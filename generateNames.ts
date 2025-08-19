@@ -1,7 +1,7 @@
 const ptFirstNames = 'João José Antônio Carlos Pedro Lucas Marcos Rafael Juliano Márcio'.split(' ');
 const ptLastNames = 'Silva Santos Costa Pereira Oliveira Rodrigues Martins Sousa'.split(' ');
 
-const esFirstNames = 'Juan Carlos Javier Diego Miguel Angel Jose David Alejandro Manuel'.split(' ');
+const esFirstNames = 'Juan Carlos Javier Diego Miguel Angel Jose David Alejandro'.split(' ');
 const esLastNames = 'Garcia Rodriguez Martinez Hernandez Lopez Gonzalez Perez Sanchez Ramirez Torres'.split(' ');
 
 const enFirstNames = 'John Paul Mark Michael Peter David Chris Robert James William'.split(' ');
