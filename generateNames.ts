@@ -1,12 +1,12 @@
-export function generatePlayerNames(tc: number, ppt: number): string[][] {
-    const f = 'João José António Carlos Pedro Lucas Luís Marcos Gabriel Rafael Daniel Marcelo Bruno Felipe Ricardo Rodrigo André Juan Marco Leo Hugo Martin Mateo Pablo Alex Mario David Diego Javier John Paul Mark Michael Peter Stefan Klaus Luca'.split(' ');
-    const l = 'Silva Santos Costa Pereira Oliveira Almeida Ferreira Alves Gomes Rodrigues Martins Sousa Castro Dias Fernandes Nunes Lopes Marques Mendes Pinto Cardoso Teixeira Smith Jones Muller Schmidt Rossi Ferrari Baker Hill Weber Ricci'.split(' ');
+export function generatePlayerNames(teamCount: number, playersPerTeam: number): string[][] {
+    const firstNames = 'João José António Carlos Pedro Lucas Luís Marcos Gabriel Rafael Daniel Marcelo Bruno Felipe Ricardo Rodrigo André Juan Marco Leo Hugo Martin Mateo Pablo Alex Mario David Diego Javier John Paul Mark Michael Peter Stefan Klaus Luca'.split(' ');
+    const lastNames = 'Silva Santos Costa Pereira Oliveira Almeida Ferreira Alves Gomes Rodrigues Martins Sousa Castro Dias Fernandes Nunes Lopes Marques Mendes Pinto Cardoso Teixeira Smith Jones Muller Schmidt Rossi Ferrari Baker Hill Weber Ricci'.split(' ');
 
-    const total = tc * ppt;
+    const total = teamCount * playersPerTeam;
     const names: string[] = [];
 
-    for (const first of f) {
-        for (const last of l) {
+    for (const first of firstNames) {
+        for (const last of lastNames) {
             names.push(`${first} ${last}`);
         }
     }
@@ -24,9 +24,9 @@ export function generatePlayerNames(tc: number, ppt: number): string[][] {
     const teams: string[][] = [];
     let idx = 0;
 
-    for (let i = 0; i < tc; i++) {
-        teams.push(names.slice(idx, idx + ppt));
-        idx += ppt;
+    for (let i = 0; i < teamCount; i++) {
+        teams.push(names.slice(idx, idx + playersPerTeam));
+        idx += playersPerTeam;
     }
 
     return teams;
