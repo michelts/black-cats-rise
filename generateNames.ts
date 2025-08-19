@@ -19,6 +19,9 @@ const frLastNames = 'Martin Bernard Dubois Petit Moreau Laurent'.split(' ');
 const jpFirstNames = 'Hiroshi Takeshi'.split(' ');
 const jpLastNames = 'Sato Suzuki'.split(' ');
 
+const afFirstNames = 'Femi Ade Kwame Kofi Jide Emeka Chinedu Olu Yaw Kwaku'.split(' ');
+const afLastNames = 'Adebayo Okafor Nkrumah Mensah Diallo Sow Traoré Keita Bankole Eze'.split(' ');
+
 export function makePlayerNames() {
   const allNames = [
     ...generatePlayerNames(ptFirstNames, ptLastNames),
@@ -28,6 +31,7 @@ export function makePlayerNames() {
     ...generatePlayerNames(itFirstNames, itLastNames),
     ...generatePlayerNames(frFirstNames, frLastNames),
     ...generatePlayerNames(jpFirstNames, jpLastNames),
+    ...generatePlayerNames(afFirstNames, afLastNames),
   ];
   return shuffle(allNames);
 }
