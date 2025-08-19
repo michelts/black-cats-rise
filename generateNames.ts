@@ -1,8 +1,23 @@
-const firstNames = 'João José António Carlos Pedro Lucas Luís Marcos Gabriel Rafael Daniel Marcelo Bruno Felipe Ricardo Rodrigo André Juan Marco Leo Hugo Martin Mateo Pablo Alex Mario David Diego Javier John Paul Mark Michael Peter Stefan Klaus Luca'.split(' ');
-const lastNames = 'Silva Santos Costa Pereira Oliveira Almeida Ferreira Alves Gomes Rodrigues Martins Sousa Castro Dias Fernandes Nunes Lopes Marques Mendes Pinto Cardoso Teixeira Smith Jones Muller Schmidt Rossi Ferrari Baker Hill Weber Ricci'.split(' ');
+const ptEsFirstNames = 'João José António Carlos Pedro Lucas Luís Marcos Gabriel Rafael Daniel Marcelo Bruno Felipe Ricardo Rodrigo André Juan Marco Martin Mateo Pablo Alex Mario David Diego Javier'.split(' ');
+const ptEsLastNames = 'Silva Santos Costa Pereira Oliveira Almeida Ferreira Alves Gomes Rodrigues Martins Sousa Castro Dias Fernandes Nunes Lopes Marques Mendes Pinto Cardoso Teixeira'.split(' ');
+
+const enFirstNames = 'John Paul Mark Michael Peter'.split(' ');
+const enLastNames = 'Smith Jones Baker Hill'.split(' ');
+
+const deFirstNames = 'Stefan Klaus'.split(' ');
+const deLastNames = 'Muller Schmidt Weber'.split(' ');
+
+const itFirstNames = 'Leo Hugo Luca'.split(' ');
+const itLastNames = 'Rossi Ferrari Ricci'.split(' ');
 
 export function makePlayerNames() {
-  return shuffle([...generatePlayerNames(firstNames, lastNames)])
+  const allNames = [
+    ...generatePlayerNames(ptEsFirstNames, ptEsLastNames),
+    ...generatePlayerNames(enFirstNames, enLastNames),
+    ...generatePlayerNames(deFirstNames, deLastNames),
+    ...generatePlayerNames(itFirstNames, itLastNames),
+  ];
+  return shuffle(allNames);
 }
 
 export function* generatePlayerNames(firstNames: string[], lastNames: string[]) {
