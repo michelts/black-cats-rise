@@ -1,14 +1,20 @@
-const ptEsFirstNames = 'João José António Carlos Pedro Lucas Luís Marcos Gabriel Rafael Daniel Marcelo Bruno Felipe Ricardo Rodrigo André Juan Marco Martin Mateo Pablo Alex Mario David Diego Javier'.split(' ');
-const ptEsLastNames = 'Silva Santos Costa Pereira Oliveira Almeida Ferreira Alves Gomes Rodrigues Martins Sousa Castro Dias Fernandes Nunes Lopes Marques Mendes Pinto Cardoso Teixeira'.split(' ');
+const ptEsFirstNames = 'João José António Carlos Pedro Lucas Marcos Rafael Juan Martin Mateo Pablo'.split(' ');
+const ptEsLastNames = 'Silva Santos Costa Pereira Oliveira Rodrigues Martins Sousa'.split(' ');
 
-const enFirstNames = 'John Paul Mark Michael Peter'.split(' ');
-const enLastNames = 'Smith Jones Baker Hill'.split(' ');
+const enFirstNames = 'John Paul Mark Michael Peter David Chris Robert James William'.split(' ');
+const enLastNames = 'Smith Jones Baker Hill Taylor Wilson Brown Davis'.split(' ');
 
-const deFirstNames = 'Stefan Klaus'.split(' ');
-const deLastNames = 'Muller Schmidt Weber'.split(' ');
+const deFirstNames = 'Stefan Klaus Michael Thomas Andreas Jurgen Frank'.split(' ');
+const deLastNames = 'Muller Schmidt Weber Schneider Fischer Meyer'.split(' ');
 
-const itFirstNames = 'Leo Hugo Luca'.split(' ');
-const itLastNames = 'Rossi Ferrari Ricci'.split(' ');
+const itFirstNames = 'Leo Hugo Luca Marco Antonio Giovanni Francesco Alessandro'.split(' ');
+const itLastNames = 'Rossi Ferrari Ricci Romano Bianchi Gallo Conti'.split(' ');
+
+const frFirstNames = 'Jean Pierre Michel André Louis Philippe Nicolas'.split(' ');
+const frLastNames = 'Martin Bernard Dubois Petit Moreau Laurent'.split(' ');
+
+const jpFirstNames = 'Hiroshi Takeshi'.split(' ');
+const jpLastNames = 'Sato Suzuki'.split(' ');
 
 export function makePlayerNames() {
   const allNames = [
@@ -16,6 +22,8 @@ export function makePlayerNames() {
     ...generatePlayerNames(enFirstNames, enLastNames),
     ...generatePlayerNames(deFirstNames, deLastNames),
     ...generatePlayerNames(itFirstNames, itLastNames),
+    ...generatePlayerNames(frFirstNames, frLastNames),
+    ...generatePlayerNames(jpFirstNames, jpLastNames),
   ];
   return shuffle(allNames);
 }
