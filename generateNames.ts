@@ -1,10 +1,10 @@
-const ptEsFirstNames = 'João José António Carlos Pedro Lucas Marcos Rafael Juan Martin Mateo Pablo'.split(' ');
+const ptEsFirstNames = 'João José Antônio Carlos Pedro Lucas Marcos Rafael Juliano Márcio'.split(' ');
 const ptEsLastNames = 'Silva Santos Costa Pereira Oliveira Rodrigues Martins Sousa'.split(' ');
 
 const enFirstNames = 'John Paul Mark Michael Peter David Chris Robert James William'.split(' ');
 const enLastNames = 'Smith Jones Baker Hill Taylor Wilson Brown Davis'.split(' ');
 
-const deFirstNames = 'Stefan Klaus Michael Thomas Andreas Jurgen Frank'.split(' ');
+const deFirstNames = 'Stefan Klaus Mica Thomas Andreas Jurgen Frank'.split(' ');
 const deLastNames = 'Muller Schmidt Weber Schneider Fischer Meyer'.split(' ');
 
 const itFirstNames = 'Leo Hugo Luca Marco Antonio Giovanni Francesco Alessandro'.split(' ');
@@ -51,4 +51,6 @@ function shuffle<T>(originalItems: T[]) {
   return shuffledItems;
 }
 
-console.log(makePlayerNames())
+const names = makePlayerNames()
+console.log(names.length)
+console.log(JSON.stringify(names))
