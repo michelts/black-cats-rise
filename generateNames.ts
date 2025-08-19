@@ -1,5 +1,8 @@
-const ptEsFirstNames = 'João José Antônio Carlos Pedro Lucas Marcos Rafael Juliano Márcio'.split(' ');
-const ptEsLastNames = 'Silva Santos Costa Pereira Oliveira Rodrigues Martins Sousa'.split(' ');
+const ptFirstNames = 'João José Antônio Carlos Pedro Lucas Marcos Rafael Juliano Márcio'.split(' ');
+const ptLastNames = 'Silva Santos Costa Pereira Oliveira Rodrigues Martins Sousa'.split(' ');
+
+const esFirstNames = 'Juan Carlos Javier Diego Miguel Angel Jose David Alejandro Manuel'.split(' ');
+const esLastNames = 'Garcia Rodriguez Martinez Hernandez Lopez Gonzalez Perez Sanchez Ramirez Torres'.split(' ');
 
 const enFirstNames = 'John Paul Mark Michael Peter David Chris Robert James William'.split(' ');
 const enLastNames = 'Smith Jones Baker Hill Taylor Wilson Brown Davis'.split(' ');
@@ -18,7 +21,8 @@ const jpLastNames = 'Sato Suzuki'.split(' ');
 
 export function makePlayerNames() {
   const allNames = [
-    ...generatePlayerNames(ptEsFirstNames, ptEsLastNames),
+    ...generatePlayerNames(ptFirstNames, ptLastNames),
+    ...generatePlayerNames(esFirstNames, esLastNames),
     ...generatePlayerNames(enFirstNames, enLastNames),
     ...generatePlayerNames(deFirstNames, deLastNames),
     ...generatePlayerNames(itFirstNames, itLastNames),
