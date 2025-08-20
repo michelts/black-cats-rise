@@ -1,4 +1,22 @@
-import { js13kViteConfig } from "js13k-vite-plugins";
 import { defineConfig } from "vite";
+import { viteSingleFile } from "vite-plugin-singlefile";
 
-export default defineConfig(js13kViteConfig());
+export default defineConfig({
+  base: "./",
+  build: {
+    minify: "terser",
+    cssMinify: "lightningcss",
+    terserOptions: {
+      compress: {
+        drop_console: true,
+      },
+    },
+  },
+  plugins: [viteSingleFile()],
+  server: {
+    host: true,
+    fs: {
+      strict: false,
+    },
+  },
+});
