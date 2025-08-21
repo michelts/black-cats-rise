@@ -1,14 +1,27 @@
+import { Game } from "./game";
+
+let game: Game | null = null;
+
 function main() {
   document
-    .querySelector("#splash-screen nav")
+    .querySelector("#splash button")
     ?.addEventListener("click", (event) => {
       const target = event.target as HTMLElement;
-      if (target.tagName === "BUTTON") {
-        console.log(`Clicked on: ${target.textContent}`);
-        // Here you could hide the splash screen and start the game,
-        // or navigate to another screen.
-      }
+      console.log(`Clicked on: ${target.textContent}`);
+      game = new Game();
+      swapScreen("#game");
+      console.log(game.playerNames);
     });
+}
+
+function swapScreen(id: string) {
+  for (const elem of document.querySelectorAll<HTMLDivElement>(".screen")) {
+    elem.style.display = "none";
+  }
+  const elem = document.querySelector<HTMLDivElement>(id);
+  if (elem) {
+    elem.style.display = "block";
+  }
 }
 
 main();
