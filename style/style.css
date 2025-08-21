@@ -21,13 +21,13 @@ body {
   text-align: center;
   box-sizing: border-box;
   padding: 15vh 0;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes title to top, nav to bottom */
+  align-items: center;
 }
 
 #splash.active {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Pushes title to top, nav to bottom */
-  align-items: center;
 }
 
 h1 {
