@@ -23,15 +23,17 @@
       <h2>Multiplayer</h2>
     </div>
     <main>
-      <nav id="menu">
-        <button class="menu" data-id="matches">Matches</button>
-        <button class="menu" data-id="team">Team</button>
-        <button class="menu" data-id="transfers">Transfers</button>
-      </nav>
+      <div id="menu">
+        <nav>
+          <button class="menu" data-id="matches">Matches</button>
+          <button class="menu" data-id="team">Team</button>
+          <button class="menu" data-id="transfers">Transfers</button>
+        </nav>
+        <span>🕐 <span id="date-placeholder"></span></span>
+      </div>
       <div class="screen" id="matches"></div>
       <div class="screen" id="team"></div>
       <div class="screen" id="transfers"></div>
-      <div id="footer">Current date: <span id="date-placeholder"></span></div>
     </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
