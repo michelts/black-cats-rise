@@ -10,15 +10,7 @@ function main() {
   router.onClickMenu({
     onClick: (screen: Screen) => {
       if (screen === "game") {
-        const game = new Game(storage);
-        console.log(game.getPlayerNames());
-        // Show the team screen by adding the active class
-        const teamScreen = document.getElementById("teams-screen");
-        if (teamScreen) {
-          teamScreen.classList.add("active");
-        }
-        // Render teams list
-        displayTeams("teamlist");
+        new Game(storage);
       }
     },
   });

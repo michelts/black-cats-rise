@@ -12,18 +12,24 @@
       <nav>
         <ul>
           <li><button class="menu" data-id="game">Begin Black Cat's scenario</button></li>
-          <li><button class="menu" data-id="new-team">Select another team</button></li>
+          <li><button class="menu" data-id="select-team">Select another team</button></li>
           <li><button class="menu" data-id="multiplayer">Multiplayer mode</button></li>
         </ul>
       </nav>
     </div>
+    <nav id="menu">
+      <ul>
+        <li><button class="menu" data-id="matches">Matches</button></li>
+        <li><button class="menu" data-id="team-detail">Team</button></li>
+        <li><button class="menu" data-id="transfers">Transfers</button></li>
+      </ul>
+    </nav>
     <div class="screen" id="game">
-      <div class="screen" id="teams-screen">
-        <div class="teams-header">
-          <h2>Select Team</h2>
-        </div>
-        <div id="teamlist">
-        </div>
+      <h2>Select Team</h2>
+    </div>
+    <div class="screen" id="select-team">
+      <h2>Select Team</h2>
+      <div id="teamlist">
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
