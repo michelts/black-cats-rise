@@ -1,5 +1,5 @@
 export type GameStorage = {
-  playerNames: string[];
+  playerNames?: string[];
   [rest: string]: unknown;
 };
 

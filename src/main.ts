@@ -15,16 +15,13 @@ function main() {
     },
     onActivate: (_, screen, elem) => {
       if (screen === "matches") {
-        if (!game) {
-          return;
+        const players = game?.getPlayerNames();
+        if (players) {
+          elem.innerHTML =
+            "<ul>" +
+            players.map((player) => `<li>${player}</li>`).join("") +
+            "</ul>";
         }
-        elem.innerHTML =
-          "<ul>" +
-          game
-            .getPlayerNames()
-            .map((player) => `<li>${player}</li>`)
-            .join("") +
-          "</ul>";
       }
     },
   });
