@@ -1,25 +1,19 @@
-import type { Storage } from "./types";
+import type { GameStorage } from "./types";
 
-export class LocalStorage implements Storage {
-  [key: string]: unknown;
+const storagePrefix = "bcr"; // short of black cat's rise
 
-  constructor() {
-    return new Proxy(this, {
-      get: (target, prop: string) => {
-        const value = localStorage.getItem(prop);
-        if (value) {
-          try {
-            return JSON.parse(value);
-          } catch (e) {
-            return value;
-          }
-        }
-        return undefined;
-      },
-      set: (target, prop: string, value: unknown) => {
-        localStorage.setItem(prop, JSON.stringify(value));
-        return true;
-      },
-    });
-  }
+export function makeStorage(): GameStorage {
+  return new Proxy(window.localStorage, {
+    get: (target, prop: string) => {
+      const value = target.getItem(storagePrefix + prop);
+      if (value) {
+        return JSON.parse(value);
+      }
+      return undefined;
+    },
+    set: (target, prop: string, value: unknown) => {
+      target.setItem(storagePrefix + prop, JSON.stringify(value));
+      return true;
+    },
+  });
 }

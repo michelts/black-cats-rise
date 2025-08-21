@@ -1,8 +1,8 @@
 import { Game } from "./game";
-import { LocalStorage } from "./storage";
+import { makeStorage } from "./storage";
 
+const storage = makeStorage();
 let game: Game | null = null;
-const storage = new LocalStorage();
 
 function main() {
   document
@@ -12,7 +12,7 @@ function main() {
       console.log(`Clicked on: ${target.textContent}`);
       game = new Game(storage);
       swapScreen("#game");
-      console.log(storage.playerNames);
+      console.log(game.getPlayerNames());
     });
 }
 

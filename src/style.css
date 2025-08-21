@@ -8,7 +8,7 @@ body {
   color: white;
 }
 
-#splash-screen {
+#splash {
   display: flex;
   flex-direction: column;
   justify-content: space-between; /* Pushes title to top, nav to bottom */

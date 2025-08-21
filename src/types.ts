@@ -1,3 +1,1 @@
-export interface Storage {
-  [key: string]: unknown;
-}
+export type GameStorage = Record<string, unknown>;
