@@ -29,7 +29,7 @@ nav {
   display: flex;
   justify-content: center;
   gap: 1em;
-  margin: 1em;
+  padding: 1em;
   font-size: 1.5rem;
 }
 nav button {
@@ -45,6 +45,21 @@ nav button {
 nav button:hover {
   color: #f7b700;
   text-decoration: underline;
+}
+
+#menu {
+  position: sticky;
+  top: 0;
+  left: 0;
+  background: #081408;
+}
+
+#footer {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  background: #081408;
+  padding: 0.5em;
 }
 
 .intro {
@@ -68,7 +83,7 @@ main {
   display: flex;
   flex-direction: column;
 }
-.intro.active + main {
+.intro.active ~ main {
   display: none;
 }
 main nav button.active {

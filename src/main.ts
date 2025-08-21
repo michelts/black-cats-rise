@@ -15,7 +15,6 @@ function main() {
     },
     onActivate: (_, screen, elem) => {
       if (screen === "matches") {
-        console.log("ok");
         if (!game) {
           return;
         }
@@ -30,6 +29,12 @@ function main() {
     },
   });
   router.activate();
+  setInterval(() => {
+    const placeholder = document.querySelector(
+      "#date-placeholder",
+    ) as HTMLElement;
+    placeholder.innerHTML = new Date().toLocaleDateString();
+  });
 }
 
 main();
