@@ -10,9 +10,9 @@ function main() {
     ?.addEventListener("click", (event) => {
       const target = event.target as HTMLElement;
       console.log(`Clicked on: ${target.textContent}`);
-      game = new Game();
+      game = new Game(storage);
       swapScreen("#game");
-      console.log(game.playerNames);
+      console.log(storage.playerNames);
     });
 }
 
