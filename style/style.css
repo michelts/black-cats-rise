@@ -1,11 +1,9 @@
 html,
 body {
   height: 100%;
-  margin: 0;
-  overflow: hidden;
   font-family: Arial, sans-serif;
-  background-color: #081408; /* Dark green from image */
   color: white;
+  margin: 0;
 }
 
 .screen {
@@ -13,19 +11,6 @@ body {
 }
 .screen.active {
   display: block;
-}
-
-#splash {
-  height: 100%;
-  text-align: center;
-  box-sizing: border-box;
-  padding: 15vh 0;
-  flex-direction: column;
-  justify-content: space-between; /* Pushes title to top, nav to bottom */
-  align-items: center;
-}
-#splash.active {
-  display: flex;
 }
 
 h1 {
@@ -40,13 +25,12 @@ h1 span {
   color: #f7b700; /* Yellow from image */
 }
 
-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+nav {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   gap: 1em;
+  margin: 1em;
+  font-size: 1.5rem;
 }
 nav button {
   background: none;
@@ -54,7 +38,39 @@ nav button {
   color: white;
   cursor: pointer;
   font-family: inherit;
-  font-size: 3.5vmin;
+  font-size: inherit;
   padding: 0;
   text-decoration: none;
+}
+nav button:hover {
+  color: #f7b700;
+  text-decoration: underline;
+}
+
+.intro {
+  height: 100%;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 15vh 0;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes title to top, nav to bottom */
+  align-items: center;
+}
+.intro.active {
+  display: flex;
+}
+.intro nav {
+  flex-direction: column;
+  font-size: 3.5vmin;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+}
+.intro.active + main {
+  display: none;
+}
+main nav button.active {
+  color: red;
 }

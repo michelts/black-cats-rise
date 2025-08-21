@@ -1,25 +1,30 @@
 import type { Screen } from "./types";
 
 export class Router {
-  construtor() {
+  activate({ onClick }: { onClick: (router: Router, screen: Screen) => void }) {
     this.navigate("splash");
-  }
-
-  onClickMenu({ onClick }: { onClick: (screen: Screen) => void }) {
-    document.querySelector(".menu")?.addEventListener("click", (event) => {
-      const target = event.target as HTMLElement;
-      const screen = target.dataset.id as Screen;
-      this.navigate(screen);
-      onClick(screen);
-    });
+    for (const elem of document.querySelectorAll(".menu")) {
+      elem.addEventListener("click", (event) => {
+        const target = event.target as HTMLElement;
+        const screen = target.dataset.id as Screen;
+        this.navigate(screen);
+        console.log("Navigate to", screen);
+        onClick(this, screen);
+      });
+    }
+    document.body.style.visibility = "visible";
   }
 
   navigate(id: Screen) {
-    for (const elem of document.querySelectorAll<HTMLDivElement>(".screen")) {
+    console.log("id", id);
+    for (const elem of document.querySelectorAll<HTMLDivElement>(
+      ".screen, .menu",
+    )) {
       elem.classList.remove("active");
     }
-    const elem = document.querySelector<HTMLDivElement>("#" + id);
-    if (elem) {
+    for (const elem of document.querySelectorAll<HTMLElement>(
+      `#${id}, [data-id=${id}]`,
+    )) {
       elem.classList.add("active");
     }
   }

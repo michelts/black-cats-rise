@@ -4,34 +4,40 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <title>Black Cat's Rise</title>
-    <link rel="stylesheet" href="/style/style.css" />
   </head>
-  <body>
-    <div class="screen active" id="splash">
+  <body style="visibility: hidden; background-color: #081408">
+    <div class="screen intro" id="splash">
       <h1>BLACK CATS<br /><span>RAISE</span></h1>
       <nav>
-        <ul>
-          <li><button class="menu" data-id="game">Begin Black Cat's scenario</button></li>
-          <li><button class="menu" data-id="select-team">Select another team</button></li>
-          <li><button class="menu" data-id="multiplayer">Multiplayer mode</button></li>
-        </ul>
+        <button class="menu" data-id="game">Begin Black Cat's scenario</button>
+        <button class="menu" data-id="select-team">Select another team</button>
+        <button class="menu" data-id="multiplayer">Multiplayer mode</button>
       </nav>
     </div>
-    <nav id="menu">
-      <ul>
-        <li><button class="menu" data-id="matches">Matches</button></li>
-        <li><button class="menu" data-id="team-detail">Team</button></li>
-        <li><button class="menu" data-id="transfers">Transfers</button></li>
-      </ul>
-    </nav>
-    <div class="screen" id="game">
+    <div class="screen intro" id="select-team">
+      <h1>BLACK CATS<br /><span>RAISE</span></h1>
       <h2>Select Team</h2>
     </div>
-    <div class="screen" id="select-team">
-      <h2>Select Team</h2>
-      <div id="teamlist">
+    <div class="screen intro" id="multiplayer">
+      <h1>BLACK CATS<br /><span>RAISE</span></h1>
+      <h2>Multiplayer</h2>
+    </div>
+    <main>
+      <nav id="menu">
+        <button class="menu" data-id="matches">Matches</button>
+        <button class="menu" data-id="team">Team</button>
+        <button class="menu" data-id="transfers">Transfers</button>
+      </nav>
+      <div class="screen" id="matches">
+        <h2>Matches</h2>
       </div>
-    </div>
+      <div class="screen" id="team">
+        <h2>Team</h2>
+      </div>
+      <div class="screen" id="transfers">
+        <h2>Transfers</h2>
+      </div>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

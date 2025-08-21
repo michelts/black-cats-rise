@@ -1,16 +1,17 @@
 import { Game } from "./game";
 import { Router } from "./router";
 import { makeStorage } from "./storage";
-import type { Screen } from "./types";
+import "../style/style.css";
 
 function main() {
-  const router = new Router();
   const storage = makeStorage();
-
-  router.onClickMenu({
-    onClick: (screen: Screen) => {
+  const router = new Router();
+  router.activate({
+    onClick: (router, screen) => {
       if (screen === "game") {
         new Game(storage);
+        router.navigate("matches");
+        console.log("ok");
       }
     },
   });
