@@ -63,3 +63,68 @@ nav button {
   padding: 0;
   text-decoration: none;
 }
+
+.teams-screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 10%;
+  overflow-y: auto;
+}
+
+#teamlist {
+  width: 100%;
+}
+
+.teams-header {
+  margin-bottom: 2em;
+  text-align: center;
+}
+
+#teamlist > div {
+  border: 2px dashed white;
+  border-radius: 8px;
+  margin: 0.8em;
+  padding: 1em;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+#teamlist > div:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#teamlist > div:first-child:after {
+  content: ">";
+  display: block;
+  font-size: 4vmin;
+  line-height: 1;
+  text-align: right;
+  margin: 1em 0 0 0;
+}
+
+#teamlist > div:after {
+  content: "";
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  background-color: #081408; /* Dark green from image */
+  color: white;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
