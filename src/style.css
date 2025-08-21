@@ -42,8 +42,13 @@ nav li {
   margin: 1em 0;
 }
 
-nav a {
+nav button {
+  background: none;
+  border: none;
   color: white;
-  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
   font-size: 3.5vmin;
+  padding: 0;
+  text-decoration: none;
 }
