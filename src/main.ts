@@ -1,6 +1,8 @@
 import { Game } from "./game";
+import { LocalStorage } from "./storage";
 
 let game: Game | null = null;
+const storage = new LocalStorage();
 
 function main() {
   document

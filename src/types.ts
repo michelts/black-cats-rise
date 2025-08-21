@@ -1,3 +1,3 @@
 export interface Storage {
-  get: (key: string) => unknown;
+  [key: string]: unknown;
 }
