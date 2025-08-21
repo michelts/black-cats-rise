@@ -16,11 +16,11 @@ export class Router {
 
   navigate(id: Screen) {
     for (const elem of document.querySelectorAll<HTMLDivElement>(".screen")) {
-      elem.style.display = "none";
+      elem.classList.remove("active");
     }
     const elem = document.querySelector<HTMLDivElement>("#" + id);
     if (elem) {
-      elem.style.display = "block";
+      elem.classList.add("active");
     }
   }
 }

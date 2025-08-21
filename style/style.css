@@ -8,15 +8,26 @@ body {
   color: white;
 }
 
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
 #splash {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Pushes title to top, nav to bottom */
-  align-items: center;
   height: 100%;
   text-align: center;
   box-sizing: border-box;
   padding: 15vh 0;
+}
+
+#splash.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes title to top, nav to bottom */
+  align-items: center;
 }
 
 h1 {
