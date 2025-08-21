@@ -1,0 +1,49 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  background-color: #081408; /* Dark green from image */
+  color: white;
+}
+
+#splash-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes title to top, nav to bottom */
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 15vh 0;
+}
+
+h1 {
+  font-size: 8vmin;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+h1 span {
+  color: #f7b700; /* Yellow from image */
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav li {
+  margin: 1em 0;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 3.5vmin;
+}
