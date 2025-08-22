@@ -1,30 +1,26 @@
 import type { Screen } from "@/types";
 
-type ClickHandler = (router: UserInterface, screen: Screen) => void;
-type ActivateHandler = (
+type NavigateHandler = (
   router: UserInterface,
   screen: Screen,
-  elem: HTMLElement,
+  elem: HTMLElement | null,
 ) => void;
 
 export class UserInterface {
-  onActivate: ActivateHandler;
+  onNavigate: NavigateHandler;
 
   constructor({
-    onClick,
-    onActivate,
+    onNavigate,
   }: {
-    onClick: ClickHandler;
-    onActivate: ActivateHandler;
+    onNavigate: NavigateHandler;
   }) {
-    this.onActivate = onActivate;
+    this.onNavigate = onNavigate;
 
     for (const elem of document.querySelectorAll(".menu")) {
       elem.addEventListener("click", (event) => {
         const target = event.target as HTMLElement;
         const screen = target.dataset.id as Screen;
         this.navigate(screen);
-        onClick(this, screen);
       });
     }
   }
@@ -40,13 +36,22 @@ export class UserInterface {
     )) {
       elem.classList.remove("active");
     }
+    let container: HTMLElement | null = null;
     for (const elem of document.querySelectorAll<HTMLElement>(
       `#${screen}, [data-id=${screen}]`,
     )) {
       elem.classList.add("active");
       if (elem.tagName !== "BUTTON") {
-        this.onActivate(this, screen, elem);
+        container = elem;
       }
     }
+    this.onNavigate(this, screen, container);
+  }
+
+  updateTime(date: Date) {
+    const placeholder = document.querySelector(
+      "#date-placeholder",
+    ) as HTMLElement;
+    placeholder.innerHTML = date.toLocaleDateString();
   }
 }

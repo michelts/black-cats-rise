@@ -4,8 +4,10 @@ import { makeTeamNames } from "./teams";
 
 export class Game {
   storage: GameStorage;
+  currentDate: Date;
 
   constructor(storage: GameStorage) {
+    this.currentDate = new Date();
     this.storage = storage;
     this.storage.playerNames = makePlayerNames();
     this.storage.teamNames = makeTeamNames(20);

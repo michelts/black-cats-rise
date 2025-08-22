@@ -5,19 +5,16 @@ import "../style/style.css";
 
 function main() {
   const storage = makeStorage();
-  let game: Game | null = null;
+  const game = new Game(storage);
   const ui = new UserInterface({
-    onClick: (router, screen) => {
+    onNavigate(router, screen, elem) {
       if (screen === "game") {
-        game = new Game(storage);
         router.navigate("table");
       }
-    },
-    onActivate: (_, screen, elem) => {
-      if (screen === "matches") {
-        const players = game?.getPlayerNames();
+      if (screen === "table") {
+        const players = game.getPlayerNames();
         if (players) {
-          elem.innerHTML =
+          elem!.innerHTML =
             "<ul>" +
             players.map((player) => `<li>${player}</li>`).join("") +
             "</ul>";
@@ -26,12 +23,7 @@ function main() {
     },
   });
   ui.activate();
-  setInterval(() => {
-    const placeholder = document.querySelector(
-      "#date-placeholder",
-    ) as HTMLElement;
-    placeholder.innerHTML = new Date().toLocaleDateString();
-  });
+  ui.updateTime(game.currentDate);
 }
 
 main();
