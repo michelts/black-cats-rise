@@ -38,6 +38,9 @@ export class UserInterface {
       this.updateTime(this.game.currentDate);
       this.navigate("table");
     }
+    if (screen === "matches" && container) {
+      this.renderMatches(container);
+    }
     if (screen === "table" && container) {
       this.renderTable(container);
     }
@@ -48,6 +51,18 @@ export class UserInterface {
       "#date-placeholder",
     ) as HTMLElement;
     placeholder.innerHTML = date.toLocaleDateString();
+  }
+
+  renderMatches(container: HTMLElement) {
+    container.innerHTML =
+      "<table><tr><th>Home</th><th>Away</th><th>Date</th></tr>" +
+      this.game.matches
+        .map(
+          (match) =>
+            `<tr><td>${match.home.team.name}</td><td>${match.away.team.name}</td><td>${match.round}</td></tr>`,
+        )
+        .join("") +
+      "</table>";
   }
 
   renderTable(container: HTMLElement) {
