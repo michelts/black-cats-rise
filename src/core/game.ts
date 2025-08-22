@@ -1,15 +1,16 @@
-import type { Game as GameType } from "@/types";
 import { makePlayerNames } from "@/utils/makePlayerNames";
+import { combineMatches } from "./matches";
 import { makeTeamNames } from "./teams";
 
 export class Game {
-  storage: GameType;
+  storage: Storage;
   currentDate: Date;
 
-  constructor(storage: GameType) {
+  constructor(storage: Storage) {
     this.currentDate = new Date();
     this.storage = storage;
     this.storage.teams = makeTeamNames();
+    this.storage.matches = combineMatches(this.teams);
     this.storage.playerNames = makePlayerNames();
   }
 
