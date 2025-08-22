@@ -22,6 +22,7 @@ body {
 
 .screen {
   display: none;
+  padding: 1em;
 }
 .screen.active {
   display: block;
@@ -69,6 +70,7 @@ nav button:hover {
   padding: 1em;
   align-items: center;
   background-color: #1a361a;
+  width: calc(100% - 2em);
 }
 #menu nav {
   flex: 1;
@@ -96,10 +98,20 @@ main {
   flex-direction: column;
   height: 100%;
   overflow: auto;
+  align-items: center;
 }
 .intro.active ~ main {
   display: none;
 }
 main nav button.active {
   color: red;
+}
+
+table, th, td {
+  border: 1px dashed rgba(#fff, 0.2);
+  border-width: 1px 0;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 0.25em 0.75em;
 }

@@ -1,8 +1,6 @@
-import type { GameStorage } from "./types";
-
 const storagePrefix = "bcr"; // short of black cat's rise
 
-export function makeStorage(): GameStorage {
+export function makeStorage() {
   return new Proxy(window.localStorage, {
     get: (target, prop: string) => {
       const value = target.getItem(storagePrefix + prop);

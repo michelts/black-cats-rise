@@ -1,19 +1,23 @@
-import type { GameStorage } from "@/types";
+import type { Game as GameType } from "@/types";
 import { makePlayerNames } from "@/utils/makePlayerNames";
 import { makeTeamNames } from "./teams";
 
 export class Game {
-  storage: GameStorage;
+  storage: GameType;
   currentDate: Date;
 
-  constructor(storage: GameStorage) {
+  constructor(storage: GameType) {
     this.currentDate = new Date();
     this.storage = storage;
+    this.storage.teams = makeTeamNames();
     this.storage.playerNames = makePlayerNames();
-    this.storage.teamNames = makeTeamNames(20);
   }
 
-  getPlayerNames() {
+  get playerNames() {
     return this.storage.playerNames;
+  }
+
+  get teams() {
+    return this.storage.teams;
   }
 }

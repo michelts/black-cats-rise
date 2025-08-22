@@ -1,21 +1,10 @@
-import type { Screen } from "@/types";
-
-type NavigateHandler = (
-  router: UserInterface,
-  screen: Screen,
-  elem: HTMLElement | null,
-) => void;
+import type { Game, Screen } from "@/types";
 
 export class UserInterface {
-  onNavigate: NavigateHandler;
+  game: Game;
 
-  constructor({
-    onNavigate,
-  }: {
-    onNavigate: NavigateHandler;
-  }) {
-    this.onNavigate = onNavigate;
-
+  constructor(game: Game) {
+    this.game = game;
     for (const elem of document.querySelectorAll(".menu")) {
       elem.addEventListener("click", (event) => {
         const target = event.target as HTMLElement;
@@ -45,7 +34,13 @@ export class UserInterface {
         container = elem;
       }
     }
-    this.onNavigate(this, screen, container);
+    if (screen === "game") {
+      this.updateTime(this.game.currentDate);
+      this.navigate("table");
+    }
+    if (screen === "table" && container) {
+      this.renderTable(container);
+    }
   }
 
   updateTime(date: Date) {
@@ -53,5 +48,17 @@ export class UserInterface {
       "#date-placeholder",
     ) as HTMLElement;
     placeholder.innerHTML = date.toLocaleDateString();
+  }
+
+  renderTable(container: HTMLElement) {
+    container.innerHTML =
+      "<table><tr><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th></tr>" +
+      this.game.teams
+        .map(
+          (team) =>
+            `<tr><td>${team.name}</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>`,
+        )
+        .join("") +
+      "</table>";
   }
 }
