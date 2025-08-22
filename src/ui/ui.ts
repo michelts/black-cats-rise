@@ -57,6 +57,7 @@ export class UserInterface {
     container.innerHTML =
       "<table><tr><th>Home</th><th>Away</th><th>Date</th></tr>" +
       this.game.matches
+        .filter((match) => match.home.teamId === 0 || match.away.teamId === 0)
         .map(
           (match) =>
             `<tr><td>${match.home.team.name}</td><td>${match.away.team.name}</td><td>${match.round}</td></tr>`,

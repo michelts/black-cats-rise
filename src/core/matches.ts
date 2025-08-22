@@ -11,7 +11,7 @@ export function generateEmptyMatches(numTeams: EvenNumber): Match[] {
       const home = teams[i];
       const away = teams[numTeams - 1 - i];
       if (home !== undefined && away !== undefined) {
-        matches.push({ round, home: { teamId: home }, away: { teamId: away } });
+        matches.push({ home: { teamId: home }, away: { teamId: away } });
       }
     }
 
@@ -21,5 +21,9 @@ export function generateEmptyMatches(numTeams: EvenNumber): Match[] {
     teams.splice(0, 0, teams.pop());
   }
 
-  return rounds.flat();
+  return rounds
+    .sort(() => Math.random() - 0.5)
+    .flatMap((matches, index) =>
+      matches.map((match) => ({ ...match, round: index })),
+    );
 }

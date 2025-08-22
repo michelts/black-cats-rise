@@ -1,3 +1,4 @@
+import { range } from "@/utils/range";
 import { expect, it } from "vitest";
 import type { Match } from "@/types";
 import { generateEmptyMatches } from "../matches";
@@ -16,28 +17,12 @@ it("generates matches", () => {
     );
     expect(teams).toHaveLength(6); // make sure there's not repeating inside the round
   }
-  expect(matches).toEqual([
-    // round 0
-    { away: { teamId: 5 }, home: { teamId: 0 }, round: 0 },
-    { away: { teamId: 4 }, home: { teamId: 1 }, round: 0 },
-    { away: { teamId: 3 }, home: { teamId: 2 }, round: 0 },
-    // round 1
-    { away: { teamId: 4 }, home: { teamId: 5 }, round: 1 },
-    { away: { teamId: 3 }, home: { teamId: 0 }, round: 1 },
-    { away: { teamId: 2 }, home: { teamId: 1 }, round: 1 },
-    // round 2
-    { away: { teamId: 3 }, home: { teamId: 4 }, round: 2 },
-    { away: { teamId: 2 }, home: { teamId: 5 }, round: 2 },
-    { away: { teamId: 1 }, home: { teamId: 0 }, round: 2 },
-    // round 3
-    { away: { teamId: 2 }, home: { teamId: 3 }, round: 3 },
-    { away: { teamId: 1 }, home: { teamId: 4 }, round: 3 },
-    { away: { teamId: 0 }, home: { teamId: 5 }, round: 3 },
-    // round 4
-    { away: { teamId: 1 }, home: { teamId: 2 }, round: 4 },
-    { away: { teamId: 0 }, home: { teamId: 3 }, round: 4 },
-    { away: { teamId: 5 }, home: { teamId: 4 }, round: 4 },
-  ]);
+  for (let i = 0; i < teamsCount; i++) {
+    const teamRounds = matches
+      .filter((match) => match.home.teamId === i || match.away.teamId === i)
+      .map((match) => match.round);
+    expect(teamRounds).toEqual(range(5)); // ensure index are sorted
+  }
 });
 
 it("generates matches with 20 teams", () => {
@@ -57,6 +42,12 @@ it("generates matches with 20 teams", () => {
       roundMatches.flatMap((match) => [match.home.teamId, match.away.teamId]),
     );
     expect(teams).toHaveLength(20); // make sure there's not repeating inside the round
+  }
+  for (let i = 0; i < teamsCount; i++) {
+    const teamRounds = matches
+      .filter((match) => match.home.teamId === i || match.away.teamId === i)
+      .map((match) => match.round);
+    expect(teamRounds).toEqual(range(19)); // ensure index are sorted
   }
 });
 
