@@ -1,13 +1,13 @@
-import type { Screen } from "./types";
+import type { Screen } from "@/types";
 
-type ClickHandler = (router: Router, screen: Screen) => void;
+type ClickHandler = (router: UserInterface, screen: Screen) => void;
 type ActivateHandler = (
-  router: Router,
+  router: UserInterface,
   screen: Screen,
   elem: HTMLElement,
 ) => void;
 
-export class Router {
+export class UserInterface {
   onActivate: ActivateHandler;
 
   constructor({

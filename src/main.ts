@@ -1,16 +1,16 @@
-import { Game } from "./game";
-import { Router } from "./router";
-import { makeStorage } from "./storage";
+import { Game } from "@/core/game";
+import { makeStorage } from "@/storage";
+import { UserInterface } from "@/ui/ui";
 import "../style/style.css";
 
 function main() {
   const storage = makeStorage();
   let game: Game | null = null;
-  const router = new Router({
+  const ui = new UserInterface({
     onClick: (router, screen) => {
       if (screen === "game") {
         game = new Game(storage);
-        router.navigate("matches");
+        router.navigate("table");
       }
     },
     onActivate: (_, screen, elem) => {
@@ -25,7 +25,7 @@ function main() {
       }
     },
   });
-  router.activate();
+  ui.activate();
   setInterval(() => {
     const placeholder = document.querySelector(
       "#date-placeholder",

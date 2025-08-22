@@ -19,4 +19,9 @@ export default defineConfig({
       strict: false,
     },
   },
+  resolve: {
+    alias: {
+      "@/": new URL("./src/", import.meta.url).pathname,
+    },
+  },
 });

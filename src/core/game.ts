@@ -1,6 +1,6 @@
-import type { GameStorage } from "./types";
-import { makePlayerNames } from "./utils/makePlayerNames";
-import { makeTeamNames } from "./utils/makeTeamNames";
+import type { GameStorage } from "@/types";
+import { makePlayerNames } from "@/utils/makePlayerNames";
+import { makeTeamNames } from "./teams";
 
 export class Game {
   storage: GameStorage;

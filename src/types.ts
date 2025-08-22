@@ -3,4 +3,4 @@ export type GameStorage = {
   [rest: string]: unknown;
 };
 
-export type Screen = "splash" | "game" | "matches" | "team" | "transfers";
+export type Screen = "splash" | "game" | "matches" | "team" | "table";
