@@ -40,6 +40,26 @@ it("generates matches", () => {
   ]);
 });
 
+it("generates matches with 20 teams", () => {
+  const teamsCount = 20;
+  const matches = generateEmptyMatches(teamsCount);
+  expect(matches).toHaveLength(190);
+  expect(getCount(matches, teamsCount, "home")).toEqual([
+    10, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+  ]);
+  expect(getCount(matches, teamsCount, "away")).toEqual([
+    9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+  ]);
+  for (let i = 0; i < teamsCount - 1; i++) {
+    const roundMatches = matches.filter((match) => match.round === i);
+    expect(roundMatches).toHaveLength(10);
+    const teams = new Set(
+      roundMatches.flatMap((match) => [match.home.teamId, match.away.teamId]),
+    );
+    expect(teams).toHaveLength(20); // make sure there's not repeating inside the round
+  }
+});
+
 function getCount(matches: Match[], count: number, key: "home" | "away") {
   const indexes = [...Array(count).keys()];
   return indexes.map(
