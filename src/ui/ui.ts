@@ -55,12 +55,12 @@ export class UserInterface {
 
   renderMatches(container: HTMLElement) {
     container.innerHTML =
-      "<table><tr><th>Home</th><th>Away</th><th>Date</th></tr>" +
+      "<table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
       this.game.matches
         .filter((match) => match.home.teamId === 0 || match.away.teamId === 0)
         .map(
           (match) =>
-            `<tr><td>${match.home.team.name}</td><td>${match.away.team.name}</td><td>${match.date.toLocaleDateString()}</td></tr>`,
+            `<tr><td>${match.round}<td>${match.home.team.name}</td><td>${match.away.team.name}</td><td>${match.date.toLocaleDateString()}</td><td><button>Begin</button></td></tr>`,
         )
         .join("") +
       "</table>";
