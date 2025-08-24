@@ -21,9 +21,8 @@ export function generateEmptyMatches(numTeams: EvenNumber): Match[] {
     teams.splice(0, 0, teams.pop());
   }
 
-  return rounds
-    .sort(() => Math.random() - 0.5)
-    .flatMap((matches, index) =>
-      matches.map((match) => ({ ...match, round: index })),
-    );
+  rounds.sort(() => Math.random() - 0.5);
+  return rounds.flatMap((matches, index) =>
+    matches.map((match) => ({ ...match, round: index })),
+  );
 }
