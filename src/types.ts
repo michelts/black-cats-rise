@@ -6,6 +6,7 @@ export interface Game {
       home: MatchStatsWithTeam;
       away: MatchStatsWithTeam;
       date: Date;
+      isCurrent: boolean;
     }
   >;
   currentDate: Date;
@@ -34,6 +35,10 @@ export interface Match {
   round: number;
   home: MatchStats;
   away: MatchStats;
+  score?: {
+    home: number;
+    away: number;
+  };
 }
 
 interface MatchStats {
@@ -44,7 +49,6 @@ interface MatchStats {
 interface MatchStatsWithTeam {
   teamId: number;
   team: Team;
-  goals?: number;
 }
 
 export type EvenNumber =

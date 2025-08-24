@@ -60,7 +60,7 @@ export class UserInterface {
         .filter((match) => match.home.teamId === 0 || match.away.teamId === 0)
         .map(
           (match) =>
-            `<tr><td>${match.round}<td>${match.home.team.name}</td><td>${match.away.team.name}</td><td>${match.date.toLocaleDateString()}</td><td><button>Begin</button></td></tr>`,
+            `<tr><td>${match.round}<td>${match.home.team.name}</td><td>${match.away.team.name}</td><td>${match.date.toLocaleDateString()}</td><td>${match.isCurrent ? "<button>Begin</button>" : ""}</td></tr>`,
         )
         .join("") +
       "</table>";

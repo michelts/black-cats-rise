@@ -46,6 +46,14 @@ export class Game {
         team: teams[match.away.teamId],
       },
       date: matchDate,
+      isCurrent: match.round === this.currentRound,
     };
+  }
+
+  get currentRound() {
+    const match = (this.storage.matches as Match[]).find(
+      (match) => !match.score,
+    );
+    return match?.round;
   }
 }
