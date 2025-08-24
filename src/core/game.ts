@@ -25,16 +25,21 @@ export class Game {
 
   get matches() {
     const teams = this.teams;
-    return (this.storage.matches as Match[]).map((match) => ({
-      ...match,
-      home: {
-        ...match.home,
-        team: teams[match.home.teamId],
-      },
-      away: {
-        ...match.away,
-        team: teams[match.away.teamId],
-      },
-    }));
+    return (this.storage.matches as Match[]).map((match) => {
+      const matchDate = new Date(this.currentDate);
+      matchDate.setDate(matchDate.getDate() + match.round * 7);
+      return {
+        ...match,
+        home: {
+          ...match.home,
+          team: teams[match.home.teamId],
+        },
+        away: {
+          ...match.away,
+          team: teams[match.away.teamId],
+        },
+        date: matchDate,
+      };
+    });
   }
 }

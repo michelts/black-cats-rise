@@ -60,7 +60,7 @@ export class UserInterface {
         .filter((match) => match.home.teamId === 0 || match.away.teamId === 0)
         .map(
           (match) =>
-            `<tr><td>${match.home.team.name}</td><td>${match.away.team.name}</td><td>${match.round}</td></tr>`,
+            `<tr><td>${match.home.team.name}</td><td>${match.away.team.name}</td><td>${match.date.toLocaleDateString()}</td></tr>`,
         )
         .join("") +
       "</table>";

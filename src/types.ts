@@ -5,6 +5,7 @@ export interface Game {
     Omit<Match, "home" | "away"> & {
       home: MatchStatsWithTeam;
       away: MatchStatsWithTeam;
+      date: Date;
     }
   >;
   currentDate: Date;
