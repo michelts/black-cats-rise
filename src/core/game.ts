@@ -26,20 +26,16 @@ export class Game {
   }
 
   get matches() {
-    const currentTeamId = 0;
-    return (this.storage.matches as StoredMatch[])
-      .map(this.transformMatch.bind(this))
-      .filter(
-        (match) =>
-          match.home.teamId === currentTeamId ||
-          match.away.teamId === currentTeamId,
-      );
+    return (this.storage.matches as StoredMatch[]).map(
+      this.transformMatch.bind(this),
+    );
   }
 
   transformMatch(match: StoredMatch): Match {
     const teams = this.teams;
     const matchDate = new Date(this.currentDate);
     matchDate.setDate(matchDate.getDate() + match.round * 7);
+    const currentTeamId = 0;
     return {
       ...match,
       home: {
@@ -51,7 +47,10 @@ export class Game {
         team: teams[match.away.teamId],
       },
       date: matchDate,
-      isCurrent: match.round === this.currentRound,
+      isCurrent:
+        (match.round === this.currentRound &&
+          match.home.teamId === currentTeamId) ||
+        match.away.teamId === currentTeamId,
       play: () => {
         const storedMatches = this.storage.matches as StoredMatch[];
         const roundMatches = storedMatches.filter(

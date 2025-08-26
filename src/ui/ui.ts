@@ -58,7 +58,6 @@ export class UserInterface {
       "<table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
       this.game.matches
         .map((match) => {
-          console.log(match.round, match.score, this.game.currentRound);
           return `
 <tr>
 <td>${match.round}</td>
