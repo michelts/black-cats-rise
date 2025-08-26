@@ -2,6 +2,7 @@ import type { Game, Screen } from "@/types";
 
 export class UserInterface {
   game: Game;
+  currentTeam = 0;
 
   constructor(game: Game) {
     this.game = game;
@@ -55,8 +56,22 @@ export class UserInterface {
 
   renderMatches(container: HTMLElement) {
     container.innerHTML =
-      "<table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
+      "<select>" +
+      this.game.teams.map(
+        (team, index) =>
+          "<option" +
+          (index === this.currentTeam ? " selected" : "") +
+          ">" +
+          team.name +
+          "</option>",
+      ) +
+      "</select><table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
       this.game.matches
+        .filter(
+          (match) =>
+            match.home.teamId === this.currentTeam ||
+            match.away.teamId === this.currentTeam,
+        )
         .map((match) => {
           return `
 <tr>
@@ -81,6 +96,11 @@ export class UserInterface {
           this.renderMatches(container);
         }
       });
+    document.querySelector("select")?.addEventListener("change", (event) => {
+      this.currentTeam = (event.target as HTMLSelectElement).selectedIndex;
+      this.renderMatches(container);
+      document.querySelector("select")?.focus();
+    });
   }
 
   renderTable(container: HTMLElement) {

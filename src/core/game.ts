@@ -14,6 +14,12 @@ export class Game {
     this.storage.matches = Array.from(
       generateEmptyMatches(this.teams.length as EvenNumber),
     );
+    console.log(
+      (this.storage.matches as StoredMatch[]).map((match) => [
+        match.home.teamId,
+        match.away.teamId,
+      ]),
+    );
     this.storage.playerNames = makePlayerNames();
   }
 
@@ -48,9 +54,9 @@ export class Game {
       },
       date: matchDate,
       isCurrent:
-        (match.round === this.currentRound &&
-          match.home.teamId === currentTeamId) ||
-        match.away.teamId === currentTeamId,
+        match.round === this.currentRound &&
+        (match.home.teamId === currentTeamId ||
+          match.away.teamId === currentTeamId),
       play: () => {
         const storedMatches = this.storage.matches as StoredMatch[];
         const roundMatches = storedMatches.filter(
