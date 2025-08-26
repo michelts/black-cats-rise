@@ -1,6 +1,6 @@
-import { range } from "@/utils/range";
 import { expect, it } from "vitest";
 import type { StoredMatch } from "@/types";
+import { range } from "@/utils/range";
 import { generateEmptyMatches } from "../matches";
 
 it("generates matches", () => {

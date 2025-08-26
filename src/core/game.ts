@@ -4,27 +4,24 @@ import { generateEmptyMatches } from "./matches";
 import { makeTeamNames } from "./teams";
 
 export class Game {
-  storage: Storage;
+  storage: Record<string, unknown>;
   currentDate: Date;
 
-  constructor(storage: Storage) {
+  constructor(storage: Record<string, unknown>) {
     this.currentDate = new Date();
     this.storage = storage;
+  }
+
+  reset() {
     this.storage.teams = makeTeamNames();
     this.storage.matches = Array.from(
       generateEmptyMatches(this.teams.length as EvenNumber),
-    );
-    console.log(
-      (this.storage.matches as StoredMatch[]).map((match) => [
-        match.home.idx,
-        match.away.idx,
-      ]),
     );
     this.storage.playerNames = makePlayerNames();
   }
 
   get playerNames() {
-    return this.storage.playerNames;
+    return this.storage.playerNames as string[];
   }
 
   get teams() {
@@ -71,7 +68,6 @@ export class Game {
           };
         }
         this.storage.matches = storedMatches;
-        console.log("XXX play");
       },
     };
   }
