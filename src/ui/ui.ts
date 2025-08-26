@@ -69,8 +69,8 @@ export class UserInterface {
       this.game.matches
         .filter(
           (match) =>
-            match.home.teamId === this.currentTeam ||
-            match.away.teamId === this.currentTeam,
+            match.home.idx === this.currentTeam ||
+            match.away.idx === this.currentTeam,
         )
         .map((match) => {
           return `

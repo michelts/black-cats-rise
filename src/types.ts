@@ -48,7 +48,7 @@ export interface StoredMatch {
 }
 
 interface StoredMatchStats {
-  teamId: number;
+  idx: number;
 }
 
 export type EvenNumber =

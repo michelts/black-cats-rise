@@ -16,8 +16,8 @@ export class Game {
     );
     console.log(
       (this.storage.matches as StoredMatch[]).map((match) => [
-        match.home.teamId,
-        match.away.teamId,
+        match.home.idx,
+        match.away.idx,
       ]),
     );
     this.storage.playerNames = makePlayerNames();
@@ -46,17 +46,16 @@ export class Game {
       ...match,
       home: {
         ...match.home,
-        team: teams[match.home.teamId],
+        team: teams[match.home.idx],
       },
       away: {
         ...match.away,
-        team: teams[match.away.teamId],
+        team: teams[match.away.idx],
       },
       date: matchDate,
       isCurrent:
         match.round === this.currentRound &&
-        (match.home.teamId === currentTeamId ||
-          match.away.teamId === currentTeamId),
+        (match.home.idx === currentTeamId || match.away.idx === currentTeamId),
       play: () => {
         const storedMatches = this.storage.matches as StoredMatch[];
         const roundMatches = storedMatches.filter(

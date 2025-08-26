@@ -32,7 +32,7 @@ it("generates matches with 20 teams", () => {
 function getCount(matches: StoredMatch[], count: number, key: "home" | "away") {
   const indexes = [...Array(count).keys()];
   return indexes.map(
-    (index) => matches.filter((match) => match[key].teamId === index).length,
+    (index) => matches.filter((match) => match[key].idx === index).length,
   );
 }
 
@@ -41,7 +41,7 @@ function assertRoundHasAllTeams(matches: StoredMatch[], teamsCount: number) {
     const roundMatches = matches.filter((match) => match.round === i);
     expect(roundMatches).toHaveLength(teamsCount / 2);
     const teams = new Set(
-      roundMatches.flatMap((match) => [match.home.teamId, match.away.teamId]),
+      roundMatches.flatMap((match) => [match.home.idx, match.away.idx]),
     );
     expect(teams).toHaveLength(teamsCount); // make sure there's not repeating inside the round
   }
@@ -53,7 +53,7 @@ function assertRoundsAreSortedAscending(
 ) {
   for (let i = 0; i < teamsCount; i++) {
     const teamRounds = matches
-      .filter((match) => match.home.teamId === i || match.away.teamId === i)
+      .filter((match) => match.home.idx === i || match.away.idx === i)
       .map((match) => match.round);
     expect(teamRounds).toEqual(range(teamsCount - 1)); // ensure index are sorted
   }
@@ -62,7 +62,7 @@ function assertRoundsAreSortedAscending(
 function assertUniqueMatches(matches: StoredMatch[]) {
   const result: string[] = [];
   for (const match of matches) {
-    const ids = [match.home.teamId, match.away.teamId];
+    const ids = [match.home.idx, match.away.idx];
     ids.sort();
     const key = `${ids[0]}-${ids[1]}`;
     if (result.includes(key)) {
