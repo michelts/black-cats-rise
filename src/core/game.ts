@@ -71,6 +71,18 @@ export class Game {
       teams[away.idx].a += goals.home;
       teams[away.idx].gd += goals.away - goals.home;
     }
+    teams.sort((a, b) => {
+      if (a.pts !== b.pts) {
+        return b.pts - a.pts;
+      }
+      if (a.gd !== b.gd) {
+        return b.gd - a.gd;
+      }
+      if (a.f !== b.f) {
+        return b.f - a.f;
+      }
+      return a.a - b.a;
+    });
     return teams;
   }
 
