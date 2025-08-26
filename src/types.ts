@@ -29,6 +29,7 @@ export interface Match extends Omit<MatchFromStorage, "home" | "away"> {
   away: MatchStats;
   date: Date;
   isCurrent: boolean;
+  play: () => void;
 }
 
 interface MatchStats extends StoredMatchStats {

@@ -1,4 +1,4 @@
-import type { EvenNumber, MatchFromStorage, Team } from "@/types";
+import type { EvenNumber, Match, MatchFromStorage, Team } from "@/types";
 import { makePlayerNames } from "@/utils/makePlayerNames";
 import { generateEmptyMatches } from "./matches";
 import { makeTeamNames } from "./teams";
@@ -26,12 +26,17 @@ export class Game {
   }
 
   get matches() {
-    return (this.storage.matches as MatchFromStorage[]).map(
-      this.transformMatch.bind(this),
-    );
+    const currentTeamId = 0;
+    return (this.storage.matches as MatchFromStorage[])
+      .map(this.transformMatch.bind(this))
+      .filter(
+        (match) =>
+          match.home.teamId === currentTeamId ||
+          match.away.teamId === currentTeamId,
+      );
   }
 
-  transformMatch(match: MatchFromStorage) {
+  transformMatch(match: MatchFromStorage): Match {
     const teams = this.teams;
     const matchDate = new Date(this.currentDate);
     matchDate.setDate(matchDate.getDate() + match.round * 7);
@@ -47,6 +52,9 @@ export class Game {
       },
       date: matchDate,
       isCurrent: match.round === this.currentRound,
+      play: () => {
+        console.log("XXX play", this.storage);
+      },
     };
   }
 
