@@ -8,22 +8,25 @@ export function generateEmptyMatches(numTeams: EvenNumber): StoredMatch[] {
     const matches = [];
 
     for (let i = 0; i < numTeams / 2; i++) {
-      const home = teams[i];
-      const away = teams[numTeams - 1 - i];
-      if (home !== undefined && away !== undefined) {
-        matches.push({
-          id: crypto.randomUUID(),
-          home: { teamId: home },
-          away: { teamId: away },
-        });
+      const pair = [teams[i], teams[numTeams - 1 - i]];
+      if (pair[0] === undefined || pair[1] === undefined) {
+        continue;
       }
+      if (i === 0 && round >= numTeams / 2) {
+        pair.reverse();
+      }
+      matches.push({
+        id: crypto.randomUUID(),
+        home: { teamId: pair[0] },
+        away: { teamId: pair[1] },
+      });
     }
 
     rounds.push(matches);
 
     const rotate = teams.pop();
     if (rotate) {
-      teams.splice(0, 0, rotate);
+      teams.splice(1, 0, rotate);
     }
   }
 

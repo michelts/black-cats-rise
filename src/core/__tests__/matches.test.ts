@@ -7,26 +7,26 @@ it("generates matches", () => {
   const teamsCount = 6;
   const matches = generateEmptyMatches(teamsCount);
   expect(matches).toHaveLength(15);
-  expect(getCount(matches, teamsCount, "home")).toEqual([3, 2, 2, 2, 3, 3]);
-  expect(getCount(matches, teamsCount, "away")).toEqual([2, 3, 3, 3, 2, 2]);
   assertRoundHasAllTeams(matches, teamsCount);
   assertRoundsAreSortedAscending(matches, teamsCount);
   assertUniqueMatches(matches);
+  expect(getCount(matches, teamsCount, "home")).toEqual([3, 3, 3, 2, 2, 2]);
+  expect(getCount(matches, teamsCount, "away")).toEqual([2, 2, 2, 3, 3, 3]);
 });
 
 it("generates matches with 20 teams", () => {
   const teamsCount = 20;
   const matches = generateEmptyMatches(teamsCount);
   expect(matches).toHaveLength(190);
-  expect(getCount(matches, teamsCount, "home")).toEqual([
-    10, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-  ]);
-  expect(getCount(matches, teamsCount, "away")).toEqual([
-    9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-  ]);
   assertRoundHasAllTeams(matches, teamsCount);
   assertRoundsAreSortedAscending(matches, teamsCount);
   assertUniqueMatches(matches);
+  expect(getCount(matches, teamsCount, "home")).toEqual([
+    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+  ]);
+  expect(getCount(matches, teamsCount, "away")).toEqual([
+    9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+  ]);
 });
 
 function getCount(matches: StoredMatch[], count: number, key: "home" | "away") {
