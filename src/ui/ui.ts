@@ -36,7 +36,7 @@ export class UserInterface {
     }
     if (screen === "game") {
       this.updateTime(this.game.currentDate);
-      this.navigate("table");
+      this.navigate("matches");
     }
     if (screen === "matches" && container) {
       this.renderMatches(container);

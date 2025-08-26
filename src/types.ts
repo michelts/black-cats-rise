@@ -1,14 +1,7 @@
 export interface Game {
   playerNames: string[];
   teams: Team[];
-  matches: Array<
-    Omit<Match, "home" | "away"> & {
-      home: MatchStatsWithTeam;
-      away: MatchStatsWithTeam;
-      date: Date;
-      isCurrent: boolean;
-    }
-  >;
+  matches: Array<Match>;
   currentDate: Date;
 }
 
@@ -31,24 +24,29 @@ export type KitPattern = "vertical" | "horizontal" | "checkered";
 
 export type MatchKey = `${number}-${number}`;
 
-export interface Match {
-  round: number;
+export interface Match extends Omit<MatchFromStorage, "home" | "away"> {
   home: MatchStats;
   away: MatchStats;
+  date: Date;
+  isCurrent: boolean;
+}
+
+interface MatchStats extends StoredMatchStats {
+  team: Team;
+}
+
+export interface MatchFromStorage {
+  round: number;
+  home: StoredMatchStats;
+  away: StoredMatchStats;
   score?: {
     home: number;
     away: number;
   };
 }
 
-interface MatchStats {
+interface StoredMatchStats {
   teamId: number;
-  goals?: number;
-}
-
-interface MatchStatsWithTeam {
-  teamId: number;
-  team: Team;
 }
 
 export type EvenNumber =

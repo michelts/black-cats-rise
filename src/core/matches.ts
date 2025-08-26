@@ -1,6 +1,6 @@
-import type { EvenNumber, Match } from "@/types";
+import type { EvenNumber, MatchFromStorage } from "@/types";
 
-export function generateEmptyMatches(numTeams: EvenNumber): Match[] {
+export function generateEmptyMatches(numTeams: EvenNumber): MatchFromStorage[] {
   const rounds = [];
   const teams = [...Array(numTeams).keys()];
 
@@ -17,8 +17,10 @@ export function generateEmptyMatches(numTeams: EvenNumber): Match[] {
 
     rounds.push(matches);
 
-    // rotate (except the first team)
-    teams.splice(0, 0, teams.pop());
+    const rotate = teams.pop();
+    if (rotate) {
+      teams.splice(0, 0, rotate);
+    }
   }
 
   rounds.sort(() => Math.random() - 0.5);
