@@ -1,7 +1,8 @@
 import type { KitPattern, StoredTeam } from "@/types";
 
 export function makeTeamNames(): StoredTeam[] {
-  return teams.map(([name, nick, region, color1, color2, pattern]) => ({
+  return teams.map(([name, nick, region, color1, color2, pattern], index) => ({
+    id: index,
     name,
     nick,
     region,
@@ -11,18 +12,18 @@ export function makeTeamNames(): StoredTeam[] {
 
 const teams: [string, string, string, string, string, KitPattern][] = [
   [
-    "Manchester Metropolis",
-    "Citizens",
-    "Manchester",
-    "skyblue",
-    "white",
-    "vertical",
-  ],
-  [
     "Sunderland Black Cats",
     "Black Cats",
     "Sunderland",
     "red",
+    "white",
+    "vertical",
+  ],
+  [
+    "Manchester Metropolis",
+    "Citizens",
+    "Manchester",
+    "skyblue",
     "white",
     "vertical",
   ],

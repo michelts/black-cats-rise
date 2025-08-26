@@ -42,34 +42,37 @@ export class Game {
       gd: 0,
       pts: 0,
     }));
-    for (const match of this.storage.matches as Match[]) {
-      const { goals, home, away } = match;
+    for (const match of this.storage.matches as StoredMatch[]) {
+      const {
+        teamIds: [home, away],
+        goals,
+      } = match;
       if (!goals) {
         continue;
       }
-      teams[home.idx].mp += 1;
-      teams[away.idx].mp += 1;
-      if (goals.home > goals.away) {
-        teams[home.idx].w += 1;
-        teams[away.idx].l += 1;
-        teams[home.idx].pts += 3;
-      } else if (goals.home < goals.away) {
-        teams[home.idx].l += 1;
-        teams[away.idx].w += 1;
-        teams[away.idx].pts += 3;
+      teams[home].mp += 1;
+      teams[away].mp += 1;
+      if (goals[0] > goals[1]) {
+        teams[home].w += 1;
+        teams[away].l += 1;
+        teams[home].pts += 3;
+      } else if (goals[0] < goals[1]) {
+        teams[home].l += 1;
+        teams[away].w += 1;
+        teams[away].pts += 3;
       } else {
-        teams[home.idx].d += 1;
-        teams[away.idx].d += 1;
-        teams[home.idx].pts += 1;
-        teams[away.idx].pts += 1;
+        teams[home].d += 1;
+        teams[away].d += 1;
+        teams[home].pts += 1;
+        teams[away].pts += 1;
       }
 
-      teams[home.idx].f += goals.home;
-      teams[home.idx].a += goals.away;
-      teams[home.idx].gd += goals.home - goals.away;
-      teams[away.idx].f += goals.away;
-      teams[away.idx].a += goals.home;
-      teams[away.idx].gd += goals.away - goals.home;
+      teams[home].f += goals[0];
+      teams[home].a += goals[1];
+      teams[home].gd += goals[0] - goals[1];
+      teams[away].f += goals[1];
+      teams[away].a += goals[0];
+      teams[away].gd += goals[1] - goals[0];
     }
     teams.sort((a, b) => {
       if (a.pts !== b.pts) {
@@ -93,24 +96,17 @@ export class Game {
   }
 
   transformMatch(match: StoredMatch): Match {
-    const teams = this.teams;
+    const teams = Object.fromEntries(this.teams.map((team) => [team.id, team]));
     const matchDate = this.currentDate;
     matchDate.setDate(matchDate.getDate() + match.round * 7);
     const currentTeamId = 0;
     return {
       ...match,
-      home: {
-        ...match.home,
-        team: teams[match.home.idx],
-      },
-      away: {
-        ...match.away,
-        team: teams[match.away.idx],
-      },
+      teams: [teams[match.teamIds[0]], teams[match.teamIds[1]]],
       date: matchDate,
       isCurrent:
         match.round === this.currentRound &&
-        (match.home.idx === currentTeamId || match.away.idx === currentTeamId),
+        match.teamIds.includes(currentTeamId),
       play: () => {
         const storedMatches = this.storage.matches as StoredMatch[];
         const roundMatches = storedMatches.filter(
@@ -120,10 +116,10 @@ export class Game {
           const storedMatchIndex = storedMatches.findIndex(
             (item) => item.id === roundMatch.id,
           );
-          storedMatches[storedMatchIndex].goals = {
-            home: Math.round(Math.random() * 10),
-            away: Math.round(Math.random() * 10),
-          };
+          storedMatches[storedMatchIndex].goals = [
+            Math.round(Math.random() * 10),
+            Math.round(Math.random() * 10),
+          ];
         }
         this.storage.matches = storedMatches;
       },

@@ -17,8 +17,7 @@ export function generateEmptyMatches(numTeams: EvenNumber): StoredMatch[] {
       }
       matches.push({
         id: crypto.randomUUID(),
-        home: { idx: pair[0] },
-        away: { idx: pair[1] },
+        teamIds: pair as [number, number],
       });
     }
 

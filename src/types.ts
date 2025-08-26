@@ -15,9 +15,11 @@ export interface Team extends StoredTeam {
   f: number; // goals for
   a: number; // goals against
   gd: number; // goal difference
+  pts: number; // points
 }
 
 export interface StoredTeam {
+  id: number;
   name: string;
   nick: string;
   region: string;
@@ -34,31 +36,18 @@ export type KitPattern = "vertical" | "horizontal" | "checkered";
 
 export type MatchKey = `${number}-${number}`;
 
-export interface Match extends Omit<StoredMatch, "home" | "away"> {
-  home: MatchStats;
-  away: MatchStats;
+export interface Match extends StoredMatch {
+  teams: [Team, Team];
   date: Date;
   isCurrent: boolean;
   play: () => void;
 }
 
-interface MatchStats extends StoredMatchStats {
-  team: StoredTeam;
-}
-
 export interface StoredMatch {
   id: string;
   round: number;
-  home: StoredMatchStats;
-  away: StoredMatchStats;
-  goals?: {
-    home: number;
-    away: number;
-  };
-}
-
-interface StoredMatchStats {
-  idx: number;
+  teamIds: [Team["id"], Team["id"]];
+  goals?: [number, number];
 }
 
 export type EvenNumber =
