@@ -1,6 +1,6 @@
 import { range } from "@/utils/range";
 import { expect, it } from "vitest";
-import type { MatchFromStorage } from "@/types";
+import type { StoredMatch } from "@/types";
 import { generateEmptyMatches } from "../matches";
 
 it("generates matches", () => {
@@ -51,11 +51,7 @@ it("generates matches with 20 teams", () => {
   }
 });
 
-function getCount(
-  matches: MatchFromStorage[],
-  count: number,
-  key: "home" | "away",
-) {
+function getCount(matches: StoredMatch[], count: number, key: "home" | "away") {
   const indexes = [...Array(count).keys()];
   return indexes.map(
     (index) => matches.filter((match) => match[key].teamId === index).length,

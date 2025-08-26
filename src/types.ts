@@ -24,7 +24,7 @@ export type KitPattern = "vertical" | "horizontal" | "checkered";
 
 export type MatchKey = `${number}-${number}`;
 
-export interface Match extends Omit<MatchFromStorage, "home" | "away"> {
+export interface Match extends Omit<StoredMatch, "home" | "away"> {
   home: MatchStats;
   away: MatchStats;
   date: Date;
@@ -36,7 +36,8 @@ interface MatchStats extends StoredMatchStats {
   team: Team;
 }
 
-export interface MatchFromStorage {
+export interface StoredMatch {
+  id: string;
   round: number;
   home: StoredMatchStats;
   away: StoredMatchStats;

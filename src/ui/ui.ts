@@ -57,17 +57,17 @@ export class UserInterface {
     container.innerHTML =
       "<table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
       this.game.matches
-        .map(
-          (match) =>
-            `
+        .map((match) => {
+          console.log(match.round, match.score, this.game.currentRound);
+          return `
 <tr>
 <td>${match.round}</td>
 <td>${match.home.team.name}</td>
 <td>${match.away.team.name}</td>
 <td>${match.date.toLocaleDateString()}</td>
-<td>${match.isCurrent ? "<button data-round=" + match.round + ">Begin</button>" : ""}</td>
-</tr>`,
-        )
+<td>${match.score ? match.score.home + "x" + match.score.away : match.isCurrent ? "<button data-round=" + match.round + ">Begin</button>" : ""}</td>
+</tr>`;
+        })
         .join("") +
       "</table>";
     document
@@ -79,6 +79,7 @@ export class UserInterface {
             (match) => match.round === parseInt(round),
           );
           match?.play();
+          this.renderMatches(container);
         }
       });
   }

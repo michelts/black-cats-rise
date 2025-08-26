@@ -1,4 +1,4 @@
-import type { EvenNumber, Match, MatchFromStorage, Team } from "@/types";
+import type { EvenNumber, Match, StoredMatch, Team } from "@/types";
 import { makePlayerNames } from "@/utils/makePlayerNames";
 import { generateEmptyMatches } from "./matches";
 import { makeTeamNames } from "./teams";
@@ -27,7 +27,7 @@ export class Game {
 
   get matches() {
     const currentTeamId = 0;
-    return (this.storage.matches as MatchFromStorage[])
+    return (this.storage.matches as StoredMatch[])
       .map(this.transformMatch.bind(this))
       .filter(
         (match) =>
@@ -36,7 +36,7 @@ export class Game {
       );
   }
 
-  transformMatch(match: MatchFromStorage): Match {
+  transformMatch(match: StoredMatch): Match {
     const teams = this.teams;
     const matchDate = new Date(this.currentDate);
     matchDate.setDate(matchDate.getDate() + match.round * 7);
@@ -53,13 +53,27 @@ export class Game {
       date: matchDate,
       isCurrent: match.round === this.currentRound,
       play: () => {
-        console.log("XXX play", this.storage);
+        const storedMatches = this.storage.matches as StoredMatch[];
+        const roundMatches = storedMatches.filter(
+          (storedMatch) => storedMatch.round === match.round,
+        );
+        for (const roundMatch of roundMatches) {
+          const storedMatchIndex = storedMatches.findIndex(
+            (item) => item.id === roundMatch.id,
+          );
+          storedMatches[storedMatchIndex].score = {
+            home: Math.round(Math.random() * 10),
+            away: Math.round(Math.random() * 10),
+          };
+        }
+        this.storage.matches = storedMatches;
+        console.log("XXX play");
       },
     };
   }
 
   get currentRound() {
-    const match = (this.storage.matches as MatchFromStorage[]).find(
+    const match = (this.storage.matches as StoredMatch[]).find(
       (match) => !match.score,
     );
     return match?.round;

@@ -1,6 +1,6 @@
-import type { EvenNumber, MatchFromStorage } from "@/types";
+import type { EvenNumber, StoredMatch } from "@/types";
 
-export function generateEmptyMatches(numTeams: EvenNumber): MatchFromStorage[] {
+export function generateEmptyMatches(numTeams: EvenNumber): StoredMatch[] {
   const rounds = [];
   const teams = [...Array(numTeams).keys()];
 
@@ -11,7 +11,11 @@ export function generateEmptyMatches(numTeams: EvenNumber): MatchFromStorage[] {
       const home = teams[i];
       const away = teams[numTeams - 1 - i];
       if (home !== undefined && away !== undefined) {
-        matches.push({ home: { teamId: home }, away: { teamId: away } });
+        matches.push({
+          id: crypto.randomUUID(),
+          home: { teamId: home },
+          away: { teamId: away },
+        });
       }
     }
 
