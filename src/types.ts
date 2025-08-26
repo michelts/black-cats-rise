@@ -14,6 +14,7 @@ export interface Team extends StoredTeam {
   l: number; // lose
   f: number; // goals for
   a: number; // goals against
+  gd: number; // goal difference
 }
 
 export interface StoredTeam {

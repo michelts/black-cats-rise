@@ -109,7 +109,7 @@ export class UserInterface {
       this.game.teams
         .map(
           (team) =>
-            `<tr><td>${team.name}</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>`,
+            `<tr><td>${team.name}</td><td>${team.mp}</td><td>${team.w}</td><td>${team.d}</td><td>${team.l}</td><td>${team.f}</td><td>${team.a}</td><td>${team.gd}</td></tr>`,
         )
         .join("") +
       "</table>";
