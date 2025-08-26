@@ -79,7 +79,7 @@ export class UserInterface {
 <td>${match.home.team.name}</td>
 <td>${match.away.team.name}</td>
 <td>${match.date.toLocaleDateString()}</td>
-<td>${match.score ? match.score.home + "x" + match.score.away : match.isCurrent ? "<button data-round=" + match.round + ">Begin</button>" : ""}</td>
+<td>${match.goals ? match.goals.home + "x" + match.goals.away : match.isCurrent ? "<button data-round=" + match.round + ">Begin</button>" : ""}</td>
 </tr>`;
         })
         .join("") +

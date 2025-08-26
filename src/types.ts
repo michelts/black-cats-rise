@@ -7,7 +7,16 @@ export interface Game {
 
 export type Screen = "splash" | "game" | "matches" | "team" | "table";
 
-export interface Team {
+export interface Team extends StoredTeam {
+  mp: number; // matches played
+  w: number; // won
+  d: number; // drawn
+  l: number; // lose
+  f: number; // goals for
+  a: number; // goals against
+}
+
+export interface StoredTeam {
   name: string;
   nick: string;
   region: string;
@@ -33,7 +42,7 @@ export interface Match extends Omit<StoredMatch, "home" | "away"> {
 }
 
 interface MatchStats extends StoredMatchStats {
-  team: Team;
+  team: StoredTeam;
 }
 
 export interface StoredMatch {
@@ -41,7 +50,7 @@ export interface StoredMatch {
   round: number;
   home: StoredMatchStats;
   away: StoredMatchStats;
-  score?: {
+  goals?: {
     home: number;
     away: number;
   };
