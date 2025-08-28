@@ -31,6 +31,12 @@ export class Game {
     return new Date(this.storage.currentDate as number);
   }
 
+  getDateFromInitial(weeks: number) {
+    const date = this.initialDate;
+    date.setDate(date.getDate() + weeks * 7);
+    return date;
+  }
+
   get playerNames() {
     return this.storage.playerNames as string[];
   }
@@ -95,42 +101,35 @@ export class Game {
   }
 
   get matches() {
-    return (this.storage.matches as StoredMatch[]).map(
-      this.transformMatch.bind(this),
-    );
-  }
-
-  transformMatch(match: StoredMatch): Match {
     const teams = Object.fromEntries(this.teams.map((team) => [team.id, team]));
-    const matchDate = this.initialDate;
-    matchDate.setDate(matchDate.getDate() + match.round * 7);
     const currentTeamId = 0;
-    return {
+    return (this.storage.matches as StoredMatch[]).map((match) => ({
       ...match,
       teams: [teams[match.teamIds[0]], teams[match.teamIds[1]]],
-      date: matchDate,
+      date: this.getDateFromInitial(match.round),
       isCurrent:
         match.round === this.currentRound &&
         match.teamIds.includes(currentTeamId),
-      play: () => {
-        const storedMatches = this.storage.matches as StoredMatch[];
-        const roundMatches = storedMatches.filter(
-          (storedMatch) => storedMatch.round === match.round,
-        );
-        for (const roundMatch of roundMatches) {
-          const storedMatchIndex = storedMatches.findIndex(
-            (item) => item.id === roundMatch.id,
-          );
-          storedMatches[storedMatchIndex].goals = [
-            Math.round(Math.random() * 10),
-            Math.round(Math.random() * 10),
-          ];
-        }
-        const oneWeek = 7 * 24 * 60 * 60 * 1000;
-        this.storage.matches = storedMatches;
-        this.storage.currentDate = matchDate.valueOf() + oneWeek;
-      },
-    };
+      play: () => this.playMatch(match),
+    }));
+  }
+
+  playMatch(match: StoredMatch) {
+    const storedMatches = this.storage.matches as StoredMatch[];
+    const roundMatches = storedMatches.filter(
+      (storedMatch) => storedMatch.round === match.round,
+    );
+    for (const roundMatch of roundMatches) {
+      const storedMatchIndex = storedMatches.findIndex(
+        (item) => item.id === roundMatch.id,
+      );
+      storedMatches[storedMatchIndex].goals = [
+        Math.round(Math.random() * 10),
+        Math.round(Math.random() * 10),
+      ];
+    }
+    this.storage.currentDate = this.getDateFromInitial(match.round + 1);
+    this.storage.matches = storedMatches;
   }
 
   get currentRound() {
