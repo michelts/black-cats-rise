@@ -1,6 +1,6 @@
 import type { KitPattern, StoredTeam } from "@/types";
 
-export function makeTeamNames(): StoredTeam[] {
+export function makeTeams(): StoredTeam[] {
   return teams.map(([name, nick, region, color1, color2, pattern], index) => ({
     id: index,
     name,
