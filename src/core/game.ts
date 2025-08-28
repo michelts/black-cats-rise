@@ -1,4 +1,4 @@
-import type { EvenNumber, Match, StoredMatch, StoredTeam } from "@/types";
+import type { EvenNumber, StoredMatch, StoredTeam, Team } from "@/types";
 import { makePlayerNames } from "@/utils/makePlayerNames";
 import { generateEmptyMatches } from "./matches";
 import { makeTeamNames } from "./teams";
@@ -41,7 +41,7 @@ export class Game {
     return this.storage.playerNames as string[];
   }
 
-  get teams() {
+  get teams(): Team[] {
     const teams = (this.storage.teams as StoredTeam[]).map((team) => ({
       ...team,
       mp: 0,
@@ -105,7 +105,10 @@ export class Game {
     const currentTeamId = 0;
     return (this.storage.matches as StoredMatch[]).map((match) => ({
       ...match,
-      teams: [teams[match.teamIds[0]], teams[match.teamIds[1]]],
+      teams: [teams[match.teamIds[0]], teams[match.teamIds[1]]] satisfies [
+        Team,
+        Team,
+      ],
       date: this.getDateFromInitial(match.round),
       isCurrent:
         match.round === this.currentRound &&
