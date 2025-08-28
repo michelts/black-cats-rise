@@ -22,8 +22,8 @@ export class UserInterface {
 
   navigate(screen: Screen, extraData?: unknown) {
     const screenContainer = toggleScreen(screen);
+    this.renderTime(this.game.currentDate);
     if (screen === "game") {
-      this.renderTime(this.game.currentDate);
       this.navigate("matches");
     }
     if (screen === "matches" && screenContainer) {

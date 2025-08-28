@@ -14,12 +14,17 @@ export class Game {
   }
 
   reset() {
+    this.storage.initialDate = Date.now();
     this.storage.currentDate = Date.now();
     this.storage.teams = makeTeamNames();
     this.storage.matches = Array.from(
       generateEmptyMatches(this.teams.length as EvenNumber),
     );
     this.storage.playerNames = makePlayerNames();
+  }
+
+  get initialDate() {
+    return new Date(this.storage.initialDate as number);
   }
 
   get currentDate() {
@@ -97,7 +102,7 @@ export class Game {
 
   transformMatch(match: StoredMatch): Match {
     const teams = Object.fromEntries(this.teams.map((team) => [team.id, team]));
-    const matchDate = this.currentDate;
+    const matchDate = this.initialDate;
     matchDate.setDate(matchDate.getDate() + match.round * 7);
     const currentTeamId = 0;
     return {
@@ -121,7 +126,9 @@ export class Game {
             Math.round(Math.random() * 10),
           ];
         }
+        const oneWeek = 7 * 24 * 60 * 60 * 1000;
         this.storage.matches = storedMatches;
+        this.storage.currentDate = matchDate.valueOf() + oneWeek;
       },
     };
   }
