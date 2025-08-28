@@ -95,7 +95,7 @@ export class UserInterface {
       );
       if (match) {
         match.play();
-        this.renderMatches(container);
+        this.navigate("matches");
       }
     });
   }
