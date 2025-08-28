@@ -49,7 +49,9 @@ export class UserInterface {
       "<select>" +
       this.game.teams.map(
         (team) =>
-          "<option" +
+          "<option value='" +
+          team.id +
+          "'" +
           (team.id === this.currentTeam ? " selected" : "") +
           ">" +
           team.name +
@@ -79,7 +81,7 @@ export class UserInterface {
         }
       });
     document.querySelector("select")?.addEventListener("change", (event) => {
-      this.currentTeam = (event.target as HTMLSelectElement).selectedIndex;
+      this.currentTeam = Number((event.target as HTMLSelectElement).value);
       this.renderMatches(container);
       document.querySelector("select")?.focus();
     });
