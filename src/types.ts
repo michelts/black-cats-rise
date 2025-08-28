@@ -5,7 +5,7 @@ export interface Game {
   currentDate: Date;
 }
 
-export type Screen = "splash" | "game" | "matches" | "team" | "table";
+export type Screen = "splash" | "game" | "matches" | "team" | "table" | "live";
 
 export interface Team extends StoredTeam {
   mp: number; // matches played

@@ -20,7 +20,7 @@ export class UserInterface {
     document.body.style.visibility = "visible";
   }
 
-  navigate(screen: Screen) {
+  navigate(screen: Screen, extraData?: unknown) {
     const screenContainer = toggleScreen(screen);
     if (screen === "game") {
       this.renderTime(this.game.currentDate);
@@ -28,6 +28,9 @@ export class UserInterface {
     }
     if (screen === "matches" && screenContainer) {
       this.renderMatches(screenContainer);
+    }
+    if (screen === "live" && screenContainer) {
+      this.renderLiveGame(screenContainer, extraData);
     }
     if (screen === "table" && screenContainer) {
       this.renderTable(screenContainer);
@@ -72,17 +75,26 @@ export class UserInterface {
       ?.addEventListener("click", (event) => {
         const round = (event.target as HTMLElement).dataset.round;
         if (round) {
-          const match = this.game.matches.find(
-            (match) => match.round === Number(round),
-          );
-          match?.play();
-          this.renderMatches(container);
+          this.navigate("live", round);
         }
       });
     document.querySelector("select")?.addEventListener("change", (event) => {
       this.currentTeam = (event.target as HTMLSelectElement).selectedIndex;
       this.renderMatches(container);
       document.querySelector("select")?.focus();
+    });
+  }
+
+  renderLiveGame(container: HTMLElement, round: unknown) {
+    container.innerHTML = "<button data-start>Start</button>";
+    document.querySelector("[data-start]")?.addEventListener("click", () => {
+      const match = this.game.matches.find(
+        (match) => match.round === Number(round),
+      );
+      if (match) {
+        match.play();
+        this.renderMatches(container);
+      }
     });
   }
 
