@@ -1,5 +1,4 @@
 import type { EvenNumber, StoredMatch, StoredTeam, Team } from "@/types";
-import { makePlayerNames } from "@/utils/makePlayerNames";
 import { generateEmptyMatches } from "./matches";
 import { makeTeams } from "./teams";
 
@@ -20,7 +19,6 @@ export class Game {
     this.storage.matches = Array.from(
       generateEmptyMatches(this.teams.length as EvenNumber),
     );
-    this.storage.playerNames = makePlayerNames();
   }
 
   get initialDate() {
@@ -35,10 +33,6 @@ export class Game {
     const date = this.initialDate;
     date.setDate(date.getDate() + weeks * 7);
     return date;
-  }
-
-  get playerNames() {
-    return this.storage.playerNames as string[];
   }
 
   get teams(): Team[] {

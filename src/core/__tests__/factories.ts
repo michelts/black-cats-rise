@@ -11,6 +11,7 @@ export const TeamFactory = Factory.define<StoredTeam>(({ sequence }) => ({
     color2: "black",
     pattern: "vertical",
   },
+  players: [],
 }));
 
 class BaseMatchFactory extends Factory<StoredMatch> {

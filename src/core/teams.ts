@@ -1,12 +1,19 @@
 import type { KitPattern, StoredTeam } from "@/types";
+import { playerNameFactory } from "@/utils/playerNameFactory";
+import { getFormation } from "./formations";
+import { makePlayers } from "./players";
 
 export function makeTeams(): StoredTeam[] {
+  const getPlayerName = playerNameFactory();
+  const formation = getFormation();
   return teams.map(([name, nick, region, color1, color2, pattern], index) => ({
     id: index,
     name,
     nick,
     region,
     kit: { color1, color2, pattern },
+    formation,
+    players: Array.from(makePlayers(formation, getPlayerName)),
   }));
 }
 

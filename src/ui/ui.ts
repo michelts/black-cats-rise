@@ -1,3 +1,4 @@
+import { formations } from "@/core/formations";
 import type { Game, Screen } from "@/types";
 
 export class UserInterface {
@@ -28,6 +29,9 @@ export class UserInterface {
     }
     if (screen === "matches" && screenContainer) {
       this.renderMatches(screenContainer);
+    }
+    if (screen === "team" && screenContainer) {
+      this.renderTeam(screenContainer);
     }
     if (screen === "live" && screenContainer) {
       this.renderLiveGame(screenContainer, extraData);
@@ -100,6 +104,45 @@ export class UserInterface {
     });
   }
 
+  renderTeam(container: HTMLElement) {
+    const team = this.game.teams[this.currentTeam];
+    container.innerHTML =
+      "<select>" +
+      formations.map(
+        (formation) =>
+          "<option value='" +
+          formation +
+          "'" +
+          (formation === team.formation ? " selected" : "") +
+          ">" +
+          formation +
+          "</option>",
+      ) +
+      "</select><table><tr><th>#<th>Pos</th><th>Name</th><th>Gk</th><th>Df</th><th>Md</th><th>At</th></tr>" +
+      "<ul>" +
+      team.players
+        .map(
+          (player) =>
+            "<tr><td>" +
+            player.number +
+            "<td>" +
+            player.pos +
+            "</td><td>" +
+            player.name +
+            "</td><td>" +
+            round(player.gk) +
+            "</td><td>" +
+            round(player.df) +
+            "</td><td>" +
+            round(player.md) +
+            "</td><td>" +
+            round(player.at) +
+            "</td></tr>",
+        )
+        .join("") +
+      "</ul>";
+  }
+
   renderTable(container: HTMLElement) {
     container.innerHTML =
       "<table><tr><th>Id</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr>" +
@@ -128,4 +171,8 @@ function toggleScreen(screen: Screen) {
     }
   }
   return null;
+}
+
+function round(n: number) {
+  return n.toFixed(2);
 }

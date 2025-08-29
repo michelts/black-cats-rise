@@ -1,5 +1,4 @@
 export interface Game {
-  playerNames: string[];
   teams: Team[];
   matches: Array<Match>;
   currentDate: Date;
@@ -24,12 +23,28 @@ export interface StoredTeam {
   nick: string;
   region: string;
   kit: Kit;
+  formation: Formation;
+  players: Player[];
 }
 
 export interface Kit {
   color1: string;
   color2: string;
   pattern: KitPattern;
+}
+
+export type Formation = `${number}-${number}-${number}`;
+
+export type Position = "gk" | "df" | "md" | "at";
+
+export interface Player {
+  name: string;
+  number: number;
+  pos: Position;
+  gk: number;
+  df: number;
+  md: number;
+  at: number;
 }
 
 export type KitPattern = "vertical" | "horizontal" | "checkered";

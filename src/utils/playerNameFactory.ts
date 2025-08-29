@@ -1,3 +1,5 @@
+import { shuffle } from "@/utils/shuffle";
+
 const ptFirstNames =
   "João José Antônio Carlos Pedro Lucas Marcos Rafael Juliano Márcio";
 const ptLastNames =
@@ -9,8 +11,9 @@ const esLastNames =
   "Garcia Rodriguez Martinez Hernandez Lopez Gonzalez Perez Sanchez Ramirez Torres";
 
 const enFirstNames =
-  "John Paul Mark Michael Peter David Chris Robert James William";
-const enLastNames = "Smith Jones Baker Hill Taylor Wilson Brown Davis";
+  "John Paul Mark Michael Peter David Chris Robert James William Jack Jim Aaron Jay";
+const enLastNames =
+  "Smith Jones Baker Hill Taylor Wilson Brown Davis Cox Day Rey Law Key";
 
 const deFirstNames = "Stefan Klaus Mica Thomas Andreas Jurgen Frank";
 const deLastNames = "Muller Schmidt Weber Schneider Fischer Meyer";
@@ -29,7 +32,7 @@ const afFirstNames = "Femi Ade Kwame Kofi Jide Emeka Chinedu Olu Yaw Kwaku";
 const afLastNames =
   "Adebayo Okafor Nkrumah Mensah Diallo Sow Traoré Keita Bankole Eze";
 
-export function makePlayerNames() {
+export function playerNameFactory() {
   const allNames = [
     ...generatePlayerNames(ptFirstNames, ptLastNames),
     ...generatePlayerNames(esFirstNames, esLastNames),
@@ -40,7 +43,8 @@ export function makePlayerNames() {
     ...generatePlayerNames(jpFirstNames, jpLastNames),
     ...generatePlayerNames(afFirstNames, afLastNames),
   ];
-  return shuffle(allNames);
+  shuffle(allNames);
+  return () => allNames.pop();
 }
 
 export function* generatePlayerNames(
@@ -54,19 +58,4 @@ export function* generatePlayerNames(
       yield `${first} ${last}`;
     }
   }
-}
-
-function shuffle<T>(originalItems: T[]) {
-  const shuffledItems = [...originalItems];
-  let currentIndex = shuffledItems.length;
-  while (currentIndex !== 0) {
-    const randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-    // swap positions
-    [shuffledItems[currentIndex], shuffledItems[randomIndex]] = [
-      shuffledItems[randomIndex],
-      shuffledItems[currentIndex],
-    ];
-  }
-  return shuffledItems;
 }
