@@ -5,10 +5,10 @@ export function getFormation() {
   return shuffle([...formations])[0];
 }
 
-export function adjustIntoPosition<T extends Array<object>>(
-  list: T,
+export function adjustIntoPosition<T extends object>(
+  list: Array<T>,
   formation: Formation,
-) {
+): Array<T & { pos?: Position }> {
   const positions = makePositionsFromFormation(formation);
   return list.map((item, index) => ({ ...item, pos: positions[index] }));
 }
@@ -27,7 +27,7 @@ export const formations: Formation[] = [
   "6-2-2",
 ];
 
-function makePositionsFromFormation(formation: Formation) {
+function makePositionsFromFormation(formation: Formation): Position[] {
   const positions: Position[] = ["df", "md", "at"];
   return [
     "gk",
