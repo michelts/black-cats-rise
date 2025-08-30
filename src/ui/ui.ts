@@ -132,13 +132,13 @@ export class UserInterface {
             "</td><td>" +
             player.name +
             "</td><td>" +
-            round(player.gk) +
+            player.gk +
             "</td><td>" +
-            round(player.df) +
+            player.df +
             "</td><td>" +
-            round(player.md) +
+            player.md +
             "</td><td>" +
-            round(player.at) +
+            player.at +
             "</td></tr>",
         )
         .join("") +
@@ -181,8 +181,4 @@ function toggleScreen(screen: Screen) {
     }
   }
   return null;
-}
-
-function round(n: number) {
-  return n.toFixed(2);
 }

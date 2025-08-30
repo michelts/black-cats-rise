@@ -36,10 +36,10 @@ function makePlayer(
   return {
     name: getPlayerName(),
     number,
-    gk: getStat("gk", pos),
-    df: getStat("df", pos),
-    md: getStat("md", pos),
-    at: getStat("at", pos),
+    gk: round(getStat("gk", pos)),
+    df: round(getStat("df", pos)),
+    md: round(getStat("md", pos)),
+    at: round(getStat("at", pos)),
   };
 }
 
@@ -50,4 +50,8 @@ function getStat(desiredStat: Position, position: Position): number {
     return threshold + Math.random() ** 3 * (1 - threshold);
   }
   return Math.random() * threshold;
+}
+
+function round(n: number) {
+  return Math.trunc(n * 100);
 }
