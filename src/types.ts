@@ -17,6 +17,7 @@ export interface Team extends StoredTeam {
   a: number; // goals against
   gd: number; // goal difference
   pts: number; // points
+  players: Player[];
 }
 
 export interface StoredTeam {
@@ -26,7 +27,7 @@ export interface StoredTeam {
   region: string;
   kit: Kit;
   formation: Formation;
-  players: Player[];
+  players: StoredPlayer[];
 }
 
 export interface Kit {
@@ -39,10 +40,13 @@ export type Formation = `${number}-${number}-${number}`;
 
 export type Position = "gk" | "df" | "md" | "at";
 
-export interface Player {
+export interface Player extends StoredPlayer {
+  pos?: Position;
+}
+
+export interface StoredPlayer {
   name: string;
   number: number;
-  pos: Position;
   gk: number;
   df: number;
   md: number;

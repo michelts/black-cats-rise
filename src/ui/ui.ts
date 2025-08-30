@@ -128,7 +128,7 @@ export class UserInterface {
             "<tr><td>" +
             player.number +
             "<td>" +
-            player.pos +
+            (player.pos ?? "re") +
             "</td><td>" +
             player.name +
             "</td><td>" +

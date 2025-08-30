@@ -1,9 +1,9 @@
-import type { Formation, Player, Position } from "@/types";
+import type { Formation, Position, StoredPlayer } from "@/types";
 
 export function* makePlayers(
   formation: Formation,
   getPlayerName: () => string,
-): Generator<Player> {
+): Generator<StoredPlayer> {
   const positions = ["df", "md", "at"] as const;
   const formationNumbers = formation.split("-").map((n) => Number(n));
 
@@ -36,7 +36,6 @@ function makePlayer(
   return {
     name: getPlayerName(),
     number,
-    pos,
     gk: getStat("gk", pos),
     df: getStat("df", pos),
     md: getStat("md", pos),

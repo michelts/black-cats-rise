@@ -7,6 +7,7 @@ import type {
 } from "@/types";
 import { generateEmptyMatches } from "./matches";
 import { makeTeams } from "./teams";
+import { adjustIntoPosition } from "./formations";
 
 export class Game {
   storage: Record<string, unknown>;
@@ -52,6 +53,7 @@ export class Game {
       a: 0,
       gd: 0,
       pts: 0,
+      players: adjustIntoPosition(team.players, team.formation),
     }));
     for (const match of this.storage.matches as StoredMatch[]) {
       const {
@@ -137,7 +139,6 @@ export class Game {
 
   setTeamFormation(teamId: Team["id"], formation: Formation) {
     const teams = this.storage.teams as StoredTeam[];
-    console.log("formation", formation);
     teams[teamId].formation = formation;
     this.storage.teams = teams;
   }
