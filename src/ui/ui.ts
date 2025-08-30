@@ -161,7 +161,7 @@ export class UserInterface {
       this.game.teams
         .map(
           (team) =>
-            `<tr><td>${team.id}</td><td>${team.name}</td><td>${team.mp}</td><td>${team.w}</td><td>${team.d}</td><td>${team.l}</td><td>${team.f}</td><td>${team.a}</td><td>${team.gd}</td><td>${team.pts}</td></tr>`,
+            `<tr${team.id === this.userTeam ? ' class="bold"' : ""}><td>${team.id}</td><td>${team.name + (team.id === this.userTeam ? " (you)" : "")}</td><td>${team.mp}</td><td>${team.w}</td><td>${team.d}</td><td>${team.l}</td><td>${team.f}</td><td>${team.a}</td><td>${team.gd}</td><td>${team.pts}</td></tr>`,
         )
         .join("") +
       "</table>";
