@@ -127,7 +127,9 @@ export class UserInterface {
       team.players
         .map(
           (player) =>
-            "<tr><td>" +
+            "<tr class=" +
+            player.pos +
+            "><td>" +
             player.number +
             "<td>" +
             (player.pos ?? "re") +
