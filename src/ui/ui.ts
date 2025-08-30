@@ -70,8 +70,8 @@ export class UserInterface {
           return `
 <tr>
 <td>${match.round}</td>
-<td>${match.teams[0].name}</td>
-<td>${match.teams[1].name}</td>
+<td${match.teams[0].id === this.currentTeam ? " class=bold" : ""}>${match.teams[0].name}</td>
+<td${match.teams[1].id === this.currentTeam ? " class=bold" : ""}>${match.teams[1].name}</td>
 <td>${match.date.toLocaleDateString()}</td>
 <td>${match.goals ? match.goals[0] + "x" + match.goals[1] : match.isCurrent ? "<button data-round=" + match.round + ">Begin</button>" : ""}</td>
 </tr>`;

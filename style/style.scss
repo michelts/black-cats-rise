@@ -115,8 +115,10 @@ table, th, td {
 th, td {
   padding: 0.25em 0.75em;
 }
-tr.bold {
+.bold {
   font-weight: bold;
+}
+tr.bold {
   background: rgba(#fff, 0.1)
 }
 tr.gk {
