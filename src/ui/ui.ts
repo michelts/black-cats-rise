@@ -128,7 +128,7 @@ export class UserInterface {
         .map(
           (player) =>
             "<tr class=" +
-            player.pos +
+            (player.pos ?? "re") +
             "><td>" +
             player.number +
             "<td>" +
