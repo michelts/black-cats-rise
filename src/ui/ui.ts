@@ -3,6 +3,7 @@ import type { Formation, Game, Screen } from "@/types";
 
 export class UserInterface {
   game: Game;
+  userTeam = 0;
   currentTeam = 0;
 
   constructor(game: Game) {
@@ -59,6 +60,7 @@ export class UserInterface {
           (team.id === this.currentTeam ? " selected" : "") +
           ">" +
           team.name +
+          (team.id === this.userTeam ? " (you)" : "") +
           "</option>",
       ) +
       "</select><table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
@@ -107,7 +109,7 @@ export class UserInterface {
   }
 
   renderTeam(container: HTMLElement) {
-    const team = this.game.teams[this.currentTeam];
+    const team = this.game.teams[this.userTeam];
     container.innerHTML =
       "<select id=sel-formation>" +
       formations.map(
@@ -147,7 +149,7 @@ export class UserInterface {
       .querySelector("#sel-formation")
       ?.addEventListener("change", (event) => {
         const value = (event.target as HTMLSelectElement).value as Formation;
-        this.game.setTeamFormation(this.currentTeam, value);
+        this.game.setTeamFormation(this.userTeam, value);
         this.renderTeam(container);
         (event.target as HTMLSelectElement).focus();
       });
