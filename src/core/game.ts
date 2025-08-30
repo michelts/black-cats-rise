@@ -1,4 +1,10 @@
-import type { EvenNumber, StoredMatch, StoredTeam, Team } from "@/types";
+import type {
+  EvenNumber,
+  Formation,
+  StoredMatch,
+  StoredTeam,
+  Team,
+} from "@/types";
 import { generateEmptyMatches } from "./matches";
 import { makeTeams } from "./teams";
 
@@ -127,6 +133,13 @@ export class Game {
     }
     this.storage.currentDate = this.getDateFromInitial(match.round + 1);
     this.storage.matches = storedMatches;
+  }
+
+  setTeamFormation(teamId: Team["id"], formation: Formation) {
+    const teams = this.storage.teams as StoredTeam[];
+    console.log("formation", formation);
+    teams[teamId].formation = formation;
+    this.storage.teams = teams;
   }
 
   get currentRound() {

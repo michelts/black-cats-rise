@@ -1,5 +1,5 @@
 import { formations } from "@/core/formations";
-import type { Game, Screen } from "@/types";
+import type { Formation, Game, Screen } from "@/types";
 
 export class UserInterface {
   game: Game;
@@ -50,7 +50,7 @@ export class UserInterface {
 
   renderMatches(container: HTMLElement) {
     container.innerHTML =
-      "<select>" +
+      "<select id=sel-teams>" +
       this.game.teams.map(
         (team) =>
           "<option value='" +
@@ -84,11 +84,13 @@ export class UserInterface {
           this.navigate("live", round);
         }
       });
-    document.querySelector("select")?.addEventListener("change", (event) => {
-      this.currentTeam = Number((event.target as HTMLSelectElement).value);
-      this.renderMatches(container);
-      document.querySelector("select")?.focus();
-    });
+    document
+      .querySelector("#sel-teams")
+      ?.addEventListener("change", (event) => {
+        this.currentTeam = Number((event.target as HTMLSelectElement).value);
+        this.renderMatches(container);
+        (event.target as HTMLSelectElement).focus();
+      });
   }
 
   renderLiveGame(container: HTMLElement, round: unknown) {
@@ -107,7 +109,7 @@ export class UserInterface {
   renderTeam(container: HTMLElement) {
     const team = this.game.teams[this.currentTeam];
     container.innerHTML =
-      "<select>" +
+      "<select id=sel-formation>" +
       formations.map(
         (formation) =>
           "<option value='" +
@@ -141,6 +143,14 @@ export class UserInterface {
         )
         .join("") +
       "</ul>";
+    document
+      .querySelector("#sel-formation")
+      ?.addEventListener("change", (event) => {
+        const value = (event.target as HTMLSelectElement).value as Formation;
+        this.game.setTeamFormation(this.currentTeam, value);
+        this.renderTeam(container);
+        (event.target as HTMLSelectElement).focus();
+      });
   }
 
   renderTable(container: HTMLElement) {

@@ -2,11 +2,13 @@ export interface Game {
   teams: Team[];
   matches: Array<Match>;
   currentDate: Date;
+  setTeamFormation: (teamId: Team["id"], formation: Formation) => void;
 }
 
 export type Screen = "splash" | "game" | "matches" | "team" | "table" | "live";
 
 export interface Team extends StoredTeam {
+  // Runtime calculation
   mp: number; // matches played
   w: number; // won
   d: number; // drawn

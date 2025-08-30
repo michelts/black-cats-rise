@@ -32,7 +32,7 @@ const afFirstNames = "Femi Ade Kwame Kofi Jide Emeka Chinedu Olu Yaw Kwaku";
 const afLastNames =
   "Adebayo Okafor Nkrumah Mensah Diallo Sow Traoré Keita Bankole Eze";
 
-export function playerNameFactory() {
+export function playerNameFactory(): () => string {
   const allNames = [
     ...generatePlayerNames(ptFirstNames, ptLastNames),
     ...generatePlayerNames(esFirstNames, esLastNames),
@@ -44,7 +44,7 @@ export function playerNameFactory() {
     ...generatePlayerNames(afFirstNames, afLastNames),
   ];
   shuffle(allNames);
-  return () => allNames.pop();
+  return () => allNames.pop() || ""; // TODO invariant or handle error
 }
 
 export function* generatePlayerNames(
