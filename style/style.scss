@@ -2,7 +2,7 @@ html,
 body {
   height: 100%;
   font-family: Arial, sans-serif;
-  color: white;
+  color: rgba(#fff, 0.7);
   margin: 0;
   overflow: hidden;
 
@@ -116,13 +116,19 @@ th, td {
   padding: 0.25em 0.75em;
 }
 .bold {
-  font-weight: bold;
+  color: #fff;
 }
 tr.bold {
   background: rgba(#fff, 0.1)
 }
+tr.over {
+  color: #fff;
+
+  td {
+    filter: blur(1px);
+  }
+}
 tr.gk {
-  font-weight: bold;
   background: rgba(#f0f, 0.1)
 }
 tr.df {

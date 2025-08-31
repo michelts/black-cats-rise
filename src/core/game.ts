@@ -5,9 +5,9 @@ import type {
   StoredTeam,
   Team,
 } from "@/types";
+import { adjustIntoPosition } from "./formations";
 import { generateEmptyMatches } from "./matches";
 import { makeTeams } from "./teams";
-import { adjustIntoPosition } from "./formations";
 
 export class Game {
   storage: Record<string, unknown>;
@@ -140,6 +140,21 @@ export class Game {
   setTeamFormation(teamId: Team["id"], formation: Formation) {
     const teams = this.storage.teams as StoredTeam[];
     teams[teamId].formation = formation;
+    this.storage.teams = teams;
+  }
+
+  swapPlayers(
+    teamId: Team["id"],
+    originIndex: number,
+    destinationIndex: number,
+  ) {
+    const teams = this.storage.teams as StoredTeam[];
+    const players = teams[teamId].players;
+    [players[originIndex], players[destinationIndex]] = [
+      players[destinationIndex],
+      players[originIndex],
+    ];
+    teams[teamId].players = players;
     this.storage.teams = teams;
   }
 

@@ -126,8 +126,10 @@ export class UserInterface {
       "<ul>" +
       team.players
         .map(
-          (player) =>
-            "<tr class=" +
+          (player, index) =>
+            "<tr data-idx='" +
+            index +
+            "' draggable=true class=" +
             (player.pos ?? "re") +
             "><td>" +
             player.number +
@@ -155,6 +157,34 @@ export class UserInterface {
         this.renderTeam(container);
         (event.target as HTMLSelectElement).focus();
       });
+    for (const row of document.querySelectorAll('tr[draggable="true"]')) {
+      row.addEventListener("dragstart", (evt) => {
+        (evt as DragEvent).dataTransfer?.setData(
+          "text/plain",
+          (evt.target as HTMLTableRowElement).dataset.idx ?? "",
+        );
+      });
+      row.addEventListener("dragenter", (evt) => {
+        evt.preventDefault();
+        row.classList.add("over");
+      });
+      row.addEventListener("dragover", (evt) => {
+        evt.preventDefault();
+      });
+      row.addEventListener("dragleave", () => {
+        row.classList.remove("over");
+      });
+      row.addEventListener("drop", (evt) => {
+        evt.preventDefault();
+        row.classList.remove("over");
+        const orig = (evt as DragEvent).dataTransfer?.getData("text/plain");
+        const dest = (evt.target as HTMLElement).closest("tr")?.dataset.idx;
+        if (orig && dest) {
+          this.game.swapPlayers(this.currentTeam, Number(orig), Number(dest));
+          this.renderTeam(container);
+        }
+      });
+    }
   }
 
   renderTable(container: HTMLElement) {

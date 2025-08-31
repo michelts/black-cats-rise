@@ -3,6 +3,11 @@ export interface Game {
   matches: Array<Match>;
   currentDate: Date;
   setTeamFormation: (teamId: Team["id"], formation: Formation) => void;
+  swapPlayers: (
+    teamId: Team["id"],
+    originIndex: number,
+    destinationIndex: number,
+  ) => void;
 }
 
 export type Screen = "splash" | "game" | "matches" | "team" | "table" | "live";
