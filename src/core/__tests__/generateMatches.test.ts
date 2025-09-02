@@ -66,7 +66,6 @@ function assertUniqueMatches(matches: StoredMatch[]) {
     ids.sort();
     const key = `${ids[0]}-${ids[1]}`;
     if (result.includes(key)) {
-      console.log("Duplicate key", key);
       throw new Error(`Duplicate: ${key}`);
     }
     result.push(key);

@@ -1,203 +1,266 @@
 import { formations } from "@/core/formations";
-import type { Formation, Game, Screen } from "@/types";
+import { turnTimeout } from "@/core/game";
+import type { Formation, Game, Match, Screen } from "@/types";
 
-export class UserInterface {
-  game: Game;
-  userTeam = 0;
-  currentTeam = 0;
+let matchInterval: ReturnType<typeof setTimeout> | null = null;
+let currentTeam: number;
 
-  constructor(game: Game) {
-    this.game = game;
-    for (const elem of document.querySelectorAll(".menu")) {
-      elem.addEventListener("click", (event) => {
-        const target = event.target as HTMLElement;
-        const screen = target.dataset.id as Screen;
-        this.navigate(screen);
-      });
-    }
+export function makeUserInterface(game: Game) {
+  // reset state
+  currentTeam = game.userTeam.id;
+  matchInterval = null;
+
+  for (const elem of document.querySelectorAll(".menu")) {
+    elem.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+      const screen = target.dataset.id as Screen;
+      navigate(game, screen);
+    });
+  }
+  navigate(game, "splash");
+  document.body.style.visibility = "visible";
+}
+
+function navigate(game: Game, screen: Screen, extraData?: unknown) {
+  const screenContainer = toggleScreen(screen);
+  updateClock(game);
+
+  if (screen !== "live" && matchInterval) {
+    clearInterval(matchInterval);
   }
 
-  activate() {
-    this.navigate("splash");
-    document.body.style.visibility = "visible";
+  if (screen === "game") {
+    navigate(game, "matches");
   }
 
-  navigate(screen: Screen, extraData?: unknown) {
-    const screenContainer = toggleScreen(screen);
-    this.renderTime(this.game.currentDate);
-    if (screen === "game") {
-      this.navigate("matches");
-    }
-    if (screen === "matches" && screenContainer) {
-      this.renderMatches(screenContainer);
-    }
-    if (screen === "team" && screenContainer) {
-      this.renderTeam(screenContainer);
-    }
-    if (screen === "live" && screenContainer) {
-      this.renderLiveGame(screenContainer, extraData);
-    }
-    if (screen === "table" && screenContainer) {
-      this.renderTable(screenContainer);
-    }
+  if (screen === "matches" && screenContainer) {
+    renderMatches(game, screenContainer);
   }
 
-  renderTime(date: Date) {
-    const placeholder = document.querySelector(
-      "#date-placeholder",
-    ) as HTMLElement;
-    placeholder.innerHTML = date.toLocaleDateString();
+  if (screen === "team" && screenContainer) {
+    renderTeam(game, screenContainer);
   }
 
-  renderMatches(container: HTMLElement) {
-    container.innerHTML =
-      "<select id=sel-teams>" +
-      this.game.teams.map(
-        (team) =>
-          "<option value='" +
-          team.id +
-          "'" +
-          (team.id === this.currentTeam ? " selected" : "") +
-          ">" +
-          team.name +
-          (team.id === this.userTeam ? " (you)" : "") +
-          "</option>",
-      ) +
-      "</select><table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
-      this.game.matches
-        .filter((match) => match.teamIds.includes(this.currentTeam))
-        .map((match) => {
-          return `
+  if (screen === "live" && screenContainer) {
+    renderLiveGame(game, screenContainer, extraData);
+  }
+
+  if (screen === "table" && screenContainer) {
+    renderTable(game, screenContainer);
+  }
+}
+
+function updateClock(game: Game) {
+  const placeholder = document.querySelector("#clock") as HTMLElement;
+  placeholder.innerHTML = game.currentDate.toLocaleDateString();
+}
+
+function renderMatches(game: Game, container: HTMLElement) {
+  container.innerHTML =
+    "<select id=sel-teams>" +
+    game.teams.map(
+      (team) =>
+        "<option value='" +
+        team.id +
+        "'" +
+        (team.id === currentTeam ? " selected" : "") +
+        ">" +
+        team.name +
+        (team.id === game.userTeam.id ? " (you)" : "") +
+        "</option>",
+    ) +
+    "</select><table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
+    game.matches
+      .filter((match) => match.teamIds.includes(currentTeam))
+      .map((match) => {
+        return `
 <tr>
 <td>${match.round}</td>
-<td${match.teams[0].id === this.currentTeam ? " class=bold" : ""}>${match.teams[0].name}</td>
-<td${match.teams[1].id === this.currentTeam ? " class=bold" : ""}>${match.teams[1].name}</td>
+<td${match.teams[0].id === currentTeam ? " class=bold" : ""}>${match.teams[0].name}</td>
+<td${match.teams[1].id === currentTeam ? " class=bold" : ""}>${match.teams[1].name}</td>
 <td>${match.date.toLocaleDateString()}</td>
-<td>${match.goals ? match.goals[0] + "x" + match.goals[1] : match.isCurrent ? "<button data-round=" + match.round + ">Begin</button>" : ""}</td>
+<td>${match.isDone ? match.goals[0] + "x" + match.goals[1] : match.isCurrent ? ("<button data-round=" + match.round + ">" + (match.isPending ? "Begin" : "Continue") + "</button>") : ""}</td>
 </tr>`;
-        })
-        .join("") +
-      "</table>";
-    document
-      .querySelector<HTMLElement>("[data-round]")
-      ?.addEventListener("click", (event) => {
-        const round = (event.target as HTMLElement).dataset.round;
-        if (round) {
-          this.navigate("live", round);
-        }
-      });
-    document
-      .querySelector("#sel-teams")
-      ?.addEventListener("change", (event) => {
-        this.currentTeam = Number((event.target as HTMLSelectElement).value);
-        this.renderMatches(container);
-        (event.target as HTMLSelectElement).focus();
-      });
-  }
+      })
+      .join("") +
+    "</table>";
+  document
+    .querySelector<HTMLElement>("[data-round]")
+    ?.addEventListener("click", (event) => {
+      const round = (event.target as HTMLElement).dataset.round;
+      if (round) {
+        navigate(game, "live", round);
+      }
+    });
+  document.querySelector("#sel-teams")?.addEventListener("change", (event) => {
+    currentTeam = Number((event.target as HTMLSelectElement).value);
+    renderMatches(game, container);
+    (event.target as HTMLSelectElement).focus();
+  });
+}
 
-  renderLiveGame(container: HTMLElement, round: unknown) {
-    container.innerHTML = "<button data-start>Start</button>";
-    document.querySelector("[data-start]")?.addEventListener("click", () => {
-      const match = this.game.matches.find(
-        (match) => match.round === Number(round),
+function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
+  let match = game.matches.find((match) => match.round === Number(round));
+  if (!match) {
+    return;
+  }
+  container.innerHTML =
+    "<button data-start" +
+    (!match.isPending ? " disabled" : "") +
+    ">Start</button>" +
+    "<div>Possession: <strong id=ball>-</strong></div><div>Time: <strong id=matchTime>-</strong></div>";
+  const start = document.querySelector("[data-start]");
+
+  const begin = (match: Match) => {
+    start?.setAttribute("disabled", "");
+    matchInterval = setInterval(() => {
+      if (!match.isLive) {
+        if (matchInterval) {
+          clearInterval(matchInterval);
+        }
+        return;
+      }
+      match = match.advance();
+      updateLiveGame(match);
+      if (match.isDone) {
+        renderLiveGame(game, container, round);
+      }
+    }, turnTimeout);
+  };
+
+  if (match.isPending) {
+    start!.addEventListener("click", () => {
+      match = match!.advance();
+      updateLiveGame(match);
+      begin(match);
+    });
+  } else {
+    updateLiveGame(match);
+    if (match.isLive) {
+      begin(match); // continue game
+    }
+  }
+}
+
+function updateLiveGame(match: Match) {
+  const ball = document.querySelector("#ball");
+  ball!.innerHTML = String(match.turns[0].ballPosition);
+  const matchTime = document.querySelector("#matchTime");
+  matchTime!.innerHTML = match.turns[0].time + "min";
+}
+
+function renderTeam(game: Game, container: HTMLElement) {
+  const team = game.userTeam;
+  container.innerHTML =
+    "<select id=sel-formation>" +
+    formations.map(
+      (formation) =>
+        "<option value='" +
+        formation +
+        "'" +
+        (formation === team.formation ? " selected" : "") +
+        ">" +
+        formation +
+        "</option>",
+    ) +
+    "</select><table><tr><th>#<th>Pos</th><th>Name</th><th>Gk</th><th>Df</th><th>Md</th><th>At</th></tr>" +
+    "<ul>" +
+    team.players
+      .map(
+        (player, index) =>
+          "<tr data-idx='" +
+          index +
+          "' draggable=true class=" +
+          (player.pos ?? "re") +
+          "><td>" +
+          player.number +
+          "<td>" +
+          (player.pos ?? "re") +
+          "</td><td>" +
+          player.name +
+          "</td><td>" +
+          player.gk +
+          "</td><td>" +
+          player.df +
+          "</td><td>" +
+          player.md +
+          "</td><td>" +
+          player.at +
+          "</td></tr>",
+      )
+      .join("") +
+    "</ul>";
+  document
+    .querySelector("#sel-formation")
+    ?.addEventListener("change", (event) => {
+      const value = (event.target as HTMLSelectElement).value as Formation;
+      game.userTeam.setFormation(value);
+      renderTeam(game, container);
+      (event.target as HTMLSelectElement).focus();
+    });
+  for (const row of document.querySelectorAll('tr[draggable="true"]')) {
+    row.addEventListener("dragstart", (evt) => {
+      (evt as DragEvent).dataTransfer?.setData(
+        "text/plain",
+        (evt.target as HTMLTableRowElement).dataset.idx ?? "",
       );
-      if (match) {
-        match.play();
-        this.navigate("matches");
+    });
+    row.addEventListener("dragenter", (evt) => {
+      evt.preventDefault();
+      row.classList.add("over");
+    });
+    row.addEventListener("dragover", (evt) => {
+      evt.preventDefault();
+    });
+    row.addEventListener("dragleave", () => {
+      row.classList.remove("over");
+    });
+    row.addEventListener("drop", (evt) => {
+      evt.preventDefault();
+      row.classList.remove("over");
+      const orig = (evt as DragEvent).dataTransfer?.getData("text/plain");
+      const dest = (evt.target as HTMLElement).closest("tr")?.dataset.idx;
+      if (orig && dest) {
+        game.userTeam.swapPlayers(Number(orig), Number(dest));
+        renderTeam(game, container);
       }
     });
   }
+}
 
-  renderTeam(container: HTMLElement) {
-    const team = this.game.teams[this.userTeam];
-    container.innerHTML =
-      "<select id=sel-formation>" +
-      formations.map(
-        (formation) =>
-          "<option value='" +
-          formation +
-          "'" +
-          (formation === team.formation ? " selected" : "") +
-          ">" +
-          formation +
-          "</option>",
-      ) +
-      "</select><table><tr><th>#<th>Pos</th><th>Name</th><th>Gk</th><th>Df</th><th>Md</th><th>At</th></tr>" +
-      "<ul>" +
-      team.players
-        .map(
-          (player, index) =>
-            "<tr data-idx='" +
-            index +
-            "' draggable=true class=" +
-            (player.pos ?? "re") +
-            "><td>" +
-            player.number +
-            "<td>" +
-            (player.pos ?? "re") +
-            "</td><td>" +
-            player.name +
-            "</td><td>" +
-            player.gk +
-            "</td><td>" +
-            player.df +
-            "</td><td>" +
-            player.md +
-            "</td><td>" +
-            player.at +
-            "</td></tr>",
-        )
-        .join("") +
-      "</ul>";
-    document
-      .querySelector("#sel-formation")
-      ?.addEventListener("change", (event) => {
-        const value = (event.target as HTMLSelectElement).value as Formation;
-        this.game.setTeamFormation(this.userTeam, value);
-        this.renderTeam(container);
-        (event.target as HTMLSelectElement).focus();
-      });
-    for (const row of document.querySelectorAll('tr[draggable="true"]')) {
-      row.addEventListener("dragstart", (evt) => {
-        (evt as DragEvent).dataTransfer?.setData(
-          "text/plain",
-          (evt.target as HTMLTableRowElement).dataset.idx ?? "",
-        );
-      });
-      row.addEventListener("dragenter", (evt) => {
-        evt.preventDefault();
-        row.classList.add("over");
-      });
-      row.addEventListener("dragover", (evt) => {
-        evt.preventDefault();
-      });
-      row.addEventListener("dragleave", () => {
-        row.classList.remove("over");
-      });
-      row.addEventListener("drop", (evt) => {
-        evt.preventDefault();
-        row.classList.remove("over");
-        const orig = (evt as DragEvent).dataTransfer?.getData("text/plain");
-        const dest = (evt.target as HTMLElement).closest("tr")?.dataset.idx;
-        if (orig && dest) {
-          this.game.swapPlayers(this.currentTeam, Number(orig), Number(dest));
-          this.renderTeam(container);
-        }
-      });
-    }
-  }
-
-  renderTable(container: HTMLElement) {
-    container.innerHTML =
-      "<table><tr><th>Id</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr>" +
-      this.game.teams
-        .map(
-          (team) =>
-            `<tr${team.id === this.userTeam ? ' class="bold"' : ""}><td>${team.id}</td><td>${team.name + (team.id === this.userTeam ? " (you)" : "")}</td><td>${team.mp}</td><td>${team.w}</td><td>${team.d}</td><td>${team.l}</td><td>${team.f}</td><td>${team.a}</td><td>${team.gd}</td><td>${team.pts}</td></tr>`,
-        )
-        .join("") +
-      "</table>";
-  }
+function renderTable(game: Game, container: HTMLElement) {
+  container.innerHTML =
+    "<table><tr><th>Id</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr>" +
+    game.table
+      .map(
+        (record) =>
+          "<tr" +
+          (record.id === game.userTeam.id ? ' class="bold"' : "") +
+          "><td>" +
+          record.id +
+          "</td><td>" +
+          record.name +
+          (record.id === game.userTeam.id ? " (you)" : "") +
+          "</td><td>" +
+          record.mp +
+          "</td><td>" +
+          record.w +
+          "</td><td>" +
+          record.d +
+          "</td><td>" +
+          record.l +
+          "</td><td>" +
+          record.f +
+          "</td><td>" +
+          record.a +
+          "</td><td>" +
+          record.gd +
+          "</td><td>" +
+          record.pts +
+          "</td></tr>",
+      )
+      .join("") +
+    "</table>";
 }
 
 function toggleScreen(screen: Screen) {

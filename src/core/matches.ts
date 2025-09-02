@@ -18,6 +18,8 @@ export function generateEmptyMatches(numTeams: EvenNumber): StoredMatch[] {
       matches.push({
         id: crypto.randomUUID(),
         teamIds: pair as [number, number],
+        turns: [],
+        goals: [0, 0] satisfies [number, number],
       });
     }
 

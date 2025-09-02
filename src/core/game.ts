@@ -1,19 +1,34 @@
 import type {
+  CompleteMatch,
   EvenNumber,
   Formation,
+  Game as GameType,
+  LiveMatch,
+  Match,
+  PendingMatch,
   StoredMatch,
   StoredTeam,
+  StoredTurn,
+  Table,
   Team,
 } from "@/types";
 import { adjustIntoPosition } from "./formations";
 import { generateEmptyMatches } from "./matches";
+import { getTable } from "./table";
 import { makeTeams } from "./teams";
 
-export class Game {
-  storage: Record<string, unknown>;
+export const time = 90;
+const turnsPerSecond = 4;
+export const maxTurns = time * turnsPerSecond;
+export const turnTimeout = 12; // increase or decrease for controlling game speed
 
-  constructor(storage: Record<string, unknown>) {
+export class Game implements GameType {
+  storage: Record<string, unknown>;
+  userTeamId: number;
+
+  constructor(userTeamId: number, storage: Record<string, unknown>) {
     this.storage = storage;
+    this.userTeamId = userTeamId;
     if (!this.storage.teams) {
       this.reset();
     }
@@ -45,96 +60,118 @@ export class Game {
   get teams(): Team[] {
     const teams = (this.storage.teams as StoredTeam[]).map((team) => ({
       ...team,
-      mp: 0,
-      w: 0,
-      d: 0,
-      l: 0,
-      f: 0,
-      a: 0,
-      gd: 0,
-      pts: 0,
       players: adjustIntoPosition(team.players, team.formation),
+      setFormation: (formation: Formation) =>
+        this.setTeamFormation(team.id, formation),
+      swapPlayers: (originIndex: number, destinationIndex: number) =>
+        this.swapPlayers(team.id, originIndex, destinationIndex),
     }));
-    for (const match of this.storage.matches as StoredMatch[]) {
-      const {
-        teamIds: [home, away],
-        goals,
-      } = match;
-      if (!goals) {
-        continue;
-      }
-      teams[home].mp += 1;
-      teams[away].mp += 1;
-      if (goals[0] > goals[1]) {
-        teams[home].w += 1;
-        teams[away].l += 1;
-        teams[home].pts += 3;
-      } else if (goals[0] < goals[1]) {
-        teams[home].l += 1;
-        teams[away].w += 1;
-        teams[away].pts += 3;
-      } else {
-        teams[home].d += 1;
-        teams[away].d += 1;
-        teams[home].pts += 1;
-        teams[away].pts += 1;
-      }
-
-      teams[home].f += goals[0];
-      teams[home].a += goals[1];
-      teams[home].gd += goals[0] - goals[1];
-      teams[away].f += goals[1];
-      teams[away].a += goals[0];
-      teams[away].gd += goals[1] - goals[0];
-    }
-    teams.sort((a, b) => {
-      if (a.pts !== b.pts) {
-        return b.pts - a.pts;
-      }
-      if (a.gd !== b.gd) {
-        return b.gd - a.gd;
-      }
-      if (a.f !== b.f) {
-        return b.f - a.f;
-      }
-      return a.a - b.a;
-    });
     return teams;
   }
 
-  get matches() {
-    const teams = Object.fromEntries(this.teams.map((team) => [team.id, team]));
-    const currentTeamId = 0;
-    return (this.storage.matches as StoredMatch[]).map((match) => ({
-      ...match,
-      teams: [teams[match.teamIds[0]], teams[match.teamIds[1]]] satisfies [
-        Team,
-        Team,
-      ],
-      date: this.getDateFromInitial(match.round),
-      isCurrent:
-        match.round === this.currentRound &&
-        match.teamIds.includes(currentTeamId),
-      play: () => this.playMatch(match),
-    }));
+  get userTeam(): Team {
+    return this.teams.filter((team) => team.id === this.userTeamId)[0];
   }
 
-  playMatch(match: StoredMatch) {
+  get matches(): Match[] {
+    const teamsLookup = Object.fromEntries(
+      this.teams.map((team) => [team.id, team]),
+    );
+    return (this.storage.matches as StoredMatch[]).map((match) =>
+      this.getMatch(match, teamsLookup),
+    );
+  }
+
+  getMatch(match: StoredMatch, teamsLookup: Record<Team["id"], Team>): Match {
+    const teams = [
+      teamsLookup[match.teamIds[0]],
+      teamsLookup[match.teamIds[1]],
+    ] satisfies [Team, Team];
+    const date = this.getDateFromInitial(match.round);
+    const isCurrent =
+      match.round === this.currentRound &&
+      match.teamIds.includes(this.userTeamId);
+    const game = this;
+    const commonProps = {
+      ...match,
+      teams,
+      date,
+      isCurrent,
+      advance() {
+        return game.advanceMatch(this, teamsLookup);
+      },
+    };
+    if (match.turns.length === maxTurns) {
+      return {
+        ...commonProps,
+        isPending: false,
+        isLive: false,
+        isDone: true,
+      } satisfies CompleteMatch;
+    }
+    if (match.turns.length > 0) {
+      return {
+        ...commonProps,
+        isPending: false,
+        isLive: true,
+        isDone: false,
+        turns: match.turns as [StoredTurn, ...StoredTurn[]],
+      } satisfies LiveMatch;
+    }
+    return {
+      ...commonProps,
+      isPending: true,
+      isLive: false,
+      isDone: false,
+    } satisfies PendingMatch;
+  }
+
+  advanceMatch(match: StoredMatch, teamsLookup: Record<Team["id"], Team>) {
     const storedMatches = this.storage.matches as StoredMatch[];
     const roundMatches = storedMatches.filter(
       (storedMatch) => storedMatch.round === match.round,
     );
+    if (roundMatches[0].turns.length === maxTurns) {
+      return this.getMatch(match, teamsLookup);
+    }
+    let thisMatchIndex = -1;
     for (const roundMatch of roundMatches) {
       const storedMatchIndex = storedMatches.findIndex(
         (item) => item.id === roundMatch.id,
       );
-      storedMatches[storedMatchIndex].goals = [
-        Math.round(Math.random() * 10),
-        Math.round(Math.random() * 10),
-      ];
+      const storedMatch = storedMatches[storedMatchIndex];
+
+      const latestTurn = storedMatch.turns[0] ?? { time: 0 };
+      let ballPosition = latestTurn.ballPosition;
+      if (!ballPosition) {
+        ballPosition = 1;
+      } else {
+        ballPosition = ballPosition + 1;
+      }
+
+      let goals = storedMatch.goals;
+      if (ballPosition === 53) {
+        goals = [1, 0];
+      }
+
+      storedMatches[storedMatchIndex].turns.unshift({
+        ballPosition,
+        time: Math.round(storedMatch.turns.length / 4),
+      });
+      storedMatches[storedMatchIndex].goals = goals;
+      if (roundMatch.id === match.id) {
+        thisMatchIndex = storedMatchIndex;
+      }
     }
-    this.storage.currentDate = this.getDateFromInitial(match.round + 1);
     this.storage.matches = storedMatches;
+    const updatedMatch = this.getMatch(
+      storedMatches[thisMatchIndex],
+      teamsLookup,
+    );
+    if (updatedMatch.isDone) {
+      this.storage.currentDate = this.getDateFromInitial(match.round + 1);
+    }
+    return updatedMatch;
   }
 
   setTeamFormation(teamId: Team["id"], formation: Formation) {
@@ -160,8 +197,12 @@ export class Game {
 
   get currentRound() {
     const match = (this.storage.matches as StoredMatch[]).find(
-      (match) => !match.goals,
+      (match) => match.turns.length !== maxTurns,
     );
     return match?.round;
+  }
+
+  get table(): Table[] {
+    return getTable(this.teams, this.matches);
   }
 }
