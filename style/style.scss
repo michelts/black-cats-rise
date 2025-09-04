@@ -1,6 +1,10 @@
 $menu-background: #1a361a;
 $menu-hover-background: #2a4b2a;
 
+$select-color: #fff;
+$select-background: #1a361a;
+$select-border: #15803d;
+
 html,
 body {
   height: 100%;
@@ -162,6 +166,16 @@ tr.re {
 
 select {
   margin: 0 0 1em 0;
+  color: $select-color;
+  background: $select-background;
+  border: 1px solid $select-border;
+  font-size: 110%;
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+}
+label:has(+ select) {
+  font-weight: bold;
+  margin-right: 0.5rem;
 }
 
 .hidden {

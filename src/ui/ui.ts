@@ -55,7 +55,7 @@ function renderMatches(game: Game, container: HTMLElement) {
     team.name + (team.id === game.userTeam.id ? " (you)" : ""),
   ]);
   container.innerHTML =
-    makeSelect("view-team", choices, "" + currentTeam, (value) => {
+    makeSelect("view-team", "View Team", choices, "" + currentTeam, (value) => {
       currentTeam = Number(value);
       renderMatches(game, container);
     }) +
@@ -159,10 +159,16 @@ function renderTeam(game: Game, container: HTMLElement) {
     formation,
   ]);
   container.innerHTML =
-    makeSelect("change-formation", choices, team.formation, (value) => {
-      game.userTeam.setFormation(value as Formation);
-      renderTeam(game, container);
-    }) +
+    makeSelect(
+      "change-formation",
+      "Change Formation",
+      choices,
+      team.formation,
+      (value) => {
+        game.userTeam.setFormation(value as Formation);
+        renderTeam(game, container);
+      },
+    ) +
     "<table><tr><th>#<th>Pos</th><th>Name</th><th>Gk</th><th>Df</th><th>Md</th><th>At</th></tr>" +
     team.players
       .map(
@@ -273,11 +279,15 @@ function toggleScreen(screen: Screen) {
 
 function makeSelect(
   id: string,
+  label: string,
   options: Array<[string, string]>,
   selected: string,
   callback: (value: string) => void,
 ) {
   const select =
+    "<label>" +
+    label +
+    ":</label>" +
     "<select id=" +
     id +
     ">" +
