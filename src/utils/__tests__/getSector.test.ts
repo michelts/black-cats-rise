@@ -3,12 +3,12 @@ import { getSector } from "../getSector";
 
 it.each`
   position | sector
-  ${0}     | ${0}
-  ${32}    | ${0}
-  ${33}    | ${1}
-  ${65}    | ${1}
-  ${66}    | ${2}
-  ${100}   | ${2}
+  ${0}     | ${-1}
+  ${32}    | ${-1}
+  ${33}    | ${0}
+  ${65}    | ${0}
+  ${66}    | ${1}
+  ${100}   | ${1}
 `(
   "returns the sector for the position $position as $sector",
   ({ position, sector }) => {

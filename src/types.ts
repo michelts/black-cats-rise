@@ -45,7 +45,7 @@ export interface Kit {
 
 export type Formation = `${number}-${number}-${number}`;
 
-export type Sector = "df" | "md" | "at";
+export type Sector = -1 | 0 | 1;
 
 export type Position = "gk" | "df" | "md" | "at";
 
