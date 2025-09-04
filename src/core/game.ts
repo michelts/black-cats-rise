@@ -6,21 +6,25 @@ import type {
   LiveMatch,
   Match,
   PendingMatch,
+  Sector,
   StoredMatch,
   StoredTeam,
   StoredTurn,
   Table,
   Team,
 } from "@/types";
+import { getPlayerContribution } from "@/utils/getPlayerContribution";
+import { getSector } from "@/utils/getSector";
+import { sum } from "@/utils/sum";
 import { adjustIntoPosition } from "./formations";
 import { generateEmptyMatches } from "./matches";
 import { getTable } from "./table";
 import { makeTeams } from "./teams";
 
-export const time = 90;
+export const time = 90; // production value: 90
 const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
-export const turnTimeout = 12; // increase or decrease for controlling game speed
+export const turnTimeout = 125; // increase or decrease for controlling game speed
 
 export class Game implements GameType {
   storage: Record<string, unknown>;
@@ -143,24 +147,19 @@ export class Game implements GameType {
         return this.getMatch(givenMatch, teamsLookup);
       }
 
-      const latestTurn = match.turns[0] ?? { time: 0 };
-      let ballPosition = latestTurn.ballPosition;
-      if (!ballPosition) {
-        ballPosition = 1;
-      } else {
-        ballPosition = ballPosition + 1;
-      }
-
-      let goals = match.goals;
-      if (ballPosition === 53) {
-        goals = [1, 0];
-      }
-
+      // prepend new turn and update scored goals
+      const [goals, ballPosition] = runMatchTurn(
+        match,
+        teamsLookup[match.teamIds[0]],
+        teamsLookup[match.teamIds[1]],
+        match.id === givenMatch.id,
+      );
       match.turns.unshift({
         ballPosition,
         time: Math.round(match.turns.length / 4),
       });
-      match.goals = goals;
+      match.goals = [match.goals[0] + goals[0], match.goals[1] + goals[1]];
+
       if (match.id === givenMatch.id) {
         updatedStoredMatch = match;
       }
@@ -204,4 +203,36 @@ export class Game implements GameType {
   get table(): Table[] {
     return getTable(this.teams, this.matches);
   }
+}
+
+type TurnGoals = [0 | 1, 0 | 1];
+
+function runMatchTurn(
+  match: StoredMatch,
+  homeTeam: Team,
+  awayTeam: Team,
+  debug: boolean,
+): [TurnGoals, number] {
+  const currentBallPosition = match.turns[0]?.ballPosition ?? 50;
+  const sector = getSector(currentBallPosition);
+  const homeScore = sum(
+    homeTeam.players.map((player) => getPlayerContribution(sector, player)),
+  );
+  const awayScore = sum(
+    awayTeam.players.map((player) =>
+      getPlayerContribution((sector * -1) as Sector, player),
+    ),
+  );
+  const threshold = Math.abs(homeScore - awayScore);
+  let increment = threshold ** 0.5 - 2; // 10 -> 1, 20 -> 2, 30 -> 3, 40 -> 4
+  if (awayScore > homeScore) {
+    increment *= -1;
+  }
+
+  if (debug) {
+    console.log({ homeScore, awayScore });
+  }
+
+  const goals: TurnGoals = [0, 0];
+  return [goals, currentBallPosition + increment];
 }

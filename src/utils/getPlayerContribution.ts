@@ -23,8 +23,7 @@ const contributions: Partial<
 };
 
 export function getPlayerContribution(sector: Sector, player: Player) {
-  const sectorKey = sectors[sector + 1] as unknown as Sector;
-  const value = player[sectorKey];
-  console.log({ value, sector, sectorKey });
+  const value =
+    sector === -1 ? player.df : sector === 0 ? player.md : player.at;
   return value * (contributions[sector]?.[player.pos ?? ""] ?? 0);
 }
