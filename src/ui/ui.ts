@@ -73,14 +73,30 @@ function renderMatches(game: Game, container: HTMLElement) {
     game.matches
       .filter((match) => match.teamIds.includes(currentTeam))
       .map((match) => {
-        return `
-<tr>
-<td>${match.round}</td>
-<td${match.teams[0].id === currentTeam ? " class=bold" : ""}>${match.teams[0].name}</td>
-<td${match.teams[1].id === currentTeam ? " class=bold" : ""}>${match.teams[1].name}</td>
-<td>${match.date.toLocaleDateString()}</td>
-<td>${match.isDone ? match.goals[0] + "x" + match.goals[1] : match.isCurrent ? ("<button data-round=" + match.round + ">" + (match.isPending ? "Begin" : "Continue") + "</button>") : ""}</td>
-</tr>`;
+        return (
+          "<tr><td>" +
+          match.round +
+          "</td><td" +
+          (match.teams[0].id === currentTeam ? " class=bold" : "") +
+          ">" +
+          match.teams[0].name +
+          "</td><td" +
+          (match.teams[1].id === currentTeam ? " class=bold" : "") +
+          ">" +
+          match.teams[1].name +
+          "</td><td>" +
+          match.date.toLocaleDateString() +
+          "</td><td>" +
+          (match.isDone
+            ? match.goals[0] + "x" + match.goals[1]
+            : "<button data-round=" +
+              match.round +
+              (!match.isCurrent ? " class=hidden" : "") +
+              ">" +
+              (match.isPending ? "Begin" : "Continue") +
+              "</button>") +
+          "</td></tr>"
+        );
       })
       .join("") +
     "</table>";
