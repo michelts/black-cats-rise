@@ -126,22 +126,24 @@ export class Game implements GameType {
     } satisfies PendingMatch;
   }
 
-  advanceMatch(match: StoredMatch, teamsLookup: Record<Team["id"], Team>) {
+  advanceMatch(
+    givenMatch: StoredMatch,
+    teamsLookup: Record<Team["id"], Team>,
+  ): Match {
     const storedMatches = this.storage.matches as StoredMatch[];
-    const roundMatches = storedMatches.filter(
-      (storedMatch) => storedMatch.round === match.round,
-    );
-    if (roundMatches[0].turns.length === maxTurns) {
-      return this.getMatch(match, teamsLookup);
-    }
-    let thisMatchIndex = -1;
-    for (const roundMatch of roundMatches) {
-      const storedMatchIndex = storedMatches.findIndex(
-        (item) => item.id === roundMatch.id,
-      );
-      const storedMatch = storedMatches[storedMatchIndex];
+    let updatedStoredMatch: StoredMatch | null = null;
+    for (const match of storedMatches) {
+      // Filter only matches from the current round
+      if (match.round !== givenMatch.round) {
+        continue;
+      }
 
-      const latestTurn = storedMatch.turns[0] ?? { time: 0 };
+      // Return the match itself if the round has all the turns processed
+      if (match.turns.length === maxTurns) {
+        return this.getMatch(givenMatch, teamsLookup);
+      }
+
+      const latestTurn = match.turns[0] ?? { time: 0 };
       let ballPosition = latestTurn.ballPosition;
       if (!ballPosition) {
         ballPosition = 1;
@@ -149,27 +151,24 @@ export class Game implements GameType {
         ballPosition = ballPosition + 1;
       }
 
-      let goals = storedMatch.goals;
+      let goals = match.goals;
       if (ballPosition === 53) {
         goals = [1, 0];
       }
 
-      storedMatches[storedMatchIndex].turns.unshift({
+      match.turns.unshift({
         ballPosition,
-        time: Math.round(storedMatch.turns.length / 4),
+        time: Math.round(match.turns.length / 4),
       });
-      storedMatches[storedMatchIndex].goals = goals;
-      if (roundMatch.id === match.id) {
-        thisMatchIndex = storedMatchIndex;
+      match.goals = goals;
+      if (match.id === givenMatch.id) {
+        updatedStoredMatch = match;
       }
     }
     this.storage.matches = storedMatches;
-    const updatedMatch = this.getMatch(
-      storedMatches[thisMatchIndex],
-      teamsLookup,
-    );
+    const updatedMatch = this.getMatch(updatedStoredMatch!, teamsLookup);
     if (updatedMatch.isDone) {
-      this.storage.currentDate = this.getDateFromInitial(match.round + 1);
+      this.storage.currentDate = this.getDateFromInitial(givenMatch.round + 1);
     }
     return updatedMatch;
   }
