@@ -1,22 +1,38 @@
 import { expect, it } from "vitest";
+import { PlayerFactory } from "@/factories";
 import { getPlayerContribution } from "../getPlayerContribution";
 
 it.each`
-  sector  | playerPosition | contribution
-  ${"df"} | ${"df"}        | ${1}
-  ${"df"} | ${"md"}        | ${0.3}
-  ${"df"} | ${"at"}        | ${0.1}
-  ${"md"} | ${"df"}        | ${0.3}
-  ${"md"} | ${"md"}        | ${1}
-  ${"md"} | ${"at"}        | ${0.3}
-  ${"at"} | ${"df"}        | ${0.1}
-  ${"at"} | ${"md"}        | ${0.3}
-  ${"at"} | ${"at"}        | ${1}
-  ${"at"} | ${"gk"}        | ${0}
-  ${"at"} | ${""}          | ${0}
+  sector | playerPos | df   | md   | at   | contribution
+  ${-1}  | ${"df"}   | ${1} | ${0} | ${0} | ${1}
+  ${-1}  | ${"md"}   | ${1} | ${0} | ${0} | ${0.3}
+  ${-1}  | ${"at"}   | ${1} | ${0} | ${0} | ${0.1}
+  ${0}   | ${"df"}   | ${0} | ${1} | ${0} | ${0.3}
+  ${0}   | ${"md"}   | ${0} | ${1} | ${0} | ${1}
+  ${0}   | ${"at"}   | ${0} | ${1} | ${0} | ${0.3}
+  ${1}   | ${"df"}   | ${0} | ${0} | ${1} | ${0.1}
+  ${1}   | ${"md"}   | ${0} | ${0} | ${1} | ${0.3}
+  ${1}   | ${"at"}   | ${0} | ${0} | ${1} | ${1}
 `(
-  "returns $contribution for $playerPosition player in defense area (0 to 32% of the field)",
-  ({ sector, playerPosition, contribution }) => {
-    expect(getPlayerContribution(sector, playerPosition)).toEqual(contribution);
+  "returns $contribution for $playerPos player in sector $sector",
+  ({ sector, playerPos, df, md, at, contribution }) => {
+    const player = PlayerFactory.build({ pos: playerPos, df, md, at });
+    expect(getPlayerContribution(sector, player)).toEqual(contribution);
+  },
+);
+
+it.each`
+  sector | playerPos    | contribution
+  ${-1}  | ${"gk"}      | ${0}
+  ${0}   | ${"gk"}      | ${0}
+  ${1}   | ${"gk"}      | ${0}
+  ${-1}  | ${undefined} | ${0}
+  ${0}   | ${undefined} | ${0}
+  ${1}   | ${undefined} | ${0}
+`(
+  "returns zero for goal keepers and reserves for sector $sector",
+  ({ sector, contribution }) => {
+    const player = PlayerFactory.build({ pos: "gk", df: 1, md: 1, at: 1 });
+    expect(getPlayerContribution(sector, player)).toEqual(contribution);
   },
 );

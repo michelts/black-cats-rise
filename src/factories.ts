@@ -1,6 +1,6 @@
 import { Factory } from "fishery";
 import { maxTurns } from "@/core/game";
-import type { StoredMatch, StoredTeam, StoredTurn } from "@/types";
+import type { Player, StoredMatch, StoredTeam, StoredTurn } from "@/types";
 
 export const TeamFactory = Factory.define<StoredTeam>(({ sequence }) => ({
   id: sequence,
@@ -14,6 +14,33 @@ export const TeamFactory = Factory.define<StoredTeam>(({ sequence }) => ({
   },
   formation: "4-4-2",
   players: [],
+}));
+
+class BasePlayerFactory extends Factory<Player> {
+  gk(data: Omit<Player, "pos">) {
+    return this.params({ ...data, pos: "gk" }).build();
+  }
+
+  df(data: Omit<Player, "pos">) {
+    return this.params({ ...data, pos: "df" }).build();
+  }
+
+  md(data: Omit<Player, "pos">) {
+    return this.params({ ...data, pos: "md" }).build();
+  }
+
+  at(data: Omit<Player, "pos">) {
+    return this.params({ ...data, pos: "at" }).build();
+  }
+}
+
+export const PlayerFactory = BasePlayerFactory.define(({ sequence }) => ({
+  name: `Player ${sequence}`,
+  number: sequence,
+  gk: 2,
+  df: 4,
+  md: 6,
+  at: 8,
 }));
 
 class BaseMatchFactory extends Factory<StoredMatch> {
