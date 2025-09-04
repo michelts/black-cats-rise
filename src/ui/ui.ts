@@ -23,7 +23,6 @@ export function makeUserInterface(game: Game) {
 
 function navigate(game: Game, screen: Screen, extraData?: unknown) {
   const screenContainer = toggleScreen(screen);
-  updateClock(game);
 
   if (screen !== "live" && matchInterval) {
     clearInterval(matchInterval);
@@ -50,26 +49,14 @@ function navigate(game: Game, screen: Screen, extraData?: unknown) {
   }
 }
 
-function updateClock(game: Game) {
-  const placeholder = document.querySelector("#clock") as HTMLElement;
-  placeholder.innerHTML = game.currentDate.toLocaleDateString();
-}
-
 function renderMatches(game: Game, container: HTMLElement) {
+  const choices: Array<[string, string]> = game.teams.map((team) => [
+    "" + team.id,
+    team.name + (team.id === game.userTeam.id ? " (you)" : ""),
+  ]);
   container.innerHTML =
-    "<select id=sel-teams>" +
-    game.teams.map(
-      (team) =>
-        "<option value='" +
-        team.id +
-        "'" +
-        (team.id === currentTeam ? " selected" : "") +
-        ">" +
-        team.name +
-        (team.id === game.userTeam.id ? " (you)" : "") +
-        "</option>",
-    ) +
-    "</select><table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
+    makeSelect("sel-teams", choices, "" + currentTeam) +
+    "<table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
     game.matches
       .filter((match) => match.teamIds.includes(currentTeam))
       .map((match) => {
@@ -169,19 +156,13 @@ function updateLiveGame(match: Match) {
 
 function renderTeam(game: Game, container: HTMLElement) {
   const team = game.userTeam;
+  const choices: Array<[string, string]> = formations.map((formation) => [
+    formation,
+    formation,
+  ]);
   container.innerHTML =
-    "<select id=sel-formation>" +
-    formations.map(
-      (formation) =>
-        "<option value='" +
-        formation +
-        "'" +
-        (formation === team.formation ? " selected" : "") +
-        ">" +
-        formation +
-        "</option>",
-    ) +
-    "</select><table><tr><th>#<th>Pos</th><th>Name</th><th>Gk</th><th>Df</th><th>Md</th><th>At</th></tr>" +
+    makeSelect("sel-formation", choices, team.formation) +
+    "<table><tr><th>#<th>Pos</th><th>Name</th><th>Gk</th><th>Df</th><th>Md</th><th>At</th></tr>" +
     team.players
       .map(
         (player, index) =>
@@ -295,4 +276,26 @@ function toggleScreen(screen: Screen) {
     }
   }
   return null;
+}
+
+function makeSelect(
+  id: string,
+  options: Array<[string, string]>,
+  selected: string,
+) {
+  return (
+    "<select id=" +
+    id +
+    ">" +
+    options.map(
+      ([value, label]) =>
+        "<option value=" +
+        value +
+        (value === selected ? " selected" : "") +
+        ">" +
+        label +
+        "</option>",
+    ) +
+    "</select>"
+  );
 }

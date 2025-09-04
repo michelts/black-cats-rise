@@ -1,3 +1,6 @@
+$menu-background: #1a361a;
+$menu-hover-background: #2a4b2a;
+
 html,
 body {
   height: 100%;
@@ -40,11 +43,11 @@ h1 span {
   color: #f7b700; /* Yellow from image */
 }
 
+// Generic nav
 nav {
   display: flex;
   justify-content: center;
-  gap: 1em;
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 nav button {
   background: none;
@@ -56,24 +59,34 @@ nav button {
   padding: 0;
   text-decoration: none;
 }
-nav button:hover {
-  color: #f7b700;
-  text-decoration: underline;
-}
 
 #menu {
   position: sticky;
   top: 0;
   left: 0;
   display: flex;
-  gap: 1em;
-  padding: 1em;
   align-items: center;
-  background-color: #1a361a;
-  width: calc(100% - 2em);
+  justify-content: center;
+  background-color: $menu-background;
+  width: 100%;
 }
-#menu nav {
-  flex: 1;
+
+#menu nav button {
+  padding: 0.75rem 1rem;
+  border-left: 1px solid rgba(#fff, 0.2);
+
+  &:last-child {
+    border-right: 1px solid rgba(#fff, 0.2);
+  }
+
+  &:hover {
+    background: $menu-hover-background;
+    text-decoration: underline;
+  }
+
+  &.active {
+    background: $menu-hover-background;
+  }
 }
 
 .intro {
@@ -91,6 +104,11 @@ nav button:hover {
 .intro nav {
   flex-direction: column;
   font-size: 3.5vmin;
+  gap: 1em;
+}
+.intro nav button:hover {
+  color: #f7b700;
+  text-decoration: underline;
 }
 
 main {
@@ -102,9 +120,6 @@ main {
 }
 .intro.active ~ main {
   display: none;
-}
-main nav button.active {
-  color: red;
 }
 
 table, th, td {
