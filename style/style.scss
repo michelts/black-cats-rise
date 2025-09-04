@@ -3,7 +3,9 @@ $menu-hover-background: #2a4b2a;
 
 $select-color: #fff;
 $select-background: #1a361a;
-$select-border: #15803d;
+$select-border: #1f5734;
+
+$title-color: #86efac;
 
 html,
 body {
@@ -126,6 +128,18 @@ main {
   display: none;
 }
 
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  color: $title-color;
+  margin: 0;
+}
+
 table, th, td {
   border: 1px dashed rgba(#fff, 0.2);
   border-width: 1px 0;
@@ -165,7 +179,7 @@ tr.re {
 }
 
 select {
-  margin: 0 0 1em 0;
+  margin: 0;
   color: $select-color;
   background: $select-background;
   border: 1px solid $select-border;

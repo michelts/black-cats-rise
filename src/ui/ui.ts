@@ -55,10 +55,13 @@ function renderMatches(game: Game, container: HTMLElement) {
     team.name + (team.id === game.userTeam.id ? " (you)" : ""),
   ]);
   container.innerHTML =
+    "<header>" +
+    "<h2>Next Match</h2>" +
     makeSelect("view-team", "View Team", choices, "" + currentTeam, (value) => {
       currentTeam = Number(value);
       renderMatches(game, container);
     }) +
+    "</header>" +
     "<table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
     game.matches
       .filter((match) => match.teamIds.includes(currentTeam))
@@ -159,6 +162,7 @@ function renderTeam(game: Game, container: HTMLElement) {
     formation,
   ]);
   container.innerHTML =
+    "<header><h2>Your Squad</h2>" +
     makeSelect(
       "change-formation",
       "Change Formation",
@@ -169,6 +173,7 @@ function renderTeam(game: Game, container: HTMLElement) {
         renderTeam(game, container);
       },
     ) +
+    "</header>" +
     "<table><tr><th>#<th>Pos</th><th>Name</th><th>Gk</th><th>Df</th><th>Md</th><th>At</th></tr>" +
     team.players
       .map(
@@ -285,7 +290,7 @@ function makeSelect(
   callback: (value: string) => void,
 ) {
   const select =
-    "<label>" +
+    "<div><label>" +
     label +
     ":</label>" +
     "<select id=" +
@@ -300,7 +305,7 @@ function makeSelect(
         label +
         "</option>",
     ) +
-    "</select>";
+    "</select></div>";
   setTimeout(() => {
     getById(id).addEventListener("change", (event) => {
       const value = (event.target as HTMLSelectElement).value;
