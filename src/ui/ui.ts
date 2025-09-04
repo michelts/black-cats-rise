@@ -108,7 +108,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
     "<button data-start" +
     (!match.isPending ? " disabled" : "") +
     ">Start</button>" +
-    "<div>Possession: <strong id=ball>-</strong></div><div>Time: <strong id=matchTime>-</strong></div>";
+    "<div>Possession: <strong id=ball>-</strong></div><div>Time: <strong id=matchTime>-</strong><div>Score: <strong id=score>-</strong></div>";
   const start = document.querySelector("[data-start]");
 
   const begin = (match: Match) => {
@@ -147,6 +147,8 @@ function updateLiveGame(match: Match) {
   ball!.innerHTML = String(match.turns[0].ballPosition);
   const matchTime = document.querySelector("#matchTime");
   matchTime!.innerHTML = match.turns[0].time + "min";
+  const score = document.querySelector("#score");
+  score!.innerHTML = match.goals.join("x");
 }
 
 function renderTeam(game: Game, container: HTMLElement) {
