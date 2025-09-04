@@ -166,7 +166,6 @@ function renderTeam(game: Game, container: HTMLElement) {
         "</option>",
     ) +
     "</select><table><tr><th>#<th>Pos</th><th>Name</th><th>Gk</th><th>Df</th><th>Md</th><th>At</th></tr>" +
-    "<ul>" +
     team.players
       .map(
         (player, index) =>
@@ -191,7 +190,7 @@ function renderTeam(game: Game, container: HTMLElement) {
           "</td></tr>",
       )
       .join("") +
-    "</ul>";
+    "</table>";
   document
     .querySelector("#sel-formation")
     ?.addEventListener("change", (event) => {
