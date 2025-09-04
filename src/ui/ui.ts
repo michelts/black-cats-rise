@@ -55,10 +55,9 @@ function renderMatches(game: Game, container: HTMLElement) {
     team.name + (team.id === game.userTeam.id ? " (you)" : ""),
   ]);
   container.innerHTML =
-    makeSelect("sel-mat", choices, "" + currentTeam, (target, value) => {
+    makeSelect("view-team", choices, "" + currentTeam, (value) => {
       currentTeam = Number(value);
       renderMatches(game, container);
-      target.focus();
     }) +
     "<table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
     game.matches
@@ -160,10 +159,9 @@ function renderTeam(game: Game, container: HTMLElement) {
     formation,
   ]);
   container.innerHTML =
-    makeSelect("sel-form", choices, team.formation, (target, value) => {
+    makeSelect("change-formation", choices, team.formation, (value) => {
       game.userTeam.setFormation(value as Formation);
       renderTeam(game, container);
-      target.focus();
     }) +
     "<table><tr><th>#<th>Pos</th><th>Name</th><th>Gk</th><th>Df</th><th>Md</th><th>At</th></tr>" +
     team.players
@@ -277,7 +275,7 @@ function makeSelect(
   id: string,
   options: Array<[string, string]>,
   selected: string,
-  callback: (target: HTMLSelectElement, value: string) => void,
+  callback: (value: string) => void,
 ) {
   const select =
     "<select id=" +
@@ -296,16 +294,21 @@ function makeSelect(
   setTimeout(() => {
     getById(id).addEventListener("change", (event) => {
       const value = (event.target as HTMLSelectElement).value;
-      callback(getById(id) as HTMLSelectElement, value);
+      callback(value);
+      regainFocus(id);
     });
   });
   return select;
 }
 
-function getById(id: string) {
-  const elem = document.querySelector("#" + id);
+function getById(id: string): HTMLElement {
+  const elem = document.querySelector<HTMLElement>("#" + id);
   if (!elem) {
     throw new Error();
   }
   return elem;
+}
+
+function regainFocus(id: string) {
+  getById(id).focus();
 }
