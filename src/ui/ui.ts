@@ -232,7 +232,7 @@ function renderTeam(game: Game, container: HTMLElement) {
 
 function renderTable(game: Game, container: HTMLElement) {
   container.innerHTML =
-    "<table><tr><th>Id</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr>" +
+    "<header><h2>League Table</h2></header><table><tr><th>Id</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr>" +
     game.table
       .map(
         (record) =>
