@@ -54,9 +54,12 @@ function renderMatches(game: Game, container: HTMLElement) {
     "" + team.id,
     team.name + (team.id === game.userTeam.id ? " (you)" : ""),
   ]);
-  const id = makeId();
   container.innerHTML =
-    makeSelect(id, choices, "" + currentTeam) +
+    makeSelect("sel-mat", choices, "" + currentTeam, (target, value) => {
+      currentTeam = Number(value);
+      renderMatches(game, container);
+      target.focus();
+    }) +
     "<table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
     game.matches
       .filter((match) => match.teamIds.includes(currentTeam))
@@ -96,11 +99,6 @@ function renderMatches(game: Game, container: HTMLElement) {
         navigate(game, "live", round);
       }
     });
-  document.querySelector("#" + id)?.addEventListener("change", (event) => {
-    currentTeam = Number((event.target as HTMLSelectElement).value);
-    renderMatches(game, container);
-    (event.target as HTMLSelectElement).focus();
-  });
 }
 
 function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
@@ -161,9 +159,12 @@ function renderTeam(game: Game, container: HTMLElement) {
     formation,
     formation,
   ]);
-  const id = makeId();
   container.innerHTML =
-    makeSelect(id, choices, team.formation) +
+    makeSelect("sel-form", choices, team.formation, (target, value) => {
+      game.userTeam.setFormation(value as Formation);
+      renderTeam(game, container);
+      target.focus();
+    }) +
     "<table><tr><th>#<th>Pos</th><th>Name</th><th>Gk</th><th>Df</th><th>Md</th><th>At</th></tr>" +
     team.players
       .map(
@@ -190,12 +191,6 @@ function renderTeam(game: Game, container: HTMLElement) {
       )
       .join("") +
     "</table>";
-  document.querySelector("#" + id)?.addEventListener("change", (event) => {
-    const value = (event.target as HTMLSelectElement).value as Formation;
-    game.userTeam.setFormation(value);
-    renderTeam(game, container);
-    (event.target as HTMLSelectElement).focus();
-  });
   for (const row of document.querySelectorAll('tr[draggable="true"]')) {
     row.addEventListener("dragstart", (evt) => {
       (evt as DragEvent).dataTransfer?.setData(
@@ -282,8 +277,9 @@ function makeSelect(
   id: string,
   options: Array<[string, string]>,
   selected: string,
+  callback: (target: HTMLSelectElement, value: string) => void,
 ) {
-  return (
+  const select =
     "<select id=" +
     id +
     ">" +
@@ -296,10 +292,20 @@ function makeSelect(
         label +
         "</option>",
     ) +
-    "</select>"
-  );
+    "</select>";
+  setTimeout(() => {
+    getById(id).addEventListener("change", (event) => {
+      const value = (event.target as HTMLSelectElement).value;
+      callback(getById(id) as HTMLSelectElement, value);
+    });
+  });
+  return select;
 }
 
-function makeId() {
-  return "id" + crypto.randomUUID();
+function getById(id: string) {
+  const elem = document.querySelector("#" + id);
+  if (!elem) {
+    throw new Error();
+  }
+  return elem;
 }
