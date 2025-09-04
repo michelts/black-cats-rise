@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
+import { MatchFactory, TeamFactory } from "@/factories";
 import type { StoredTeam } from "@/types";
 import { Game } from "../game";
-import { MatchFactory, TeamFactory } from "./factories";
 
 it("returns teams with all empty values on initial condition", () => {
   const teams: StoredTeam[] = TeamFactory.buildList(4);

@@ -1,6 +1,6 @@
 import { Factory } from "fishery";
+import { maxTurns } from "@/core/game";
 import type { StoredMatch, StoredTeam, StoredTurn } from "@/types";
-import { maxTurns } from "../game";
 
 export const TeamFactory = Factory.define<StoredTeam>(({ sequence }) => ({
   id: sequence,
