@@ -45,6 +45,8 @@ export interface Kit {
 
 export type Formation = `${number}-${number}-${number}`;
 
+export type Sector = "df" | "md" | "at";
+
 export type Position = "gk" | "df" | "md" | "at";
 
 export interface Player extends StoredPlayer {
