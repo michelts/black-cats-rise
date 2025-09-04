@@ -1,7 +1,5 @@
 import type { Player, Position, Sector } from "@/types";
 
-const sectors = ["df", "md", "at"];
-
 const contributions: Partial<
   Record<Sector, Partial<Record<Position | "", number>>>
 > = {
