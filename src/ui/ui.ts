@@ -1,6 +1,6 @@
 import { formations } from "@/core/formations";
 import { turnTimeout } from "@/core/game";
-import type { Formation, Game, Match, Screen, Team } from "@/types";
+import type { Formation, Game, Kit, Match, Screen, Team } from "@/types";
 
 let matchInterval: ReturnType<typeof setTimeout> | null = null;
 let currentTeam: number;
@@ -52,7 +52,7 @@ function navigate(game: Game, screen: Screen, extraData?: unknown) {
 function renderMatches(game: Game, container: HTMLElement) {
   const choices: Array<[string, string]> = game.teams.map((team) => [
     "" + team.id,
-    team.name + (team.id === game.userTeam.id ? " (you)" : ""),
+    team.name,
   ]);
   container.innerHTML =
     "<header>" +
@@ -62,32 +62,30 @@ function renderMatches(game: Game, container: HTMLElement) {
       renderMatches(game, container);
     }) +
     "</header>" +
-    "<table><tr><th>#</th><th>Home</th><th>Away</th><th>Date</th><th></th></tr>" +
+    "<table>" +
     game.matches
       .filter((match) => match.teamIds.includes(currentTeam))
       .map((match) => {
         return (
-          "<tr><td>" +
-          match.round +
-          "</td><td" +
-          (match.teams[0].id === currentTeam ? " class=bold" : "") +
-          ">" +
-          match.teams[0].name +
-          "</td><td" +
-          (match.teams[1].id === currentTeam ? " class=bold" : "") +
-          ">" +
-          match.teams[1].name +
+          "<tr><td class=r>" +
+          renderTeamName(
+            match.teams[0],
+            match.teams[0].id === game.userTeam.id ? "bold" : "",
+          ) +
+          "</td><td class=cll>" +
+          tShirt(match.teams[0].kit) +
+          "</td><td class=c>" +
+          match.date.toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+          }) +
+          "</td><td class=cll>" +
+          tShirt(match.teams[1].kit) +
           "</td><td>" +
-          match.date.toLocaleDateString() +
-          "</td><td>" +
-          (match.isDone
-            ? match.goals[0] + "x" + match.goals[1]
-            : "<button data-round=" +
-              match.round +
-              (!match.isCurrent ? " class=hidden" : "") +
-              ">" +
-              (match.isPending ? "Begin" : "Continue") +
-              "</button>") +
+          renderTeamName(
+            match.teams[1],
+            match.teams[1].id === game.userTeam.id ? "bold" : "",
+          ) +
           "</td></tr>"
         );
       })
@@ -241,7 +239,11 @@ function renderTable(game: Game, container: HTMLElement) {
           "><td>" +
           index +
           "</td><td>" +
-          renderTeamName(record.team, record.team.id === game.userTeam.id) +
+          renderTeamName(
+            record.team,
+            record.team.id === game.userTeam.id ? "bold" : "",
+            tShirt(record.team.kit),
+          ) +
           "</td><td>" +
           record.mp +
           "</td><td>" +
@@ -295,15 +297,17 @@ function makeSelect(
     "<select id=" +
     id +
     ">" +
-    options.map(
-      ([value, label]) =>
-        "<option value=" +
-        value +
-        (value === selected ? " selected" : "") +
-        ">" +
-        label +
-        "</option>",
-    ) +
+    options
+      .map(
+        ([value, label]) =>
+          "<option value=" +
+          value +
+          (value === selected ? " selected" : "") +
+          ">" +
+          label +
+          "</option>",
+      )
+      .join("") +
     "</select></div>";
   setTimeout(() => {
     getById(id).addEventListener("change", (event) => {
@@ -327,20 +331,30 @@ function regainFocus(id: string) {
   getById(id).focus();
 }
 
-function renderTeamName(team: Team, featured: boolean) {
-  const tShirtIconHTML =
-    '<div><i class="tshirt ' +
-    team.kit.pattern[0] +
-    '" style="--color1: ' +
-    team.kit.color1 +
-    "; --color2: " +
-    team.kit.color2 +
-    '"></i>';
+function renderTeamName(
+  team: Team,
+  className: string = "",
+  prefix: string = "",
+) {
   return (
-    tShirtIconHTML +
+    '<div class="name ' +
+    className +
+    '">' +
+    prefix +
     "<span>" +
     team.name +
-    (featured ? ' <i class="star" title="Your team">●</i>' : "") +
     "</span></div>"
+  );
+}
+
+function tShirt(kit: Kit) {
+  return (
+    '<i class="tshirt ' +
+    kit.pattern[0] +
+    '" style="--color1: ' +
+    kit.color1 +
+    "; --color2: " +
+    kit.color2 +
+    '"></i>'
   );
 }
