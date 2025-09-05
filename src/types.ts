@@ -61,11 +61,12 @@ export interface StoredPlayer {
   at: number;
 }
 
-export type KitPattern = "v" | "h" | "c";
-
+export type KitPattern = "v" | "h" | "c" | "m" | "p";
 export const PatternVertical = "v";
 export const PatternHorizontal = "h";
 export const PatternCheckered = "c";
+export const PatternMeridian = "m";
+export const PatternParallel = "p";
 
 export type MatchKey = `${number}-${number}`;
 

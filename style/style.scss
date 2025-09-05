@@ -253,6 +253,14 @@ label:has(+ select) {
     background: repeating-linear-gradient(to bottom, var(--color1), var(--color1) 3px, var(--color2) 3px, var(--color2) 6px);
   }
 
+  &.m { // medirian (two horizontal stripes)
+    background: repeating-linear-gradient(to bottom, var(--color1), var(--color1) 16px, var(--color2) 16px, var(--color2) 28px);
+  }
+
+  &.p { // parallel (two vertical stripes)
+    background: repeating-linear-gradient(to right, var(--color1), var(--color1) 14px, var(--color2) 14px, var(--color2) 28px);
+  }
+
   &.c { // checkered
     background-image: linear-gradient(45deg, var(--color1) 25%, transparent 25%), linear-gradient(-45deg, var(--color1) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--color1) 75%), linear-gradient(-45deg, transparent 75%, var(--color1) 75%);
     background-size: 6px 6px;
