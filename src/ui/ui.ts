@@ -1,6 +1,6 @@
 import { formations } from "@/core/formations";
 import { turnTimeout } from "@/core/game";
-import type { Formation, Game, Match, Screen, Team } from "@/types";
+import type { Formation, Game, Kit, Match, Screen, Team } from "@/types";
 
 let matchInterval: ReturnType<typeof setTimeout> | null = null;
 let currentTeam: number;
@@ -178,7 +178,7 @@ function renderTeam(game: Game, container: HTMLElement) {
     team.players
       .map(
         (player, index) =>
-          "<tr data-idx='" +
+          "<tr title='Drag to swap positions' data-idx='" +
           index +
           "' draggable=true class=" +
           (player.pos ?? "re") +
@@ -329,8 +329,25 @@ function regainFocus(id: string) {
 }
 
 function renderTeamName(team: Team) {
-  return `<svg style="vertical-align: middle; width: 20px; height: 20px" viewBox="0 0 24 24">
-<path d="M3.2,3.2 L20.8,3.2 L20.8,11.2 L24,14.4 L24,20.8 L0,20.8 L0,14.4 L3.2,11.2 Z" fill="${team.kit.color1}"></path>
-<path d="M8,3.2 L16,3.2 L16,6.4 L8,6.4 Z" fill="${team.kit.color2}"></path>
-</svg> ${team.name}`;
+  const tShirtIconHTML = `<div class="tshirt-icon" style="${getTeamIconStyle(team.kit)}"></div>`;
+  return tShirtIconHTML + " " + team.name;
 }
+
+const getTeamIconStyle = (teamConfig: Kit) => {
+  const { pattern, color1, color2 } = teamConfig;
+  switch (pattern) {
+    case "vertical":
+      // 4px of color1, then 4px of color2, repeating
+      return `background: repeating-linear-gradient(to right, ${color1}, ${color1} 4px, ${color2} 4px, ${color2} 8px);`;
+    case "horizontal":
+      return `background: repeating-linear-gradient(to bottom, ${color1}, ${color1} 4px, ${color2} 4px, ${color2} 8px);`;
+    case "checkered": {
+      const size = "6px";
+      return `background-image: linear-gradient(45deg, ${color1} 25%, transparent 25%), linear-gradient(-45deg, ${color1} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${color1} 75%), linear-gradient(-45deg, transparent 75%, ${color1} 75%);
+                         background-size: ${size} ${size};
+                         background-color: ${color2};`;
+    }
+    default:
+      return `background-color: ${color1};`;
+  }
+};

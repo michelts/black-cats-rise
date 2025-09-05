@@ -5,7 +5,16 @@ $select-color: #fff;
 $select-background: #1a361a;
 $select-border: #1f5734;
 
+$table-header: #2a4b2a;
+$table-header-color: #86efac;
+$table-cell-bg: #1a361a;
+
 $title-color: #86efac;
+
+$goalkepper-bg: #303;
+$defense-bg: #003;
+$midfield-bg: #330;
+$attack-bg: #300;
 
 html,
 body {
@@ -145,43 +154,65 @@ h2 {
 
 table {
   width: 100%;
-}
-table, th, td {
-  border: 1px dashed rgba(#fff, 0.2);
-  border-width: 1px 0;
   border-collapse: collapse;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+tr {
+  --td-bg: #{$table-cell-bg};
+}
+td {
+  border-bottom: 1px solid hsla(from var(--td-bg) h s calc(l + 5));
+  background: var(--td-bg);
+}
+tr:last-child td {
+  border-bottom: 0;
+}
+th {
+  background: $table-header;
+  color: $table-header-color;
 }
 th, td {
-  padding: 0.25em 0.75em;
+  padding: 0.75em 0.5em;
+  text-align: left;
 }
 .bold {
   color: #fff;
 }
-tr.bold {
-  background: rgba(#fff, 0.1)
-}
-tr.over {
-  color: #fff;
-
-  td {
-    filter: blur(1px);
-  }
-}
+// goalkepper
 tr.gk {
-  background: rgba(#f0f, 0.1)
+  --td-bg: #{$goalkepper-bg};
 }
+// defense
 tr.df {
-  background: rgba(#00f, 0.1)
+  --td-bg: #{$defense-bg};
 }
+// midfield 
 tr.md {
-  background: rgba(#ff0, 0.1)
+  --td-bg: #{$midfield-bg};
 }
+// attack
 tr.at {
-  background: rgba(#f00, 0.1)
+  --td-bg: #{$attack-bg};
 }
+// reserve
 tr.re {
   font-style: italic;
-  color: rgba(#fff, 0.5);
+}
+tr.bold td {
+  background: hsl(from var(--td-bg) h s calc(l + 15))
+}
+tr[draggable="true"] {
+  cursor: grab;
+
+  &:hover td {
+    background: hsl(from var(--td-bg) h s calc(l + 15))
+  }
+}
+// overflow when dragging
+tr.over td {
+  background: hsl(from var(--td-bg) h s calc(l - 5));
+  filter: blur(1px);
 }
 
 select {
@@ -200,4 +231,16 @@ label:has(+ select) {
 
 .hidden {
   visibility: hidden;
+}
+
+/* T-shirt icon styling */
+.tshirt-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-clip-path: url(#tshirt-clip);
+  clip-path: url(#tshirt-clip);
+  background-size: cover;
 }
