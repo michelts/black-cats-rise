@@ -1,6 +1,6 @@
 import { formations } from "@/core/formations";
 import { turnTimeout } from "@/core/game";
-import type { Formation, Game, Kit, Match, Screen, Team } from "@/types";
+import type { Formation, Game, Match, Screen, Team } from "@/types";
 
 let matchInterval: ReturnType<typeof setTimeout> | null = null;
 let currentTeam: number;
@@ -329,25 +329,13 @@ function regainFocus(id: string) {
 }
 
 function renderTeamName(team: Team) {
-  const tShirtIconHTML = `<div class="tshirt-icon" style="${getTeamIconStyle(team.kit)}"></div>`;
+  const tShirtIconHTML =
+    '<div class="tshirt-icon ' +
+    team.kit.pattern[0] +
+    '" style="--color1: ' +
+    team.kit.color1 +
+    "; --color2: " +
+    team.kit.color2 +
+    '"></div>';
   return tShirtIconHTML + " " + team.name;
 }
-
-const getTeamIconStyle = (teamConfig: Kit) => {
-  const { pattern, color1, color2 } = teamConfig;
-  switch (pattern) {
-    case "vertical":
-      // 4px of color1, then 4px of color2, repeating
-      return `background: repeating-linear-gradient(to right, ${color1}, ${color1} 4px, ${color2} 4px, ${color2} 8px);`;
-    case "horizontal":
-      return `background: repeating-linear-gradient(to bottom, ${color1}, ${color1} 4px, ${color2} 4px, ${color2} 8px);`;
-    case "checkered": {
-      const size = "6px";
-      return `background-image: linear-gradient(45deg, ${color1} 25%, transparent 25%), linear-gradient(-45deg, ${color1} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${color1} 75%), linear-gradient(-45deg, transparent 75%, ${color1} 75%);
-                         background-size: ${size} ${size};
-                         background-color: ${color2};`;
-    }
-    default:
-      return `background-color: ${color1};`;
-  }
-};
