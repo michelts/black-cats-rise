@@ -15,8 +15,7 @@ export interface Team extends StoredTeam {
 }
 
 export interface Table {
-  id: Team["id"];
-  name: Team["name"];
+  team: Team;
   mp: number; // matches played
   w: number; // won
   d: number; // drawn

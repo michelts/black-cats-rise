@@ -1,12 +1,11 @@
 import type { Match, Team } from "@/types";
 
 export function getTable(
-  teams: Array<Pick<Team, "id" | "name">>,
+  teams: Team[],
   matches: Array<Pick<Match, "teamIds" | "goals" | "isDone">>,
 ) {
   const table = teams.map((team) => ({
-    id: team.id,
-    name: team.name,
+    team,
     mp: 0,
     w: 0,
     d: 0,

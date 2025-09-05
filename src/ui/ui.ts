@@ -1,6 +1,6 @@
 import { formations } from "@/core/formations";
 import { turnTimeout } from "@/core/game";
-import type { Formation, Game, Match, Screen } from "@/types";
+import type { Formation, Game, Match, Screen, Team } from "@/types";
 
 let matchInterval: ReturnType<typeof setTimeout> | null = null;
 let currentTeam: number;
@@ -232,17 +232,17 @@ function renderTeam(game: Game, container: HTMLElement) {
 
 function renderTable(game: Game, container: HTMLElement) {
   container.innerHTML =
-    "<header><h2>League Table</h2></header><table><tr><th>Id</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th></tr>" +
+    "<header><h2>League Table</h2></header><table><tr><th>POS</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th></tr>" +
     game.table
       .map(
-        (record) =>
+        (record, index) =>
           "<tr" +
-          (record.id === game.userTeam.id ? ' class="bold"' : "") +
+          (record.team.id === game.userTeam.id ? ' class="bold"' : "") +
           "><td>" +
-          record.id +
+          index +
           "</td><td>" +
-          record.name +
-          (record.id === game.userTeam.id ? " (you)" : "") +
+          renderTeamName(record.team) +
+          (record.team.id === game.userTeam.id ? " (you)" : "") +
           "</td><td>" +
           record.mp +
           "</td><td>" +
@@ -326,4 +326,11 @@ function getById(id: string): HTMLElement {
 
 function regainFocus(id: string) {
   getById(id).focus();
+}
+
+function renderTeamName(team: Team) {
+  return `<svg style="vertical-align: middle; width: 20px; height: 20px" viewBox="0 0 24 24">
+<path d="M3.2,3.2 L20.8,3.2 L20.8,11.2 L24,14.4 L24,20.8 L0,20.8 L0,14.4 L3.2,11.2 Z" fill="${team.kit.color1}"></path>
+<path d="M8,3.2 L16,3.2 L16,6.4 L8,6.4 Z" fill="${team.kit.color2}"></path>
+</svg> ${team.name}`;
 }

@@ -24,7 +24,7 @@ import { makeTeams } from "./teams";
 export const time = 90; // production value: 90
 const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
-export const turnTimeout = 125; // increase or decrease for controlling game speed
+export const turnTimeout = 15; // increase or decrease for controlling game speed
 
 export class Game implements GameType {
   storage: Record<string, unknown>;
