@@ -56,7 +56,7 @@ function renderMatches(game: Game, container: HTMLElement) {
   ]);
   container.innerHTML =
     "<header>" +
-    "<h2>Next Match</h2>" +
+    "<h2>Full Fixtures</h2>" +
     makeSelect("view-team", "View Team", choices, "" + currentTeam, (value) => {
       currentTeam = Number(value);
       renderMatches(game, container);
@@ -174,7 +174,7 @@ function renderTeam(game: Game, container: HTMLElement) {
       },
     ) +
     "</header>" +
-    "<table><tr><th>#<th>Pos</th><th>Name</th><th>Gk</th><th>Df</th><th>Md</th><th>At</th></tr>" +
+    "<table><tr><th>#<th>POS</th><th>NAME</th><th>GK</th><th>DF</th><th>MD</th><th>AT</th></tr>" +
     team.players
       .map(
         (player, index) =>
@@ -232,7 +232,7 @@ function renderTeam(game: Game, container: HTMLElement) {
 
 function renderTable(game: Game, container: HTMLElement) {
   container.innerHTML =
-    "<header><h2>League Table</h2></header><table><tr><th>Id</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr>" +
+    "<header><h2>League Table</h2></header><table><tr><th>Id</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th></tr>" +
     game.table
       .map(
         (record) =>
