@@ -234,13 +234,10 @@ label:has(+ select) {
   visibility: hidden;
 }
 
-.tshirt-icon {
+.tshirt {
   width: 28px;
   height: 28px;
   margin: -3px 0;
-  margin-right: 0.75rem;
-  display: inline-block;
-  vertical-align: middle;
   -webkit-clip-path: url(#tshirt-clip);
   clip-path: url(#tshirt-clip);
   background-size: cover;
@@ -268,3 +265,14 @@ label:has(+ select) {
   }
 }
 
+.star {
+  color: #3f3;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+div:has(.tshirt) {
+  display: inline-flex;
+  gap: 0.75rem;
+  align-items: center;
+}

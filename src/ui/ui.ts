@@ -241,8 +241,7 @@ function renderTable(game: Game, container: HTMLElement) {
           "><td>" +
           index +
           "</td><td>" +
-          renderTeamName(record.team) +
-          (record.team.id === game.userTeam.id ? " (you)" : "") +
+          renderTeamName(record.team, record.team.id === game.userTeam.id) +
           "</td><td>" +
           record.mp +
           "</td><td>" +
@@ -328,14 +327,20 @@ function regainFocus(id: string) {
   getById(id).focus();
 }
 
-function renderTeamName(team: Team) {
+function renderTeamName(team: Team, featured: boolean) {
   const tShirtIconHTML =
-    '<div class="tshirt-icon ' +
+    '<div><i class="tshirt ' +
     team.kit.pattern[0] +
     '" style="--color1: ' +
     team.kit.color1 +
     "; --color2: " +
     team.kit.color2 +
-    '"></div>';
-  return tShirtIconHTML + " " + team.name;
+    '"></i>';
+  return (
+    tShirtIconHTML +
+    "<span>" +
+    team.name +
+    (featured ? ' <i class="star" title="Your team">●</i>' : "") +
+    "</span></div>"
+  );
 }
