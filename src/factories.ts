@@ -1,6 +1,12 @@
 import { Factory } from "fishery";
 import { maxTurns } from "@/core/game";
-import type { Player, StoredMatch, StoredTeam, StoredTurn } from "@/types";
+import {
+  PatternVertical,
+  type Player,
+  type StoredMatch,
+  type StoredTeam,
+  type StoredTurn,
+} from "@/types";
 
 export const TeamFactory = Factory.define<StoredTeam>(({ sequence }) => ({
   id: sequence,
@@ -10,7 +16,7 @@ export const TeamFactory = Factory.define<StoredTeam>(({ sequence }) => ({
   kit: {
     color1: "red",
     color2: "black",
-    pattern: "vertical",
+    pattern: PatternVertical,
   },
   formation: "4-4-2",
   players: [],
