@@ -81,15 +81,15 @@ function renderMatches(game: Game, container: HTMLElement) {
     renderFullFixtures(
       game.matches.filter((match) => match.teamIds.includes(currentTeam)),
       game.userTeam,
-    ) +
-    document
-      .querySelector<HTMLElement>("[data-round]")
-      ?.addEventListener("click", (event) => {
-        const round = (event.target as HTMLElement).dataset.round;
-        if (round) {
-          navigate(game, "live", round);
-        }
-      });
+    );
+  document
+    .querySelector<HTMLElement>("[data-round]")
+    ?.addEventListener("click", (event) => {
+      const round = (event.target as HTMLElement).dataset.round;
+      if (round) {
+        navigate(game, "live", round);
+      }
+    });
 }
 
 function renderNextMatch(match: Match) {
@@ -102,7 +102,12 @@ function renderNextMatch(match: Match) {
     tShirt(match.teams[1].kit) +
     "</span><div><b>" +
     match.teams[1].name +
-    "</b><span>Away</span></div></div><div><button class=btn>Begin Match</button></div></div>"
+    "</b><span>Away</span></div></div><div><button class=btn data-round=" +
+    match.round +
+    ">" +
+    (match.isPending ? "Begin" : "Continue") +
+    "Match" +
+    "</button></div></div>"
   );
 }
 
