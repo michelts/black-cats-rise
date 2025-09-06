@@ -1,6 +1,14 @@
 import { formations } from "@/core/formations";
 import { turnTimeout } from "@/core/game";
-import type { Formation, Game, Kit, Match, Screen, Team } from "@/types";
+import type {
+  Formation,
+  Game,
+  Kit,
+  Match,
+  Position,
+  Screen,
+  Team,
+} from "@/types";
 
 let matchInterval: ReturnType<typeof setTimeout> | null = null;
 let currentTeam: number;
@@ -172,7 +180,7 @@ function renderTeam(game: Game, container: HTMLElement) {
       },
     ) +
     "</header>" +
-    "<table><tr><th>#<th>POS</th><th>NAME</th><th>GK</th><th>DF</th><th>MD</th><th>AT</th></tr>" +
+    "<table><tr><th></th><th>#<th>POS</th><th>NAME</th><th>GK</th><th>DF</th><th>MD</th><th>AT</th></tr>" +
     team.players
       .map(
         (player, index) =>
@@ -183,7 +191,7 @@ function renderTeam(game: Game, container: HTMLElement) {
           "><td>" +
           player.number +
           "<td>" +
-          (player.pos ?? "re") +
+          renderPosition(player.pos) +
           "</td><td>" +
           player.name +
           "</td><td>" +
@@ -357,4 +365,9 @@ function tShirt(kit: Kit) {
     kit.color2 +
     '"></i>'
   );
+}
+
+function renderPosition(position?: Position) {
+  const value = position ?? "sub";
+  return '<b class="pos ' + value + '">' + value + "</b>";
 }
