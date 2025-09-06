@@ -187,7 +187,7 @@ function renderTeam(game: Game, container: HTMLElement) {
           "<tr title='Drag to swap positions' data-idx='" +
           index +
           "' draggable=true class=" +
-          (player.pos ?? "re") +
+          (player.pos ?? "sub") +
           "><td>⠿</td><td>" +
           player.number +
           "<td>" +
@@ -369,5 +369,5 @@ function tShirt(kit: Kit) {
 
 function renderPosition(position?: Position) {
   const value = position ?? "sub";
-  return '<b class="pos ' + value + '">' + value + "</b>";
+  return '<b class="pos">' + value + "</b>";
 }

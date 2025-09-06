@@ -205,8 +205,8 @@ tr.md {
 tr.at {
   --td-bg: #{$attack-bg};
 }
-// reserve
-tr.re {
+// substitute
+tr.sub {
   font-style: italic;
 }
 tr.bold td {
@@ -287,3 +287,15 @@ label:has(+ select) {
   align-items: center;
   white-space: nowrap;
 }
+
+.pos {
+  display: inline-block;
+  padding: 0.25em 0;
+  width: 3em;
+  font-size: 90%;
+  border-radius: 1em;
+  text-transform: uppercase;
+  text-align: center;
+  backdrop-filter: brightness(200%);
+}
+
