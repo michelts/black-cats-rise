@@ -63,56 +63,80 @@ function renderMatches(game: Game, container: HTMLElement) {
     team.name,
   ]);
   container.innerHTML =
-    "<header>" +
-    "<h2>Full Fixtures</h2>" +
-    renderSelect(
-      "view-team",
-      "View Team",
-      choices,
-      "" + currentTeam,
-      (value) => {
-        currentTeam = Number(value);
-        renderMatches(game, container);
-      },
+    renderHeader("Next Match", "") +
+    renderNextMatch(game.matches[0]) +
+    renderHeader(
+      "Full Fixtures",
+      renderSelect(
+        "view-team",
+        "View Team",
+        choices,
+        "" + currentTeam,
+        (value) => {
+          currentTeam = Number(value);
+          renderMatches(game, container);
+        },
+      ),
     ) +
-    "</header>" +
+    renderFullFixtures(
+      game.matches.filter((match) => match.teamIds.includes(currentTeam)),
+      game.userTeam,
+    ) +
+    document
+      .querySelector<HTMLElement>("[data-round]")
+      ?.addEventListener("click", (event) => {
+        const round = (event.target as HTMLElement).dataset.round;
+        if (round) {
+          navigate(game, "live", round);
+        }
+      });
+}
+
+function renderNextMatch(match: Match) {
+  return (
+    "<div class=nm><div><div><b>" +
+    match.teams[0].name +
+    "</b><span>Home</span></div><span>" +
+    tShirt(match.teams[0].kit) +
+    "vs" +
+    tShirt(match.teams[1].kit) +
+    "</span><div><b>" +
+    match.teams[1].name +
+    "</b><span>Away</span></div></div><div><button class=btn>Begin Match</button></div></div>"
+  );
+}
+
+function renderFullFixtures(matches: Match[], userTeam: Team) {
+  return (
     "<table>" +
-    game.matches
-      .filter((match) => match.teamIds.includes(currentTeam))
+    matches
       .map((match) => {
         return (
-          "<tr><td class=r>" +
+          "<tr><td class='r fif'>" +
           renderTeamName(
             match.teams[0],
-            match.teams[0].id === game.userTeam.id ? "bold" : "",
+            match.teams[0].id === userTeam.id ? "bold" : "",
           ) +
           "</td><td class=cll>" +
           tShirt(match.teams[0].kit) +
-          "</td><td class=c>" +
+          "</td><td class='c cll'>" +
           match.date.toLocaleDateString(undefined, {
             month: "short",
             day: "numeric",
           }) +
           "</td><td class=cll>" +
           tShirt(match.teams[1].kit) +
-          "</td><td>" +
+          "</td><td class=fif>" +
           renderTeamName(
             match.teams[1],
-            match.teams[1].id === game.userTeam.id ? "bold" : "",
+            match.teams[1].id === userTeam.id ? "bold" : "",
           ) +
           "</td></tr>"
         );
       })
       .join("") +
-    "</table>";
-  document
-    .querySelector<HTMLElement>("[data-round]")
-    ?.addEventListener("click", (event) => {
-      const round = (event.target as HTMLElement).dataset.round;
-      if (round) {
-        navigate(game, "live", round);
-      }
-    });
+    "</table>"
+  );
 }
 
 function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
@@ -174,18 +198,19 @@ function renderTeam(game: Game, container: HTMLElement) {
     formation,
   ]);
   container.innerHTML =
-    "<header><h2>Your Squad</h2>" +
-    renderSelect(
-      "change-formation",
-      "Change Formation",
-      choices,
-      team.formation,
-      (value) => {
-        game.userTeam.setFormation(value as Formation);
-        renderTeam(game, container);
-      },
+    renderHeader(
+      "Your Squad",
+      renderSelect(
+        "change-formation",
+        "Change Formation",
+        choices,
+        team.formation,
+        (value) => {
+          game.userTeam.setFormation(value as Formation);
+          renderTeam(game, container);
+        },
+      ),
     ) +
-    "</header>" +
     "<table><tr><th></th><th>#<th>POS</th><th>NAME</th><th>GK</th><th>DF</th><th>MD</th><th>AT</th></tr>" +
     team.players
       .map(
@@ -244,7 +269,8 @@ function renderTeam(game: Game, container: HTMLElement) {
 
 function renderTable(game: Game, container: HTMLElement) {
   container.innerHTML =
-    "<header><h2>League Table</h2></header><table><tr><th>POS</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th></tr>" +
+    renderHeader("League Table", "") +
+    "<table><tr><th>POS</th><th>Club</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th></tr>" +
     game.table
       .map(
         (record, index) =>
@@ -376,4 +402,8 @@ function tShirt(kit: Kit) {
 function renderPosition(position?: Position) {
   const value = position ?? "sub";
   return '<b class="pos">' + value + "</b>";
+}
+
+function renderHeader(title: string, content: string) {
+  return "<header><h2>" + title + "</h2>" + content + "</header>";
 }

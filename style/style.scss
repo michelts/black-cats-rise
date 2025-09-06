@@ -16,6 +16,8 @@ $defense-bg: #003;
 $midfield-bg: #330;
 $attack-bg: #300;
 
+$button-background: #16a34a;
+
 html,
 body {
   height: 100%;
@@ -166,7 +168,7 @@ td {
   border-bottom: 1px solid hsla(from var(--td-bg) h s calc(l + 5));
   background: var(--td-bg);
 }
-th.r, td.r { // right align
+.r {
   text-align: right;
 }
 th.c, td.c { // center align
@@ -174,6 +176,10 @@ th.c, td.c { // center align
 }
 th.cll, td.cll { // collapsed
   width: 1%;
+  white-space: nowrap;
+}
+td.fif { // 50%
+  width: 50%;
 }
 tr:last-child td {
   border-bottom: 0;
@@ -299,3 +305,53 @@ label:has(+ select) {
   backdrop-filter: brightness(200%);
 }
 
+// next match
+.nm {
+  background: $table-cell-bg;
+  border-radius: 1rem;
+  align-items: center;
+  padding: 1rem;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.nm, .nm > div div, .nm > div span {
+  display: flex;
+  flex-direction: column;
+}
+.nm > div:first-child {
+  display: grid;
+  grid-template-columns: 1fr min-content 1fr;
+  white-space: nowrap;
+  gap: 1rem;
+  align-items: center;
+
+  div:first-child {
+    align-items: flex-end;
+  }
+  span {
+    flex-direction: row;
+  }
+
+  span {
+    gap: 1rem;
+    align-items: center;
+  }
+
+  i {
+    transform: scale(1.5);
+    margin: 1rem 0;
+  }
+
+  b {
+    color: #fff;
+  }
+}
+.btn {
+  background: red;
+  border: 0;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: $button-background;
+}
