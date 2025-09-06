@@ -188,7 +188,7 @@ function renderTeam(game: Game, container: HTMLElement) {
           index +
           "' draggable=true class=" +
           (player.pos ?? "re") +
-          "><td>" +
+          "><td>⠿</td><td>" +
           player.number +
           "<td>" +
           renderPosition(player.pos) +
