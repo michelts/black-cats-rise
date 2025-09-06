@@ -62,9 +62,14 @@ function renderMatches(game: Game, container: HTMLElement) {
     "" + team.id,
     team.name,
   ]);
+  const matches = game.matches.filter((match) =>
+    match.teamIds.includes(currentTeam),
+  );
+  const currentMatch = matches.find((match) => match.isCurrent);
   container.innerHTML =
-    renderHeader("Next Match", "") +
-    renderNextMatch(game.matches[0]) +
+    (currentMatch
+      ? renderHeader("Next Match", "") + renderNextMatch(currentMatch)
+      : "") +
     renderHeader(
       "Full Fixtures",
       renderSelect(
@@ -78,10 +83,7 @@ function renderMatches(game: Game, container: HTMLElement) {
         },
       ),
     ) +
-    renderFullFixtures(
-      game.matches.filter((match) => match.teamIds.includes(currentTeam)),
-      game.userTeam,
-    );
+    renderFullFixtures(matches, game.userTeam);
   document
     .querySelector<HTMLElement>("[data-round]")
     ?.addEventListener("click", (event) => {
@@ -125,10 +127,12 @@ function renderFullFixtures(matches: Match[], userTeam: Team) {
           "</td><td class=cll>" +
           tShirt(match.teams[0].kit) +
           "</td><td class='c cll'>" +
-          match.date.toLocaleDateString(undefined, {
-            month: "short",
-            day: "numeric",
-          }) +
+          (match.isPending
+            ? match.date.toLocaleDateString(undefined, {
+                month: "short",
+                day: "numeric",
+              })
+            : "<b>" + match.goals.join("x") + "</b>") +
           "</td><td class=cll>" +
           tShirt(match.teams[1].kit) +
           "</td><td class=fif>" +
