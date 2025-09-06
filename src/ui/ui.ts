@@ -65,10 +65,16 @@ function renderMatches(game: Game, container: HTMLElement) {
   container.innerHTML =
     "<header>" +
     "<h2>Full Fixtures</h2>" +
-    makeSelect("view-team", "View Team", choices, "" + currentTeam, (value) => {
-      currentTeam = Number(value);
-      renderMatches(game, container);
-    }) +
+    renderSelect(
+      "view-team",
+      "View Team",
+      choices,
+      "" + currentTeam,
+      (value) => {
+        currentTeam = Number(value);
+        renderMatches(game, container);
+      },
+    ) +
     "</header>" +
     "<table>" +
     game.matches
@@ -169,7 +175,7 @@ function renderTeam(game: Game, container: HTMLElement) {
   ]);
   container.innerHTML =
     "<header><h2>Your Squad</h2>" +
-    makeSelect(
+    renderSelect(
       "change-formation",
       "Change Formation",
       choices,
@@ -291,7 +297,7 @@ function toggleScreen(screen: Screen) {
   return null;
 }
 
-function makeSelect(
+function renderSelect(
   id: string,
   label: string,
   options: Array<[string, string]>,
