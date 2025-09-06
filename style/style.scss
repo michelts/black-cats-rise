@@ -136,7 +136,7 @@ main {
   display: block;
 }
 
-.intro.active ~ main {
+.intro.active ~ main, .hide {
   display: none;
 }
 
@@ -346,6 +346,7 @@ label:has(+ select) {
     color: #fff;
   }
 }
+
 .btn {
   background: red;
   border: 0;
@@ -354,4 +355,42 @@ label:has(+ select) {
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
   background: $button-background;
+}
+
+// live game
+.lg {
+  display: grid;
+  grid-template-columns: 1fr min-content min-content min-content 1fr;
+  gap: 1rem;
+  align-items: center;
+  background: $menu-background;
+  padding: 0.5rem 0;
+  border-radius: 0.5rem;
+
+  div:first-child {
+    text-align: right;
+  }
+}
+
+// score wrapper
+.score-w {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 2.5rem;
+
+  strong {
+    font-size: 1.25rem;
+    line-height: 1;
+    white-space: nowrap;
+    padding: 0 0.25rem;
+  }
+
+  span {
+    font-size: 0.8rem;
+    line-height: 1;
+    color: $title-color;
+  }
 }

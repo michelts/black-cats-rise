@@ -154,14 +154,32 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
     return;
   }
   container.innerHTML =
-    "<button data-start" +
+    '<div class="lg">' +
+    "<div class=bold>" +
+    renderTeamName(match.teams[0]) +
+    "</div>" +
+    tShirt(match.teams[0].kit) +
+    "<div class=score-w>" +
+    "<button class=btn id=start" +
     (!match.isPending ? " disabled" : "") +
     ">Start</button>" +
-    "<div>Possession: <strong id=ball>-</strong></div><div>Time: <strong id=matchTime>-</strong><div>Score: <strong id=score>-</strong></div>";
-  const start = document.querySelector("[data-start]");
+    "<strong id=score class=hide></strong>" +
+    "<span id=matchTime class=hide></span>" +
+    "</div>" +
+    tShirt(match.teams[1].kit) +
+    "<div class=bold>" +
+    renderTeamName(match.teams[1]) +
+    "</div>" +
+    "</div>" +
+    "<div>Possession: <strong id=ball>-</strong></div>";
+  const start = getById("start");
+  const score = getById("score");
+  const time = getById("matchTime");
 
   const begin = (match: Match) => {
-    start?.setAttribute("disabled", "");
+    start.classList.add("hide");
+    score.classList.remove("hide");
+    time.classList.remove("hide");
     matchInterval = setInterval(() => {
       if (!match.isLive) {
         if (matchInterval) {
@@ -178,7 +196,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
   };
 
   if (match.isPending) {
-    start!.addEventListener("click", () => {
+    start.addEventListener("click", () => {
       match = match!.advance();
       updateLiveGame(match);
       begin(match);
