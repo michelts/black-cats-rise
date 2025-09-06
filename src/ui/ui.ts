@@ -160,9 +160,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
     "</div>" +
     tShirt(match.teams[0].kit) +
     "<div class=score-w>" +
-    "<button class=btn id=start" +
-    (!match.isPending ? " disabled" : "") +
-    ">Start</button>" +
+    "<button id=start class='btn hide'>Start</button>" +
     "<strong id=score class=hide></strong>" +
     "<span id=matchTime class=hide></span>" +
     "</div>" +
@@ -175,6 +173,12 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
   const start = getById("start");
   const score = getById("score");
   const time = getById("matchTime");
+  if (!match.isPending) {
+    score.classList.remove("hide");
+    time.classList.remove("hide");
+  } else {
+    start.classList.remove("hide");
+  }
 
   const begin = (match: Match) => {
     start.classList.add("hide");
