@@ -259,7 +259,7 @@ function renderLiveGameFormation(
   return (
     "<div class='lgf " +
     (!isHome ? "rev" : "") +
-    "'><div>" +
+    "'><b>Defense</b><div>" +
     formation
       .map((count) => {
         const players = allPlayers.splice(0, count);
@@ -287,7 +287,7 @@ function renderLiveGameFormation(
         );
       })
       .join("") +
-    "</div></div>"
+    "</div><b>Attack</b></div>"
   );
 }
 

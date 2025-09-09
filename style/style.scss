@@ -418,14 +418,18 @@ label:has(+ select) {
   background: $field-bg;
   padding: 1rem;
   aspect-ratio: 3 / 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-  &.rev > div {
+  &.rev, &.rev > div {
     flex-direction: column-reverse;
   }
 
   & > div {
     border: 1px solid $field-line-color;
     height: 100%;
+    padding: 1rem;
     position: relative;
     display: flex;
     flex-direction: column;
