@@ -153,12 +153,11 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
   if (!match) {
     return;
   }
-  const field = "<div class=lgf></div>";
   const sidebar = "<div class=lgs></div>";
   container.innerHTML =
     "<div class=lg>" +
     renderLiveGameHeader(...match.teams) +
-    field +
+    renderLiveGameFormation(...match.teams) +
     renderLiveGameProgress(...match.teams) +
     sidebar +
     "</div>";
@@ -222,6 +221,16 @@ function renderLiveGameHeader(home: Team, away: Team) {
     renderTeamName(away) +
     "</div>" +
     "</div>"
+  );
+}
+
+function renderLiveGameFormation(home: Team, _away: Team) {
+  const team = home;
+  const formation = team.formation.split("-").map(Number);
+  return (
+    "<div class=lgf><div>" +
+    formation.map((players) => players).join("") +
+    "</div></div>"
   );
 }
 
