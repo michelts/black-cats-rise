@@ -108,7 +108,7 @@ function renderNextMatch(match: Match) {
     match.round +
     ">" +
     (match.isPending ? "Begin" : "Continue") +
-    "Match" +
+    " Match" +
     "</button></div></div>"
   );
 }
@@ -153,23 +153,15 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
   if (!match) {
     return;
   }
+  const field = "<div class=lgf></div>";
+  const sidebar = "<div class=lgs></div>";
   container.innerHTML =
-    '<div class="lg">' +
-    "<div class=bold>" +
-    renderTeamName(match.teams[0]) +
-    "</div>" +
-    tShirt(match.teams[0].kit) +
-    "<div class=score-w>" +
-    "<button id=start class='btn hide'>Start</button>" +
-    "<strong id=score class=hide></strong>" +
-    "<span id=matchTime class=hide></span>" +
-    "</div>" +
-    tShirt(match.teams[1].kit) +
-    "<div class=bold>" +
-    renderTeamName(match.teams[1]) +
-    "</div>" +
-    "</div>" +
-    "<div>Possession: <strong id=ball>-</strong></div>";
+    "<div class=lg>" +
+    renderLiveGameHeader(...match.teams) +
+    field +
+    renderLiveGameProgress(...match.teams) +
+    sidebar +
+    "</div>";
   const start = getById("start");
   const score = getById("score");
   const time = getById("matchTime");
@@ -213,9 +205,42 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
   }
 }
 
+function renderLiveGameHeader(home: Team, away: Team) {
+  return (
+    '<div class="lgh">' +
+    "<div class=bold>" +
+    renderTeamName(home) +
+    "</div>" +
+    tShirt(home.kit) +
+    "<div class=score-w>" +
+    "<button id=start class='btn hide'>Start</button>" +
+    "<strong id=score class=hide></strong>" +
+    "<span id=matchTime class=hide></span>" +
+    "</div>" +
+    tShirt(away.kit) +
+    "<div class=bold>" +
+    renderTeamName(away) +
+    "</div>" +
+    "</div>"
+  );
+}
+
+function renderLiveGameProgress(home: Team, away: Team) {
+  const color1 = home.kit.color1;
+  const color2 =
+    away.kit.color1 !== home.kit.color1 ? away.kit.color1 : away.kit.color2;
+  return (
+    "<div class=lgp style='--c1: " +
+    color1 +
+    "; --c2: " +
+    color2 +
+    "'><div id=ball><span>⚽</span></div></div>"
+  );
+}
+
 function updateLiveGame(match: Match) {
-  const ball = document.querySelector("#ball");
-  ball!.innerHTML = String(match.turns[0].ballPosition);
+  const ball = getById("ball");
+  ball.style.setProperty("--pct", match.turns[0].ballPosition.toFixed(0) + "%");
   const matchTime = document.querySelector("#matchTime");
   matchTime!.innerHTML = match.turns[0].time + "min";
   const score = document.querySelector("#score");
