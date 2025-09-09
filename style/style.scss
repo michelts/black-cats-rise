@@ -382,8 +382,35 @@ label:has(+ select) {
   border-radius: 0.5rem;
   grid-column: span 3;
 
-  div:first-child {
+  // team
+  .t {
+    text-align: left;
+    color: #fff;
+    background: none;
+    border: 0;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .t:first-child {
     text-align: right;
+  }
+  .t:hover span {
+    text-decoration: underline;
+  }
+  .t span {
+    position: relative;
+  }
+  .t.a span:after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent; /* Transparent left border */
+    border-right: 5px solid transparent; /* Transparent right border */
+    border-bottom: 10px solid #fff; /* Visible bottom border forms the base */
   }
 }
 // live game formation
@@ -392,10 +419,18 @@ label:has(+ select) {
   padding: 1rem;
   aspect-ratio: 3 / 4;
 
-  div {
+  &.rev > div {
+    flex-direction: column-reverse;
+  }
+
+  & > div {
     border: 1px solid $field-line-color;
     height: 100%;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: space-around;
 
     &:before {
       content: '';
@@ -419,6 +454,52 @@ label:has(+ select) {
     }
   }
 }
+// formation
+.fmt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-around;
+
+  button {
+    position: relative;
+    z-index: 2;
+    width: 4rem;
+    height: 4rem;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    border: 0;
+    box-shadow: 2px 2px 5px rgba(#000, 0.5);
+    cursor: pointer;
+    background: hsl(from var(--bg) h s calc(l + 15));
+
+    &.df {
+      --bg: #{$defense-bg};
+    }
+
+    &.md {
+      --bg: #{$midfield-bg};
+    }
+
+    &.at {
+      --bg: #{$attack-bg};
+    }
+
+    // disabled
+    &.ds {
+      --bg: #222;
+    }
+  }
+
+  span {
+    flex-basis: 100%;
+    height: 0;
+  }
+}
+
 // live game progress
 .lgp {
   min-height: 300px;
@@ -430,20 +511,20 @@ label:has(+ select) {
   border-radius: 0.25rem;
   outline: 1px solid $progress-bar-border;
 
-  div {
+  > div {
     position: relative;
     font-size: 1.25rem;
     transition: height 0.25s ease-in-out;
     background: var(--c1);
     height: var(--pct);
     border-radius: 0.25rem;
-  }
 
-  span {
-    position: absolute;
-    bottom: -0.75rem;
-    left: -0.375rem;
-    color: #fff;;
+    span {
+      position: absolute;
+      bottom: -0.75rem;
+      left: -0.375rem;
+      color: #fff;;
+    }
   }
 }
 // live game sidebar

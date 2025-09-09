@@ -12,6 +12,7 @@ import type {
 
 let matchInterval: ReturnType<typeof setTimeout> | null = null;
 let currentTeam: number;
+let currentLiveTeamIndex: 0 | 1 | undefined;
 
 export function makeUserInterface(game: Game) {
   // reset state
@@ -153,11 +154,22 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
   if (!match) {
     return;
   }
+
+  if (currentLiveTeamIndex === undefined) {
+    currentLiveTeamIndex = match.teams.findIndex(
+      (team) => team.id === game.userTeam.id,
+    ) as 0 | 1;
+  }
   const sidebar = "<div class=lgs></div>";
+  const teamForFormation = match.teams[currentLiveTeamIndex];
   container.innerHTML =
     "<div class=lg>" +
     renderLiveGameHeader(...match.teams) +
-    renderLiveGameFormation(...match.teams) +
+    renderLiveGameFormation(
+      teamForFormation,
+      teamForFormation.id === match.teams[0].id,
+      teamForFormation.id !== game.userTeam.id,
+    ) +
     renderLiveGameProgress(...match.teams) +
     sidebar +
     "</div>";
@@ -186,6 +198,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       updateLiveGame(match);
       if (match.isDone) {
         renderLiveGame(game, container, round);
+        currentLiveTeamIndex = undefined;
       }
     }, turnTimeout);
   };
@@ -202,14 +215,24 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       begin(match); // continue game
     }
   }
+
+  // set current-live-game
+  document.querySelectorAll<HTMLElement>("[data-setclt]").forEach((element) => {
+    element.addEventListener("click", () => {
+      currentLiveTeamIndex = Number(element.dataset.setclt) as 0 | 1;
+      renderLiveGame(game, container, round);
+    });
+  });
 }
 
 function renderLiveGameHeader(home: Team, away: Team) {
   return (
     '<div class="lgh">' +
-    "<div class=bold>" +
+    "<button class='t " +
+    (currentLiveTeamIndex === 0 ? "a" : "") +
+    "' data-setclt=0>" +
     renderTeamName(home) +
-    "</div>" +
+    "</button>" +
     tShirt(home.kit) +
     "<div class=score-w>" +
     "<button id=start class='btn hide'>Start</button>" +
@@ -217,19 +240,53 @@ function renderLiveGameHeader(home: Team, away: Team) {
     "<span id=matchTime class=hide></span>" +
     "</div>" +
     tShirt(away.kit) +
-    "<div class=bold>" +
+    "<button class='t " +
+    (currentLiveTeamIndex === 1 ? "a" : "") +
+    "' data-setclt=1>" +
     renderTeamName(away) +
-    "</div>" +
+    "</button>" +
     "</div>"
   );
 }
 
-function renderLiveGameFormation(home: Team, _away: Team) {
-  const team = home;
+function renderLiveGameFormation(
+  team: Team,
+  isHome: boolean,
+  disabled: boolean,
+) {
+  const allPlayers = team.players.slice(1); // without gk
   const formation = team.formation.split("-").map(Number);
   return (
-    "<div class=lgf><div>" +
-    formation.map((players) => players).join("") +
+    "<div class='lgf " +
+    (!isHome ? "rev" : "") +
+    "'><div>" +
+    formation
+      .map((count) => {
+        const players = allPlayers.splice(0, count);
+        return (
+          "<div class=fmt>" +
+          players
+            .map((player, index) => {
+              let prefix = "";
+              if (players.length > 4 && players.length < 6 && index === 3) {
+                prefix = "<span></span>";
+              }
+              if (players.length === 6 && index === 3) {
+                prefix = "<span></span>";
+              }
+              const button =
+                "<button class=" +
+                (!disabled ? player.pos : "ds") +
+                ">" +
+                player.number +
+                "</button>";
+              return prefix + button;
+            })
+            .join("") +
+          "</div>"
+        );
+      })
+      .join("") +
     "</div></div>"
   );
 }
