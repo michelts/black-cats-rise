@@ -163,6 +163,12 @@ export class Game implements GameType {
         time: Math.round(match.turns.length / 4),
       });
       match.goals = [match.goals[0] + goals[0], match.goals[1] + goals[1]];
+      for (const playerNumber in match.boost) {
+        const value = match.boost[playerNumber];
+        if (value > 0) {
+          match.boost[playerNumber] = value - 1;
+        }
+      }
 
       if (match.id === givenMatch.id) {
         updatedStoredMatch = match;
@@ -179,7 +185,7 @@ export class Game implements GameType {
   boostPlayerInMatch(match: Pick<Match, "id">, playerNumber: Player["number"]) {
     const storedMatches = this.storage.matches as StoredMatch[];
     const index = storedMatches.findIndex((m) => m.id === match.id);
-    storedMatches[index].boost[playerNumber] = 10;
+    storedMatches[index].boost[playerNumber] = 12;
     this.storage.matches = storedMatches;
   }
 

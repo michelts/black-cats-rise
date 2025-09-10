@@ -323,7 +323,7 @@ function renderPlayerInGame(player: Player, disabled: boolean, boost: number) {
     " " +
     attrs +
     ">" +
-    (boost ? "⏳" : player.number) +
+    (boost ? `⏳ ${boost}` : player.number) +
     "</button>"
   );
 }
