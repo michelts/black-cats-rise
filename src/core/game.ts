@@ -24,7 +24,7 @@ import { makeTeams } from "./teams";
 export const time = 90; // production value: 90
 const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
-export const turnTimeout = 250; // increase or decrease for controlling game speed
+export const turnTimeout = 12; // increase or decrease for controlling game speed
 
 export class Game implements GameType {
   storage: Record<string, unknown>;
@@ -224,7 +224,7 @@ function runMatchTurn(
     ),
   );
   const threshold = Math.abs(homeScore - awayScore);
-  let increment = threshold ** 0.5 - 2; // 10 -> 1, 20 -> 2, 30 -> 3, 40 -> 4
+  let increment = Math.max(threshold ** 0.4 - 2, 0); // 10 -> 1, 20 -> 2, 30 -> 3, 40 -> 4
   if (awayScore > homeScore) {
     increment *= -1;
   }
@@ -232,9 +232,8 @@ function runMatchTurn(
     Math.max(currentBallPosition + increment, 0),
     100,
   );
-
   if (debug) {
-    console.log({ homeScore, awayScore });
+    console.log({ threshold, increment });
   }
 
   const goals: TurnGoals = [0, 0];
