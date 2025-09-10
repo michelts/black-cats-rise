@@ -113,15 +113,15 @@ nav button {
   box-sizing: border-box;
   padding: 15vh 0;
   flex-direction: column;
-  justify-content: space-between; /* Pushes title to top, nav to bottom */
+  justify-content: space-around; /* Pushes title to top, nav to bottom */
   align-items: center;
 }
-.intro.active {
+.screen.intro.active {
   display: flex;
 }
 .intro nav {
   flex-direction: column;
-  font-size: 3.5vmin;
+  font-size: 1.5rem;
   gap: 1em;
 }
 .intro nav button:hover {
@@ -368,7 +368,7 @@ label:has(+ select) {
 // live game
 .lg {
   display: grid;
-  grid-template-columns: 1fr 10px 100px;
+  grid-template-columns: 1fr 10px 1fr;
   gap: 1rem;
 }
 // live game header
@@ -434,7 +434,7 @@ label:has(+ select) {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    justify-content: space-around;
+    justify-content: space-between;
 
     &:before {
       content: '';
@@ -462,15 +462,15 @@ label:has(+ select) {
 .fmt {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 0.5rem;
   align-items: center;
   justify-content: space-around;
 
   button {
     position: relative;
     z-index: 2;
-    width: 4rem;
-    height: 4rem;
+    width: 3rem;
+    height: 3rem;
     color: #fff;
     font-weight: bold;
     font-size: 1.5rem;
