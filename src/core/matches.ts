@@ -16,7 +16,7 @@ export function generateEmptyMatches(numTeams: EvenNumber): StoredMatch[] {
         pair.reverse();
       }
       matches.push({
-        id: crypto.randomUUID(),
+        id: getId(),
         teamIds: pair as [number, number],
         turns: [],
         goals: [0, 0] satisfies [number, number],
@@ -35,4 +35,10 @@ export function generateEmptyMatches(numTeams: EvenNumber): StoredMatch[] {
   return rounds.flatMap((matches, index) =>
     matches.map((match) => ({ ...match, round: index })),
   );
+}
+
+let id = 0;
+
+function getId() {
+  return ++id + "";
 }
