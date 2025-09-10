@@ -20,6 +20,7 @@ export function generateEmptyMatches(numTeams: EvenNumber): StoredMatch[] {
         teamIds: pair as [number, number],
         turns: [],
         goals: [0, 0] satisfies [number, number],
+        boost: {},
       });
     }
 

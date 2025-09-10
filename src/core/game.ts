@@ -6,6 +6,7 @@ import type {
   LiveMatch,
   Match,
   PendingMatch,
+  Player,
   Sector,
   StoredMatch,
   StoredTeam,
@@ -104,6 +105,9 @@ export class Game implements GameType {
       advance() {
         return game.advanceMatch(this, teamsLookup);
       },
+      boostPlayer(playerNumber: Player["number"]) {
+        game.boostPlayerInMatch(this, playerNumber);
+      },
     };
     if (match.turns.length === maxTurns) {
       return {
@@ -170,6 +174,13 @@ export class Game implements GameType {
       this.storage.currentDate = this.getDateFromInitial(givenMatch.round + 1);
     }
     return updatedMatch;
+  }
+
+  boostPlayerInMatch(match: Pick<Match, "id">, playerNumber: Player["number"]) {
+    const storedMatches = this.storage.matches as StoredMatch[];
+    const index = storedMatches.findIndex((m) => m.id === match.id);
+    storedMatches[index].boost[playerNumber] = 10;
+    this.storage.matches = storedMatches;
   }
 
   setTeamFormation(teamId: Team["id"], formation: Formation) {

@@ -96,14 +96,16 @@ type BaseMatch = StoredMatch & {
   date: Date;
   isCurrent: boolean;
   advance: () => Match;
+  boostPlayer: (playerNumber: Player["number"]) => void;
 };
 
 export interface StoredMatch {
   id: string;
   round: number;
-  teamIds: [Team["id"], Team["id"]];
+  teamIds: [StoredTeam["id"], StoredTeam["id"]];
   turns: StoredTurn[];
   goals: [number, number];
+  boost: Record<StoredPlayer["number"], number>;
 }
 
 export interface StoredTurn {

@@ -167,9 +167,14 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
     "<div class=lg>" +
     renderLiveGameHeader(...match.teams) +
     renderLiveGameFormation(
+      match,
       teamForFormation,
       teamForFormation.id === match.teams[0].id,
       teamForFormation.id !== game.userTeam.id,
+      (player) => {
+        match?.boostPlayer(player);
+        renderLiveGame(game, container, round);
+      },
     ) +
     renderLiveGameProgress(...match.teams) +
     sidebar +
@@ -251,9 +256,11 @@ function renderLiveGameHeader(home: Team, away: Team) {
 }
 
 function renderLiveGameFormation(
+  match: Match,
   team: Team,
   isHome: boolean,
   disabled: boolean,
+  onClickPlayer: (player: Player["number"]) => void,
 ) {
   const allPlayers = team.players.slice(1); // without gk
   const formation = team.formation.split("-").map(Number);
@@ -275,7 +282,11 @@ function renderLiveGameFormation(
               if (players.length === 6 && index === 3) {
                 prefix = "<span></span>";
               }
-              const button = renderPlayerInGame(player, disabled, false);
+              const button = renderPlayerInGame(
+                player,
+                disabled,
+                match.boost[player.number],
+              );
               return prefix + button;
             })
             .join("") +
@@ -289,24 +300,17 @@ function renderLiveGameFormation(
       .querySelectorAll<HTMLElement>("[data-plr]:not(:disabled)")
       .forEach((element) => {
         element.addEventListener("click", () => {
-          const player = team.players.find(
-            (p) => "" + p.number === element.dataset.plr,
-          );
-          element.outerHTML = renderPlayerInGame(player!, disabled, true);
+          onClickPlayer(Number(element.dataset.plr));
         });
       });
   });
   return content;
 }
 
-function renderPlayerInGame(
-  player: Player,
-  disabled: boolean,
-  loading: boolean,
-) {
+function renderPlayerInGame(player: Player, disabled: boolean, boost: number) {
   let attrs = "class='" + player.pos;
-  if (loading) {
-    attrs += " ld";
+  if (boost) {
+    attrs += " ld"; // loading
   }
   if (!disabled) {
     attrs += "'";
@@ -319,7 +323,7 @@ function renderPlayerInGame(
     " " +
     attrs +
     ">" +
-    (loading ? "⏳" : player.number) +
+    (boost ? "⏳" : player.number) +
     "</button>"
   );
 }

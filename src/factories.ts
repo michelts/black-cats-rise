@@ -78,6 +78,7 @@ export const MatchFactory = BaseMatchFactory.define(({ sequence, params }) => {
     teamIds: teamIds ?? [0, 1],
     turns: turns ?? [],
     goals: [0, 0] satisfies [number, number],
+    boost: {},
   };
 });
 
