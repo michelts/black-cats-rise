@@ -173,7 +173,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       teamForFormation.id !== game.userTeam.id,
       (player) => {
         match?.boostPlayer(player);
-        renderLiveGame(game, container, round);
+        reRenderLiveGame(game, container, round);
       },
     ) +
     renderLiveGameProgress(...match.teams) +
@@ -203,7 +203,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       match = match.advance();
       updateLiveGame(match);
       if (match.isDone) {
-        renderLiveGame(game, container, round);
+        reRenderLiveGame(game, container, round);
         currentLiveTeamIndex = undefined;
       }
     }, turnTimeout);
@@ -226,9 +226,16 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
   document.querySelectorAll<HTMLElement>("[data-setclt]").forEach((element) => {
     element.addEventListener("click", () => {
       currentLiveTeamIndex = Number(element.dataset.setclt) as 0 | 1;
-      renderLiveGame(game, container, round);
+      reRenderLiveGame(game, container, round);
     });
   });
+}
+
+function reRenderLiveGame(game: Game, container: HTMLElement, round: unknown) {
+  if (matchInterval) {
+    clearInterval(matchInterval);
+  }
+  renderLiveGame(game, container, round);
 }
 
 function renderLiveGameHeader(home: Team, away: Team) {
