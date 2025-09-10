@@ -5,6 +5,7 @@ import type {
   Game,
   Kit,
   Match,
+  Player,
   Position,
   Screen,
   Team,
@@ -256,7 +257,7 @@ function renderLiveGameFormation(
 ) {
   const allPlayers = team.players.slice(1); // without gk
   const formation = team.formation.split("-").map(Number);
-  return (
+  const content =
     "<div class='lgf " +
     (!isHome ? "rev" : "") +
     "'><b>Defense</b><div>" +
@@ -274,12 +275,7 @@ function renderLiveGameFormation(
               if (players.length === 6 && index === 3) {
                 prefix = "<span></span>";
               }
-              const button =
-                "<button class=" +
-                (!disabled ? player.pos : "ds") +
-                ">" +
-                player.number +
-                "</button>";
+              const button = renderPlayerInGame(player, disabled, false);
               return prefix + button;
             })
             .join("") +
@@ -287,7 +283,44 @@ function renderLiveGameFormation(
         );
       })
       .join("") +
-    "</div><b>Attack</b></div>"
+    "</div><b>Attack</b></div>";
+  setTimeout(() => {
+    document
+      .querySelectorAll<HTMLElement>("[data-plr]:not(:disabled)")
+      .forEach((element) => {
+        element.addEventListener("click", () => {
+          const player = team.players.find(
+            (p) => "" + p.number === element.dataset.plr,
+          );
+          element.outerHTML = renderPlayerInGame(player!, disabled, true);
+        });
+      });
+  });
+  return content;
+}
+
+function renderPlayerInGame(
+  player: Player,
+  disabled: boolean,
+  loading: boolean,
+) {
+  let attrs = "class='" + player.pos;
+  if (loading) {
+    attrs += " ld";
+  }
+  if (!disabled) {
+    attrs += "'";
+  } else {
+    attrs += " ds' disabled";
+  }
+  return (
+    "<button data-plr=" +
+    player.number +
+    " " +
+    attrs +
+    ">" +
+    (loading ? "⏳" : player.number) +
+    "</button>"
   );
 }
 
