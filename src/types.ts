@@ -96,7 +96,7 @@ type BaseMatch = StoredMatch & {
   date: Date;
   isCurrent: boolean;
   advance: () => Match;
-  boostPlayer: (playerNumber: Player["number"]) => void;
+  boostPlayer: (playerNumber: Player["number"]) => number; // returns the boost itself
 };
 
 export interface StoredMatch {

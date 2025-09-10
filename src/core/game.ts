@@ -27,7 +27,7 @@ const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
 export const turnTimeout = 250; // increase or decrease for controlling game speed
 
-const boostTurns = 48;
+export const boostTurns = 12; // check turnsPerSecond
 
 export class Game implements GameType {
   storage: Record<string, unknown>;
@@ -108,7 +108,7 @@ export class Game implements GameType {
         return game.advanceMatch(this, teamsLookup);
       },
       boostPlayer(playerNumber: Player["number"]) {
-        game.boostPlayerInMatch(this, playerNumber);
+        return game.boostPlayerInMatch(this, playerNumber);
       },
     };
     if (match.turns.length === maxTurns) {
@@ -167,8 +167,13 @@ export class Game implements GameType {
       match.goals = [match.goals[0] + goals[0], match.goals[1] + goals[1]];
       for (const playerNumber in match.boost) {
         const value = match.boost[playerNumber];
+        if (match.id === givenMatch.id) {
+          console.log("current boost", value);
+        }
         if (value > 0) {
           match.boost[playerNumber] = value - 1;
+        } else {
+          delete match.boost[playerNumber];
         }
       }
 
@@ -187,8 +192,13 @@ export class Game implements GameType {
   boostPlayerInMatch(match: Pick<Match, "id">, playerNumber: Player["number"]) {
     const storedMatches = this.storage.matches as StoredMatch[];
     const index = storedMatches.findIndex((m) => m.id === match.id);
-    storedMatches[index].boost[playerNumber] = boostTurns;
+    const boost = storedMatches[index].boost;
+    if (boost[playerNumber] || Object.keys(boost).length > 2) {
+      return 0;
+    }
+    storedMatches[index].boost = { ...boost, [playerNumber]: boostTurns };
     this.storage.matches = storedMatches;
+    return boostTurns;
   }
 
   setTeamFormation(teamId: Team["id"], formation: Formation) {

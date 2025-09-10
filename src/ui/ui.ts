@@ -172,8 +172,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       teamForFormation.id === match.teams[0].id,
       teamForFormation.id !== game.userTeam.id,
       (player) => {
-        match?.boostPlayer(player);
-        reRenderLiveGame(game, container, round);
+        return match?.boostPlayer(player)!;
       },
     ) +
     renderLiveGameProgress(...match.teams) +
@@ -212,8 +211,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
   if (match.isPending) {
     start.addEventListener("click", () => {
       match = match!.advance();
-      updateLiveGame(match);
-      begin(match);
+      reRenderLiveGame(game, container, round);
     });
   } else {
     updateLiveGame(match);
@@ -267,7 +265,7 @@ function renderLiveGameFormation(
   team: Team,
   isHome: boolean,
   disabled: boolean,
-  onClickPlayer: (player: Player["number"]) => void,
+  onClickPlayer: (player: Player["number"]) => number,
 ) {
   const allPlayers = team.players.slice(1); // without gk
   const formation = team.formation.split("-").map(Number);
@@ -293,6 +291,7 @@ function renderLiveGameFormation(
                 player,
                 disabled,
                 match.boost[player.number],
+                match.isLive ? onClickPlayer : () => 0,
               );
               return prefix + button;
             })
@@ -302,19 +301,15 @@ function renderLiveGameFormation(
       })
       .join("") +
     "</div><b>Attack</b></div>";
-  setTimeout(() => {
-    document
-      .querySelectorAll<HTMLElement>("[data-plr]:not(:disabled)")
-      .forEach((element) => {
-        element.addEventListener("click", () => {
-          onClickPlayer(Number(element.dataset.plr));
-        });
-      });
-  });
   return content;
 }
 
-function renderPlayerInGame(player: Player, disabled: boolean, boost: number) {
+function renderPlayerInGame(
+  player: Player,
+  disabled: boolean,
+  boost: number,
+  onClickPlayer: (player: Player["number"]) => number,
+) {
   let attrs = "class='" + player.pos;
   if (boost) {
     attrs += " ld"; // loading
@@ -324,15 +319,49 @@ function renderPlayerInGame(player: Player, disabled: boolean, boost: number) {
   } else {
     attrs += " ds' disabled";
   }
-  return (
-    "<button data-plr=" +
+  const button =
+    "<button id='p" +
     player.number +
-    " " +
+    "' " +
     attrs +
     ">" +
-    (boost ? `⏳ ${boost}` : player.number) +
-    "</button>"
-  );
+    player.number +
+    "</button>";
+  if (!disabled) {
+    setTimeout(() => {
+      const element = getById("p" + player.number);
+      if (boost) {
+        console.log("Start", { boost });
+        startAnimation(boost);
+      }
+
+      element.addEventListener("click", () => {
+        const newBoost = onClickPlayer(player.number);
+        if (!newBoost) {
+          return;
+        }
+        startAnimation(newBoost);
+      });
+
+      function startAnimation(boost: number) {
+        const duration = boost * turnTimeout;
+        const zero = document.timeline.currentTime as number;
+        requestAnimationFrame(animate);
+        function animate(timestamp: number) {
+          const value = (timestamp - zero) / duration;
+          element.style.setProperty("--p", "" + value * 100);
+          if (value < 1) {
+            requestAnimationFrame((t) => animate(t));
+          } else {
+            element.style.setProperty("--p", "0");
+            console.log("Finish");
+          }
+        }
+      }
+    });
+  }
+
+  return button;
 }
 
 function renderLiveGameProgress(home: Team, away: Team) {

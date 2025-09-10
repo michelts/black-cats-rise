@@ -478,6 +478,7 @@ label:has(+ select) {
     border: 0;
     box-shadow: 2px 2px 5px rgba(#000, 0.5);
     background: hsl(from var(--bg) h s calc(l + 15));
+    --p: 0;
 
     &:not(:disabled):hover {
       cursor: pointer;
@@ -502,7 +503,7 @@ label:has(+ select) {
     }
 
     // loading
-    &.ld:after {
+    &:after {
       content: '';
       width: 100%;
       height: 100%;
@@ -511,8 +512,7 @@ label:has(+ select) {
       top: 0;
       left: 0;
       border-radius: 50%;
-      filter: blur(1px);
-      backdrop-filter: brightness(50%);
+      background: conic-gradient(rgba(#fff, 0.4) calc(var(--p) * 1%), transparent 0);
     }
   }
 
