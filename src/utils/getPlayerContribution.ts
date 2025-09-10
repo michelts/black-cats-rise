@@ -20,8 +20,13 @@ const contributions: Partial<
   },
 };
 
-export function getPlayerContribution(sector: Sector, player: Player) {
+export function getPlayerContribution(
+  sector: Sector,
+  player: Player,
+  hasBoost: number,
+) {
   const value =
     sector === -1 ? player.df : sector === 0 ? player.md : player.at;
-  return value * (contributions[sector]?.[player.pos ?? ""] ?? 0);
+  const boost = hasBoost ? 1.5 : 1; // boostContribution
+  return value * (contributions[sector]?.[player.pos ?? ""] ?? 0) * boost;
 }

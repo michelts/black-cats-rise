@@ -27,6 +27,8 @@ const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
 export const turnTimeout = 250; // increase or decrease for controlling game speed
 
+const boostTurns = 48;
+
 export class Game implements GameType {
   storage: Record<string, unknown>;
   userTeamId: number;
@@ -185,7 +187,7 @@ export class Game implements GameType {
   boostPlayerInMatch(match: Pick<Match, "id">, playerNumber: Player["number"]) {
     const storedMatches = this.storage.matches as StoredMatch[];
     const index = storedMatches.findIndex((m) => m.id === match.id);
-    storedMatches[index].boost[playerNumber] = 12;
+    storedMatches[index].boost[playerNumber] = boostTurns;
     this.storage.matches = storedMatches;
   }
 
@@ -233,11 +235,17 @@ function runMatchTurn(
   const currentBallPosition = match.turns[0]?.ballPosition ?? 50;
   const sector = getSector(currentBallPosition);
   const homeScore = sum(
-    homeTeam.players.map((player) => getPlayerContribution(sector, player)),
+    homeTeam.players.map((player) =>
+      getPlayerContribution(sector, player, match.boost[player.number]),
+    ),
   );
   const awayScore = sum(
     awayTeam.players.map((player) =>
-      getPlayerContribution((sector * -1) as Sector, player),
+      getPlayerContribution(
+        (sector * -1) as Sector,
+        player,
+        match.boost[player.number],
+      ),
     ),
   );
   const threshold = Math.abs(homeScore - awayScore);
@@ -250,7 +258,7 @@ function runMatchTurn(
     100,
   );
   if (debug) {
-    console.log({ threshold, increment });
+    //console.log({ threshold, increment });
   }
 
   const goals: TurnGoals = [0, 0];
