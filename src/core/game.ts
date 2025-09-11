@@ -157,7 +157,7 @@ export class Game implements GameType {
 
         // prepend new turn and update scored goals
         const ballPosition = match.turns[0]?.ballPosition ?? 50;
-        const [goals, newMomentum] = runMatchTurn(
+        const [goals, newMomentum, evt] = runMatchTurn(
           match,
           teamsLookup[match.teamIds[0]],
           teamsLookup[match.teamIds[1]],
@@ -172,7 +172,7 @@ export class Game implements GameType {
           momentum: newMomentum,
           time: Math.round(match.turns.length / turnsPerSecond),
           goals,
-          evt: "",
+          evt: evt,
         });
         match.goals = [match.goals[0] + goals[0], match.goals[1] + goals[1]];
         for (const playerNumber in match.boost) {
@@ -309,9 +309,11 @@ function runMatchTurn(
     maxMomentum,
   );
   if (momentum > 0 && oldMomentum < 0) {
+    console.log(homeTeam.name + " takes control");
     eventMessage = homeTeam.name + " takes control";
   }
   if (momentum < 0 && oldMomentum > 0) {
+    console.log(awayTeam.name + " takes control");
     eventMessage = awayTeam.name + " takes control";
   }
   if (debug) {
@@ -328,11 +330,13 @@ function runMatchTurn(
   if (ballPosition === 100) {
     goals[0] = 1;
     momentum = 0;
+    console.log("Goal for " + homeTeam.name);
     eventMessage = "Goal for " + homeTeam.name;
   }
   if (ballPosition === 0) {
     goals[1] = 1;
     momentum = 0;
+    console.log("Goal for " + awayTeam.name);
     eventMessage = "Goal for " + awayTeam.name;
   }
   return [goals, momentum, eventMessage];

@@ -8,6 +8,7 @@ import type {
   Player,
   Position,
   Screen,
+  StoredTurn,
   Team,
 } from "@/types";
 
@@ -175,7 +176,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       },
     ) +
     renderLiveGameProgress(...match.teams) +
-    renderLiveGameSidebar() +
+    renderLiveGameSidebar(match.turns) +
     "</div>";
   const start = getById("start");
   const score = getById("score");
@@ -381,7 +382,8 @@ function renderLiveGameProgress(home: Team, away: Team) {
   );
 }
 
-function renderLiveGameSidebar() {
+function renderLiveGameSidebar(turns: StoredTurn[]) {
+  /*
   const messages = [
     // t: time, m: message, h: isHome, g: isGoal
     { t: 90, m: "The final whistle blows. Full time!" },
@@ -392,33 +394,43 @@ function renderLiveGameSidebar() {
     { t: 25, m: "Great tackle from Other" },
     { t: 0, m: "The match kicks off", h: 0 },
   ];
+  */
   const sidebar =
-    "<div class=lgs><div class=c><b>Match Events</b></div><div class=ms>" +
-    messages
-      .map(
-        (obj) =>
-          "<div class=tm>" +
-          obj.t +
-          "'</div> " +
-          "<div class='" +
-          (obj.h ? "hm" : "") +
-          "'>" +
-          obj.m +
-          "</div>",
-      )
+    "<div class=lgs><div class=c><b>Match Events</b></div><div id=lgs-ms>" +
+    turns
+      .filter((turn) => turn.evt)
+      .map(renderTurnMessage)
       .join("") +
     "</div></div>";
   return sidebar;
+}
+
+function renderTurnMessage(turn: StoredTurn) {
+  const isGoal = turn.goals.some((goal) => goal);
+  return (
+    "<div><div class=tm>" +
+    turn.time +
+    "'</div> " +
+    "<div class='" +
+    (isGoal ? "hm" : "") +
+    "'>" +
+    turn.evt +
+    "</div></div>"
+  );
 }
 
 function updateLiveGame(match: Match) {
   const ball = getById("ball");
   const turn = match.turns[0]!; // it could be null for other teams, but not for the player's team
   ball.style.setProperty("--pct", turn.ballPosition.toFixed(0) + "%");
-  const matchTime = document.querySelector("#matchTime");
-  matchTime!.innerHTML = turn.time + "min";
-  const score = document.querySelector("#score");
-  score!.innerHTML = match.goals.join("x");
+  const matchTime = getById("matchTime");
+  matchTime.innerHTML = turn.time + "min";
+  const score = getById("score");
+  score.innerHTML = match.goals.join("x");
+  if (turn.evt) {
+    const sidebar = getById("lgs-ms");
+    sidebar.innerHTML += renderTurnMessage(turn);
+  }
 }
 
 function renderTeam(game: Game, container: HTMLElement) {

@@ -565,14 +565,20 @@ label:has(+ select) {
   overflow: auto;
   contain: size;
 
-  // messages
-  .ms {
+  // live-game-sidebar messages
+  #lgs-ms {
     padding: 1rem 0;
     margin: 0;
-    display: grid;
-    grid-template-columns: min-content 1fr;
-    gap: 0.25rem 0.5rem;
-    align-items: first baseline;
+    gap: 0.25rem 0;
+    display: flex;
+    flex-direction: column-reverse;
+
+    & > div {
+      display: grid;
+      grid-template-columns: min-content 1fr;
+      gap: 0 0.5rem;
+      align-items: first baseline;
+    }
   }
   // time
   .tm {
