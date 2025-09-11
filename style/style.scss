@@ -416,11 +416,15 @@ label:has(+ select) {
 // live game formation
 .lgf {
   background: $field-bg;
-  padding: 1rem;
+  padding: 0 1rem;
   aspect-ratio: 3 / 4;
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  b {
+    padding: 0.5rem;
+  }
 
   &.rev, &.rev > div {
     flex-direction: column-reverse;
