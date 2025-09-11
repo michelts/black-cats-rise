@@ -27,7 +27,7 @@ const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
 export const turnTimeout = 250; // increase or decrease for controlling game speed
 
-export const boostTurns = 12; // check turnsPerSecond
+export const boostTurns = 36; // check turnsPerSecond
 
 export class Game implements GameType {
   storage: Record<string, unknown>;
@@ -168,7 +168,7 @@ export class Game implements GameType {
       for (const playerNumber in match.boost) {
         const value = match.boost[playerNumber];
         if (match.id === givenMatch.id) {
-          console.log("current boost", value);
+          // console.log("current boost", value);
         }
         if (value > 0) {
           match.boost[playerNumber] = value - 1;
@@ -194,6 +194,7 @@ export class Game implements GameType {
     const index = storedMatches.findIndex((m) => m.id === match.id);
     const boost = storedMatches[index].boost;
     if (boost[playerNumber] || Object.keys(boost).length > 2) {
+      console.log("REJECT", boost[playerNumber], Object.keys(boost).length);
       return 0;
     }
     storedMatches[index].boost = { ...boost, [playerNumber]: boostTurns };

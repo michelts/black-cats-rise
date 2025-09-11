@@ -1,5 +1,5 @@
 import { formations } from "@/core/formations";
-import { turnTimeout } from "@/core/game";
+import { boostTurns, turnTimeout } from "@/core/game";
 import type {
   Formation,
   Game,
@@ -331,7 +331,6 @@ function renderPlayerInGame(
     setTimeout(() => {
       const element = getById("p" + player.number);
       if (boost) {
-        console.log("Start", { boost });
         startAnimation(boost);
       }
 
@@ -344,17 +343,23 @@ function renderPlayerInGame(
       });
 
       function startAnimation(boost: number) {
-        const duration = boost * turnTimeout;
-        const zero = document.timeline.currentTime as number;
+        const duration = boostTurns * turnTimeout;
+        const delta = (boostTurns - boost) * turnTimeout;
+        const zero = (document.timeline.currentTime as number) - delta;
         requestAnimationFrame(animate);
         function animate(timestamp: number) {
+          if (
+            !element.isConnected ||
+            element.getBoundingClientRect().width === 0
+          ) {
+            return;
+          }
           const value = (timestamp - zero) / duration;
           element.style.setProperty("--p", "" + value * 100);
           if (value < 1) {
             requestAnimationFrame((t) => animate(t));
           } else {
             element.style.setProperty("--p", "0");
-            console.log("Finish");
           }
         }
       }
