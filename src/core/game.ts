@@ -25,7 +25,7 @@ import { makeTeams } from "./teams";
 export const time = 90; // production value: 90
 const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
-export const turnTimeout = 250; // increase or decrease for controlling game speed
+export const turnTimeout = 10; // increase or decrease for controlling game speed
 
 export const boostTurns = 16; // check turnsPerSecond
 
@@ -144,7 +144,7 @@ export class Game implements GameType {
     let updatedStoredMatch: StoredMatch | null = null;
     for (const match of storedMatches) {
       // Filter only matches from the current round
-      if (match.round !== givenMatch.round) {
+      if (match.id !== givenMatch.id) {
         continue;
       }
 
@@ -183,8 +183,17 @@ export class Game implements GameType {
         }
       }
 
-      if (match.id === givenMatch.id) {
-        updatedStoredMatch = match;
+      updatedStoredMatch = match;
+    }
+    if (updatedStoredMatch!.turns.length === maxTurns) {
+      for (const match of storedMatches) {
+        if (match.round === givenMatch.round && match.id !== givenMatch.id) {
+          match.goals = [
+            Math.trunc(Math.random() * 5),
+            Math.trunc(Math.random() * 5),
+          ];
+          match.turns = Array(maxTurns).fill({}); // this is only to fit the dynamic isDone logic
+        }
       }
     }
     this.storage.matches = storedMatches;
