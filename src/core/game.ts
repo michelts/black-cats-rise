@@ -25,7 +25,7 @@ import { makeTeams } from "./teams";
 export const time = 90; // production value: 90
 const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
-export const turnTimeout = 10; // increase or decrease for controlling game speed
+export const turnTimeout = 250; // increase or decrease for controlling game speed
 
 export const boostTurns = 16; // check turnsPerSecond
 
@@ -144,58 +144,70 @@ export class Game implements GameType {
     let updatedStoredMatch: StoredMatch | null = null;
     for (const match of storedMatches) {
       // Filter only matches from the current round
-      if (match.id !== givenMatch.id) {
+      if (match.round !== givenMatch.round) {
         continue;
       }
 
-      // Return the match itself if the round has all the turns processed
-      if (match.turns.length === maxTurns) {
-        return this.getMatch(givenMatch, teamsLookup);
-      }
-
-      // prepend new turn and update scored goals
-      const ballPosition = match.turns[0]?.ballPosition ?? 50;
-      const [goals, newMomentum] = runMatchTurn(
-        match,
-        teamsLookup[match.teamIds[0]],
-        teamsLookup[match.teamIds[1]],
-        ballPosition,
-        match.id === givenMatch.id,
-      );
-      const newPosition = goals.every((goal) => goal === 0)
-        ? Math.min(Math.max(ballPosition + newMomentum, 0), 100)
-        : 50;
-      match.turns.unshift({
-        ballPosition: newPosition,
-        momentum: newMomentum,
-        time: Math.round(match.turns.length / 4),
-      });
-      match.goals = [match.goals[0] + goals[0], match.goals[1] + goals[1]];
-      for (const playerNumber in match.boost) {
-        const value = match.boost[playerNumber];
-        if (match.id === givenMatch.id) {
-          // console.log("current boost", value);
+      if (match.id === givenMatch.id) {
+        // Return the match itself if the round has all the turns processed
+        if (match.turns.length === maxTurns) {
+          return this.getMatch(givenMatch, teamsLookup);
         }
-        if (value > 0) {
-          match.boost[playerNumber] = value - 1;
-        } else {
-          delete match.boost[playerNumber];
-        }
-      }
 
-      updatedStoredMatch = match;
-    }
-    if (updatedStoredMatch!.turns.length === maxTurns) {
-      for (const match of storedMatches) {
-        if (match.round === givenMatch.round && match.id !== givenMatch.id) {
+        // prepend new turn and update scored goals
+        const ballPosition = match.turns[0]?.ballPosition ?? 50;
+        const [goals, newMomentum] = runMatchTurn(
+          match,
+          teamsLookup[match.teamIds[0]],
+          teamsLookup[match.teamIds[1]],
+          ballPosition,
+          match.id === givenMatch.id,
+        );
+        const newPosition = goals.every((goal) => goal === 0)
+          ? Math.min(Math.max(ballPosition + newMomentum, 0), 100)
+          : 50;
+        match.turns.unshift({
+          ballPosition: newPosition,
+          momentum: newMomentum,
+          time: Math.round(match.turns.length / 4),
+        });
+        match.goals = [match.goals[0] + goals[0], match.goals[1] + goals[1]];
+        for (const playerNumber in match.boost) {
+          const value = match.boost[playerNumber];
+          if (value > 0) {
+            match.boost[playerNumber] = value - 1;
+          } else {
+            delete match.boost[playerNumber];
+          }
+        }
+
+        updatedStoredMatch = match;
+      } else {
+        match.turns.push({});
+        if (match.turns.length === maxTurns) {
+          const scores = match.teamIds
+            .map((id) => teamsLookup[id])
+            .map((team) =>
+              sum(
+                team.players.flatMap((player) => [
+                  player.df,
+                  player.md,
+                  player.at,
+                ]),
+              ),
+            );
+          const goals = [6, 3];
+          if (scores[1] > scores[0]) {
+            goals.reverse();
+          }
           match.goals = [
-            Math.trunc(Math.random() * 5),
-            Math.trunc(Math.random() * 5),
+            Math.trunc(Math.random() * goals[0]),
+            Math.trunc(Math.random() * goals[1]),
           ];
-          match.turns = Array(maxTurns).fill({}); // this is only to fit the dynamic isDone logic
         }
       }
     }
+
     this.storage.matches = storedMatches;
     const updatedMatch = this.getMatch(updatedStoredMatch!, teamsLookup);
     if (updatedMatch.isDone) {
@@ -209,7 +221,6 @@ export class Game implements GameType {
     const index = storedMatches.findIndex((m) => m.id === match.id);
     const boost = storedMatches[index].boost;
     if (boost[playerNumber] || Object.keys(boost).length > 2) {
-      console.log("REJECT", boost[playerNumber], Object.keys(boost).length);
       return 0;
     }
     storedMatches[index].boost = { ...boost, [playerNumber]: boostTurns };
@@ -288,7 +299,7 @@ function runMatchTurn(
     maxMomentum,
   );
   if (debug) {
-    console.log({ sector, threshold, increment, momentum });
+    console.log({ sector, threshold, increment, momentum, ballPosition });
   }
 
   const goals: TurnGoals = [0, 0];
