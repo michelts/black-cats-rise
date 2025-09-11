@@ -27,7 +27,7 @@ const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
 export const turnTimeout = 250; // increase or decrease for controlling game speed
 
-export const boostTurns = 36; // check turnsPerSecond
+export const boostTurns = 16; // check turnsPerSecond
 
 export class Game implements GameType {
   storage: Record<string, unknown>;
@@ -154,14 +154,22 @@ export class Game implements GameType {
       }
 
       // prepend new turn and update scored goals
-      const [goals, ballPosition] = runMatchTurn(
+      const ballPosition = match.turns[0]?.ballPosition ?? 50;
+      const sector = getSector(ballPosition);
+      const [goals, newMomentum] = runMatchTurn(
         match,
         teamsLookup[match.teamIds[0]],
         teamsLookup[match.teamIds[1]],
+        sector,
         match.id === givenMatch.id,
       );
+      const newPosition = Math.min(
+        Math.max(ballPosition + newMomentum, 0),
+        100,
+      );
       match.turns.unshift({
-        ballPosition,
+        ballPosition: newPosition,
+        momentum: newMomentum,
         time: Math.round(match.turns.length / 4),
       });
       match.goals = [match.goals[0] + goals[0], match.goals[1] + goals[1]];
@@ -241,10 +249,10 @@ function runMatchTurn(
   match: StoredMatch,
   homeTeam: Team,
   awayTeam: Team,
+  sector: Sector,
   debug: boolean,
 ): [TurnGoals, number] {
-  const currentBallPosition = match.turns[0]?.ballPosition ?? 50;
-  const sector = getSector(currentBallPosition);
+  let momentum = match.turns[0]?.momentum ?? 0;
   const homeScore = sum(
     homeTeam.players.map((player) =>
       getPlayerContribution(sector, player, match.boost[player.number]),
@@ -260,18 +268,20 @@ function runMatchTurn(
     ),
   );
   const threshold = Math.abs(homeScore - awayScore);
-  let increment = Math.max(threshold ** 0.4 - 2, 0); // 10 -> 1, 20 -> 2, 30 -> 3, 40 -> 4
+  const maxIncrement = 0.25;
+  let increment = Math.max(Math.min(threshold ** 0.4 - 2, maxIncrement), 0);
   if (awayScore > homeScore) {
     increment *= -1;
   }
-  const newPosition = Math.min(
-    Math.max(currentBallPosition + increment, 0),
-    100,
+  const maxMomentum = 2;
+  momentum = Math.min(
+    Math.max(momentum + increment, -1 * maxMomentum),
+    maxMomentum,
   );
   if (debug) {
-    //console.log({ threshold, increment });
+    console.log({ sector, threshold, increment, momentum });
   }
 
   const goals: TurnGoals = [0, 0];
-  return [goals, newPosition];
+  return [goals, momentum];
 }

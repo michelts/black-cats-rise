@@ -9,14 +9,14 @@ const contributions: Partial<
     at: 0.1,
   },
   0: {
-    df: 0.3,
+    df: 0.4,
     md: 1,
-    at: 0.3,
+    at: 0.4,
   },
   1: {
     df: 0.1,
-    md: 0.3,
-    at: 1,
+    md: 0.4,
+    at: 1.1,
   },
 };
 

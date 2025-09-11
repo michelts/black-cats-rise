@@ -110,6 +110,7 @@ export interface StoredMatch {
 
 export interface StoredTurn {
   ballPosition: number;
+  momentum: number;
   time: number; // time ellapsed
 }
 
