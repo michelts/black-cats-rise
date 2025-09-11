@@ -155,18 +155,16 @@ export class Game implements GameType {
 
       // prepend new turn and update scored goals
       const ballPosition = match.turns[0]?.ballPosition ?? 50;
-      const sector = getSector(ballPosition);
       const [goals, newMomentum] = runMatchTurn(
         match,
         teamsLookup[match.teamIds[0]],
         teamsLookup[match.teamIds[1]],
-        sector,
+        ballPosition,
         match.id === givenMatch.id,
       );
-      const newPosition = Math.min(
-        Math.max(ballPosition + newMomentum, 0),
-        100,
-      );
+      const newPosition = goals.every((goal) => goal === 0)
+        ? Math.min(Math.max(ballPosition + newMomentum, 0), 100)
+        : 50;
       match.turns.unshift({
         ballPosition: newPosition,
         momentum: newMomentum,
@@ -249,22 +247,23 @@ function runMatchTurn(
   match: StoredMatch,
   homeTeam: Team,
   awayTeam: Team,
-  sector: Sector,
+  ballPosition: number,
   debug: boolean,
 ): [TurnGoals, number] {
   let momentum = match.turns[0]?.momentum ?? 0;
+  const sector = getSector(ballPosition);
   const homeScore = sum(
     homeTeam.players.map((player) =>
-      getPlayerContribution(sector, player, match.boost[player.number]),
+      getPlayerContribution(
+        sector,
+        player,
+        match.boost[player.number] ? 1.5 : 1,
+      ),
     ),
   );
   const awayScore = sum(
     awayTeam.players.map((player) =>
-      getPlayerContribution(
-        (sector * -1) as Sector,
-        player,
-        match.boost[player.number],
-      ),
+      getPlayerContribution((sector * -1) as Sector, player, 1),
     ),
   );
   const threshold = Math.abs(homeScore - awayScore);
@@ -284,5 +283,13 @@ function runMatchTurn(
   }
 
   const goals: TurnGoals = [0, 0];
+  if (ballPosition === 100) {
+    goals[0] = 1;
+    momentum = 0;
+  }
+  if (ballPosition === 0) {
+    goals[1] = 1;
+    momentum = 0;
+  }
   return [goals, momentum];
 }
