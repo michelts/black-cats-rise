@@ -170,7 +170,9 @@ export class Game implements GameType {
         match.turns.unshift({
           ballPosition: newPosition,
           momentum: newMomentum,
-          time: Math.round(match.turns.length / 4),
+          time: Math.round(match.turns.length / turnsPerSecond),
+          goals,
+          evt: "",
         });
         match.goals = [match.goals[0] + goals[0], match.goals[1] + goals[1]];
         for (const playerNumber in match.boost) {
@@ -181,7 +183,6 @@ export class Game implements GameType {
             delete match.boost[playerNumber];
           }
         }
-
         updatedStoredMatch = match;
       } else {
         match.turns.push(null);

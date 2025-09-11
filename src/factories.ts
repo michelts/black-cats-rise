@@ -87,5 +87,7 @@ export const TurnFactory = Factory.define<StoredTurn>(() => {
     ballPosition: 50,
     momentum: 0,
     time: 0,
+    goals: [0, 0],
+    evt: "",
   };
 });

@@ -112,6 +112,8 @@ export interface StoredTurn {
   ballPosition: number;
   momentum: number;
   time: number; // time ellapsed
+  goals: [number, number];
+  evt: string;
 }
 
 export type EvenNumber =
