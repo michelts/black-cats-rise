@@ -161,7 +161,6 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       (team) => team.id === game.userTeam.id,
     ) as 0 | 1;
   }
-  const sidebar = "<div class=lgs></div>";
   const teamForFormation = match.teams[currentLiveTeamIndex];
   container.innerHTML =
     "<div class=lg>" +
@@ -176,7 +175,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       },
     ) +
     renderLiveGameProgress(...match.teams) +
-    sidebar +
+    renderLiveGameSidebar() +
     "</div>";
   const start = getById("start");
   const score = getById("score");
@@ -380,6 +379,36 @@ function renderLiveGameProgress(home: Team, away: Team) {
     color2 +
     "'><div id=ball><span>⚽</span></div></div>"
   );
+}
+
+function renderLiveGameSidebar() {
+  const messages = [
+    // t: time, m: message, h: isHome, g: isGoal
+    { t: 90, m: "The final whistle blows. Full time!" },
+    { t: 76, m: "Formation changed to 4-3-3." },
+    { t: 70, m: "Goal!", h: 1, g: 1 },
+    { t: 28, m: "Great tackle from Sunderland Black Cats.", h: 1 },
+    { t: 25, m: "Goal from other!", g: 1 },
+    { t: 25, m: "Great tackle from Other" },
+    { t: 0, m: "The match kicks off", h: 0 },
+  ];
+  const sidebar =
+    "<div class=lgs><div class=c><b>Match Events</b></div><div class=ms>" +
+    messages
+      .map(
+        (obj) =>
+          "<div class=tm>" +
+          obj.t +
+          "'</div> " +
+          "<div class='" +
+          (obj.h ? "hm" : "") +
+          "'>" +
+          obj.m +
+          "</div>",
+      )
+      .join("") +
+    "</div></div>";
+  return sidebar;
 }
 
 function updateLiveGame(match: Match) {

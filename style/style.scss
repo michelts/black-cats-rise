@@ -26,6 +26,8 @@ $field-line-color: rgba(#fff, 0.7);
 
 $progress-bar-border: #16a34a;
 
+$match-events-home-color: lighten(#16a34a, 51);
+
 html,
 body {
   height: 100%;
@@ -179,7 +181,7 @@ td {
 .r {
   text-align: right;
 }
-th.c, td.c { // center align
+.c { // center align
   text-align: center;
 }
 th.cll, td.cll { // collapsed
@@ -369,6 +371,7 @@ label:has(+ select) {
 .lg {
   display: grid;
   grid-template-columns: 1fr 10px 1fr;
+  grid-template-rows: auto 1fr;
   gap: 1rem;
 }
 // live game header
@@ -421,6 +424,7 @@ label:has(+ select) {
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-radius: 0.75rem;
 
   b {
     padding: 0.5rem;
@@ -555,7 +559,32 @@ label:has(+ select) {
 }
 // live game sidebar
 .lgs {
-  background: blue;
+  backdrop-filter: brightness(140%);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  overflow: auto;
+  contain: size;
+
+  // messages
+  .ms {
+    padding: 1rem 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    gap: 0.25rem 0.5rem;
+    align-items: first baseline;
+  }
+  // time
+  .tm {
+    background: rgba(#fff, 0.2);
+    border-radius: 0.25rem;
+    padding: 0.25rem;
+    text-align: center;
+  }
+  // home
+  .hm {
+    color: $match-events-home-color;
+  }
 }
 
 // score wrapper
