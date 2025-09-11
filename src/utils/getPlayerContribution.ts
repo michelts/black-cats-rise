@@ -33,10 +33,9 @@ const contributions: Partial<
 export function getPlayerContribution(
   sector: Sector,
   player: Player,
-  hasBoost: number,
+  boost: number,
 ) {
   //const value = sector < 0 ? player.df : sector > 0 ? player.at : player.md;
   const value = player[player.pos] ?? 0; // use player max stat
-  const boost = hasBoost ? 1.5 : 1; // boostContribution
   return value * (contributions[sector]?.[player.pos ?? ""] ?? 0) * boost;
 }
