@@ -184,7 +184,7 @@ export class Game implements GameType {
 
         updatedStoredMatch = match;
       } else {
-        match.turns.push({});
+        match.turns.push(null);
         if (match.turns.length === maxTurns) {
           const scores = match.teamIds
             .map((id) => teamsLookup[id])

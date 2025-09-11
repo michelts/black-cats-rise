@@ -413,9 +413,10 @@ function renderLiveGameSidebar() {
 
 function updateLiveGame(match: Match) {
   const ball = getById("ball");
-  ball.style.setProperty("--pct", match.turns[0].ballPosition.toFixed(0) + "%");
+  const turn = match.turns[0]!; // it could be null for other teams, but not for the player's team
+  ball.style.setProperty("--pct", turn.ballPosition.toFixed(0) + "%");
   const matchTime = document.querySelector("#matchTime");
-  matchTime!.innerHTML = match.turns[0].time + "min";
+  matchTime!.innerHTML = turn.time + "min";
   const score = document.querySelector("#score");
   score!.innerHTML = match.goals.join("x");
 }
