@@ -1,5 +1,5 @@
 import type { Sector } from "@/types";
 
 export function getSector(position: number) {
-  return (Math.max(Math.min(Math.trunc(position / 33), 2), 0) - 1) as Sector;
+  return (Math.max(Math.min(Math.trunc(position / 20), 4), 0) - 2) as Sector;
 }

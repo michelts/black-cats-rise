@@ -268,8 +268,9 @@ function runMatchTurn(
     ),
   );
   const threshold = Math.abs(homeScore - awayScore);
-  const maxIncrement = 0.25;
-  let increment = Math.max(Math.min(threshold ** 0.4 - 2, maxIncrement), 0);
+  const maxIncrement = 4;
+  let increment =
+    Math.max(Math.min(threshold ** 0.4 - 2, maxIncrement), 0) / maxIncrement;
   if (awayScore > homeScore) {
     increment *= -1;
   }

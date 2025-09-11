@@ -85,6 +85,7 @@ export const MatchFactory = BaseMatchFactory.define(({ sequence, params }) => {
 export const TurnFactory = Factory.define<StoredTurn>(() => {
   return {
     ballPosition: 50,
+    momentum: 0,
     time: 0,
   };
 });
