@@ -268,14 +268,18 @@ export class Game implements GameType {
 
 type TurnGoals = [0 | 1, 0 | 1];
 
+type TurnMomentum = number;
+
+type EventMessage = string;
+
 function runMatchTurn(
   match: StoredMatch,
   homeTeam: Team,
   awayTeam: Team,
   ballPosition: number,
   debug: boolean,
-): [TurnGoals, number] {
-  let momentum = match.turns[0]?.momentum ?? 0;
+): [TurnGoals, TurnMomentum, EventMessage] {
+  const oldMomentum = match.turns[0]?.momentum ?? 0;
   const sector = getSector(ballPosition);
   const homeScore = sum(
     homeTeam.players.map((player) =>
@@ -299,22 +303,37 @@ function runMatchTurn(
     increment *= -1;
   }
   const maxMomentum = 2;
-  momentum = Math.min(
-    Math.max(momentum + increment, -1 * maxMomentum),
+  let eventMessage = "";
+  let momentum = Math.min(
+    Math.max(oldMomentum + increment, -1 * maxMomentum),
     maxMomentum,
   );
+  if (momentum > 0 && oldMomentum < 0) {
+    eventMessage = homeTeam.name + " takes control";
+  }
+  if (momentum < 0 && oldMomentum > 0) {
+    eventMessage = awayTeam.name + " takes control";
+  }
   if (debug) {
-    console.log({ sector, threshold, increment, momentum, ballPosition });
+    console.log({
+      sector,
+      threshold,
+      increment,
+      momentum: momentum,
+      ballPosition,
+    });
   }
 
   const goals: TurnGoals = [0, 0];
   if (ballPosition === 100) {
     goals[0] = 1;
     momentum = 0;
+    eventMessage = "Goal for " + homeTeam.name;
   }
   if (ballPosition === 0) {
     goals[1] = 1;
     momentum = 0;
+    eventMessage = "Goal for " + awayTeam.name;
   }
-  return [goals, momentum];
+  return [goals, momentum, eventMessage];
 }
