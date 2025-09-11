@@ -35,7 +35,7 @@ export function getPlayerContribution(
   player: Player,
   boost: number,
 ) {
-  //const value = sector < 0 ? player.df : sector > 0 ? player.at : player.md;
-  const value = player[player.pos] ?? 0; // use player max stat
+  const value = sector < 0 ? player.df : sector > 0 ? player.at : player.md;
+  // const value = (player[player.pos as keyof typeof player] ?? 0) as number; // use player max stat
   return value * (contributions[sector]?.[player.pos ?? ""] ?? 0) * boost;
 }
