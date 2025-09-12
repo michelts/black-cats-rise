@@ -171,6 +171,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       teamForFormation,
       teamForFormation.id === match.teams[0].id,
       teamForFormation.id !== game.userTeam.id,
+      renderLiveGameFormationChangeControl(game),
       (player) => {
         return match?.boostPlayer(player)!;
       },
@@ -266,12 +267,13 @@ function renderLiveGameFormation(
   team: Team,
   isHome: boolean,
   disabled: boolean,
+  suffix: string,
   onClickPlayer: (player: Player["number"]) => number,
 ) {
   const allPlayers = team.players.slice(1); // without gk
   const formation = team.formation.split("-").map(Number);
   const content =
-    "<div class='lgf " +
+    "<div class=lgfw><div class='lgf " +
     (!isHome ? "rev" : "") +
     "'><b>Defense</b><div>" +
     formation
@@ -301,8 +303,19 @@ function renderLiveGameFormation(
         );
       })
       .join("") +
-    "</div><b>Attack</b></div>";
+    "</div><b>Attack</b></div>" +
+    suffix +
+    "</div>";
   return content;
+}
+
+function renderLiveGameFormationChangeControl(game: Game) {
+  setTimeout(() => {
+    getById("fmt-c").addEventListener("click", () => {
+      navigate(game, "team");
+    });
+  });
+  return '<button id=fmt-c class="btn">Change Formation</button>';
 }
 
 function renderPlayerInGame(
