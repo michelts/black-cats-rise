@@ -385,20 +385,19 @@ function renderLiveGameProgress(home: Team, away: Team) {
 
 function renderLiveGameStrategy() {
   const strategies = [
-    ["All out attack", "+att -def"],
-    ["Park the bus", "+def -att"],
-    ["Pressure up", "+def +counter attack"],
-  ];
+    ["All out attack", ["+att", "-def"]],
+    ["Park the bus", ["+def", "-att"]],
+    ["Pressure up", ["+def", "cntr att"]],
+  ] as const;
   return (
     "<div class=lgst><div class=c><b>Strategy</b></div><div class=lgst-b>" +
     strategies
       .map(
-        ([label, effect]) =>
-          "<button class=btn>" +
+        ([label, effects]) =>
+          "<button class=btn><b>" +
           label +
-          " <span>" +
-          effect +
-          "</span>" +
+          "</b> " +
+          effects.map((ef) => "<span>" + ef + "</span>").join("") +
           "</button>",
       )
       .join("") +
