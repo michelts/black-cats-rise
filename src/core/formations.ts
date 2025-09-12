@@ -23,8 +23,6 @@ export const formations: Formation[] = [
   "5-3-2",
   "5-4-1",
   "5-2-3",
-  "6-3-1",
-  "6-2-2",
 ];
 
 function makePositionsFromFormation(formation: Formation): Position[] {

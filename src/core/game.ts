@@ -29,7 +29,9 @@ export const maxTurns = time * turnsPerSecond;
 export const turnTimeout = 250; // increase or decrease for controlling game speed
 
 export const boostTurns = 20; // check turnsPerSecond
-const boostMaxConcurrent = 5;
+const boostPercentage = 1.5;
+const boostMaxConcurrent = 3;
+const statsNormalizationRate = 3; // force stats less discrepant so the boost has easier impact
 
 export class Game implements GameType {
   storage: Record<string, unknown>;
@@ -320,15 +322,22 @@ function runMatchTurn(
   const userIsHome = homeTeam.id === userTeamId;
   const homeStats = sum(
     homeTeam.players.map((player) => {
-      const boost = userIsHome && match.boost[player.number] ? 1.5 : 1;
-      return getPlayerContribution(sector, player) ** 0.5 * boost;
+      const boost =
+        userIsHome && match.boost[player.number] ? boostPercentage : 1;
+      return (
+        getPlayerContribution(sector, player) ** (1 / statsNormalizationRate) *
+        boost
+      );
     }),
   );
   const awayStats = sum(
     awayTeam.players.map((player) => {
-      const boost = !userIsHome && match.boost[player.number] ? 2 : 1;
+      const boost =
+        !userIsHome && match.boost[player.number] ? boostPercentage : 1;
       return (
-        getPlayerContribution((sector * -1) as Sector, player) ** 0.5 * boost
+        getPlayerContribution((sector * -1) as Sector, player) **
+          (1 / statsNormalizationRate) *
+        boost
       );
     }),
   );
