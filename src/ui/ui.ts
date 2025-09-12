@@ -41,6 +41,7 @@ function navigate(game: Game, screen: Screen, extraData?: unknown) {
 
   if (screen === "game") {
     navigate(game, "matches");
+    return;
   }
 
   if (screen === "matches" && screenContainer) {
@@ -58,6 +59,8 @@ function navigate(game: Game, screen: Screen, extraData?: unknown) {
   if (screen === "table" && screenContainer) {
     renderTable(game, screenContainer);
   }
+
+  document.getElementsByTagName("main")[0].scrollTop = 0;
 }
 
 function renderMatches(game: Game, container: HTMLElement) {
