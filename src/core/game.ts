@@ -325,7 +325,11 @@ function runMatchTurn(
       const boost =
         userIsHome && match.boost[player.number] ? boostPercentage : 1;
       return (
-        getPlayerContribution(sector, player) ** (1 / statsNormalizationRate) *
+        getPlayerContribution(
+          sector,
+          applyStrategy(player, match.strategy[0]),
+        ) **
+          (1 / statsNormalizationRate) *
         boost
       );
     }),
@@ -335,7 +339,10 @@ function runMatchTurn(
       const boost =
         !userIsHome && match.boost[player.number] ? boostPercentage : 1;
       return (
-        getPlayerContribution((sector * -1) as Sector, player) **
+        getPlayerContribution(
+          (sector * -1) as Sector,
+          applyStrategy(player, match.strategy[1]),
+        ) **
           (1 / statsNormalizationRate) *
         boost
       );
@@ -399,4 +406,22 @@ function maybeScoreGoal(attackingTeam: Team, defendingTeam: Team) {
     msg = "Great defense from " + goalkeeper.name;
   }
   return [isGoal, msg] as const;
+}
+
+function applyStrategy(
+  player: Player,
+  strategyTuple: [Strategy, number],
+): Player {
+  const [strategy, strategyTurns] = strategyTuple;
+  let attackBoost = 1;
+  let defenseBoost = 1;
+  if (strategyTurns && strategy === "att") {
+    attackBoost = 1.5;
+    defenseBoost = attackBoost ** -1;
+  }
+  return {
+    ...player,
+    df: player.df * defenseBoost,
+    at: player.at * attackBoost,
+  };
 }
