@@ -383,22 +383,11 @@ function renderLiveGameProgress(home: Team, away: Team) {
 }
 
 function renderLiveGameSidebar(turns: StoredTurn[]) {
-  /*
-  const messages = [
-    // t: time, m: message, h: isHome, g: isGoal
-    { t: 90, m: "The final whistle blows. Full time!" },
-    { t: 76, m: "Formation changed to 4-3-3." },
-    { t: 70, m: "Goal!", h: 1, g: 1 },
-    { t: 28, m: "Great tackle from Sunderland Black Cats.", h: 1 },
-    { t: 25, m: "Goal from other!", g: 1 },
-    { t: 25, m: "Great tackle from Other" },
-    { t: 0, m: "The match kicks off", h: 0 },
-  ];
-  */
   const sidebar =
     "<div class=lgs><div class=c><b>Match Events</b></div><div id=lgs-ms>" +
     turns
       .filter((turn) => turn.evt)
+      .reverse()
       .map(renderTurnMessage)
       .join("") +
     "</div></div>";

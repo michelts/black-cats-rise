@@ -156,7 +156,8 @@ export class Game implements GameType {
         }
 
         // prepend new turn and update scored goals
-        const ballPosition = match.turns[0]?.ballPosition ?? 50;
+        const currentTurn = match.turns[0];
+        const ballPosition = currentTurn?.ballPosition ?? 50;
         const [goals, newMomentum, evt] = runMatchTurn(
           match,
           teamsLookup[match.teamIds[0]],
@@ -167,12 +168,14 @@ export class Game implements GameType {
         const newPosition = goals.every((goal) => goal === 0)
           ? Math.min(Math.max(ballPosition + newMomentum, 0), 100)
           : 50;
+        const time = Math.round(match.turns.length / turnsPerSecond);
         match.turns.unshift({
           ballPosition: newPosition,
           momentum: newMomentum,
-          time: Math.round(match.turns.length / turnsPerSecond),
+          time,
           goals,
-          evt: evt,
+          evt:
+            time !== currentTurn?.time && evt !== currentTurn?.evt ? evt : "",
         });
         match.goals = [match.goals[0] + goals[0], match.goals[1] + goals[1]];
         for (const playerNumber in match.boost) {
