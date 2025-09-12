@@ -51,12 +51,14 @@ body {
 }
 
 h1 {
-  font-size: 8vmin;
+  font-size: 2.5rem;
   text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 0.1em;
   line-height: 1.1;
   margin: 0;
+  position: relative;
+  z-index: 2;
 }
 h1 span {
   color: #f7b700; /* Yellow from image */
@@ -113,10 +115,35 @@ nav button {
   height: 100%;
   text-align: center;
   box-sizing: border-box;
-  padding: 15vh 0;
   flex-direction: column;
   justify-content: space-around; /* Pushes title to top, nav to bottom */
   align-items: center;
+
+  p {
+    font-size: 0.8em;
+    margin: 0;
+    max-width: 400px;
+  }
+
+  nav {
+    backdrop-filter: brightness(200%);
+    padding: 2rem;
+    border-radius: 1rem;
+    align-items: center;
+  }
+
+  svg {
+    position: absolute;
+    left: 20px;
+    top: -160px;
+  }
+
+  button {
+    background: $button-background;
+    border: 0;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
 }
 .screen.intro.active {
   display: flex;
