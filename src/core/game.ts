@@ -317,21 +317,20 @@ function runMatchTurn(
     Math.max(oldMomentum + increment, -1 * maxMomentum),
     maxMomentum,
   );
-  if (momentum > 0 && oldMomentum < 0) {
+  if (momentum === 0 && oldMomentum < 0) {
     console.log(homeTeam.name + " takes control");
     eventMessage = homeTeam.name + " takes control";
   }
-  if (momentum < 0 && oldMomentum > 0) {
+  if (momentum < 0 && oldMomentum === 0) {
     console.log(awayTeam.name + " takes control");
     eventMessage = awayTeam.name + " takes control";
   }
-  console.log({
-    sector,
-    homeStats,
-    awayStats,
-    increment,
-    momentum,
-  });
+  if (match.turns.length === 0) {
+    eventMessage = "The match kicks off!";
+  }
+  if (match.turns.length === maxTurns - 1) {
+    eventMessage = "The final whistle blows. Full time!";
+  }
 
   const goals: TurnGoals = [0, 0];
   if (ballPosition === 100) {
