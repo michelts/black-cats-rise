@@ -702,6 +702,9 @@ label:has(+ select) {
     grid-column: span 2;
     contain: none;
   }
+  #lgst {
+    grid-column: span 2;
+  }
 }
 
 // score wrapper
