@@ -290,26 +290,22 @@ function runMatchTurn(
 ): [TurnGoals, TurnMomentum, EventMessage] {
   const oldMomentum = match.turns[0]?.momentum ?? 0;
   const sector = getSector(ballPosition);
-  const homeStats =
-    sum(
-      homeTeam.players.map((player) =>
-        getPlayerContribution(
-          sector,
-          player,
-          homeTeam.id === userTeamId && match.boost[player.number] ? 1.5 : 1,
-        ),
-      ),
-    ) ** 0.5;
-  const awayStats =
-    sum(
-      awayTeam.players.map((player) =>
-        getPlayerContribution(
-          (sector * -1) as Sector,
-          player,
-          awayTeam.id === userTeamId && match.boost[player.number] ? 2 : 1,
-        ),
-      ),
-    ) ** 0.5;
+  const homeStats = sum(
+    homeTeam.players.map((player) => {
+      const boost =
+        homeTeam.id === userTeamId && match.boost[player.number] ? 1.5 : 1;
+      return getPlayerContribution(sector, player) ** 0.5 * boost;
+    }),
+  );
+  const awayStats = sum(
+    awayTeam.players.map((player) => {
+      const boost =
+        awayTeam.id === userTeamId && match.boost[player.number] ? 2 : 1;
+      return (
+        getPlayerContribution((sector * -1) as Sector, player) ** 0.5 * boost
+      );
+    }),
+  );
   let increment = 0.25;
   if (homeStats < awayStats) {
     increment *= -1;
@@ -338,16 +334,35 @@ function runMatchTurn(
 
   const goals: TurnGoals = [0, 0];
   if (ballPosition === 100) {
-    goals[0] = 1;
-    momentum = 0;
-    console.log("Goal for " + homeTeam.name);
-    eventMessage = "Goal for " + homeTeam.name;
+    const [isGoal, message] = maybeScoreGoal(homeTeam, awayTeam);
+    momentum *= -1;
+    eventMessage = message;
+    if (isGoal) {
+      goals[0] = 1;
+    }
   }
   if (ballPosition === 0) {
-    goals[1] = 1;
-    momentum = 0;
-    console.log("Goal for " + awayTeam.name);
-    eventMessage = "Goal for " + awayTeam.name;
+    const [isGoal, message] = maybeScoreGoal(awayTeam, homeTeam);
+    momentum *= -1;
+    eventMessage = message;
+    if (isGoal) {
+      goals[1] = 1;
+    }
   }
   return [goals, momentum, eventMessage];
+}
+
+function maybeScoreGoal(attackingTeam: Team, defendingTeam: Team) {
+  const goalkeeper = defendingTeam.players[0];
+  const goalChance = (100 - goalkeeper.gk + 25) / 100;
+  const isGoal = Math.random() > goalChance;
+  let msg = "";
+  if (isGoal) {
+    console.log("Goal for " + attackingTeam.name);
+    msg = "Goal for " + attackingTeam.name;
+  } else {
+    console.log("Great defense!");
+    msg = "Great defense from " + goalkeeper.name;
+  }
+  return [isGoal, msg] as const;
 }

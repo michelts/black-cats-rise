@@ -5,7 +5,7 @@ const contributions: Partial<
 > = {
   "-2": {
     df: 1,
-    md: 0.5,
+    md: 0.7,
     at: 0.1,
   },
   "-1": {
@@ -25,17 +25,13 @@ const contributions: Partial<
   },
   2: {
     df: 0.1,
-    md: 0.5,
+    md: 0.7,
     at: 1.2,
   },
 };
 
-export function getPlayerContribution(
-  sector: Sector,
-  player: Player,
-  boost: number,
-) {
+export function getPlayerContribution(sector: Sector, player: Player) {
   const value = sector < 0 ? player.df : sector > 0 ? player.at : player.md;
   // const value = (player[player.pos as keyof typeof player] ?? 0) as number; // use player max stat
-  return value * (contributions[sector]?.[player.pos ?? ""] ?? 0) * boost;
+  return value * (contributions[sector]?.[player.pos ?? ""] ?? 0);
 }
