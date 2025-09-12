@@ -27,7 +27,7 @@ const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
 export const turnTimeout = 250; // increase or decrease for controlling game speed
 
-export const boostTurns = 16; // check turnsPerSecond
+export const boostTurns = 20; // check turnsPerSecond
 const boostMaxConcurrent = 5;
 
 export class Game implements GameType {
@@ -162,20 +162,26 @@ export class Game implements GameType {
           match,
           teamsLookup[match.teamIds[0]],
           teamsLookup[match.teamIds[1]],
+          this.userTeamId,
           ballPosition,
-          match.id === givenMatch.id,
         );
-        const newPosition = goals.every((goal) => goal === 0)
-          ? Math.min(Math.max(ballPosition + newMomentum, 0), 100)
-          : 50;
+
+        const step = 1;
+        let newPosition = ballPosition;
+        if (goals.some((goal) => goal)) {
+          newPosition = 50; // midfield on goal
+        } else if (newMomentum > 0) {
+          newPosition += step;
+        } else if (newMomentum < 0) {
+          newPosition -= step;
+        }
         const time = Math.round(match.turns.length / turnsPerSecond);
         match.turns.unshift({
-          ballPosition: newPosition,
+          ballPosition: Math.min(Math.max(newPosition, 0), 100),
           momentum: newMomentum,
           time,
           goals,
-          evt:
-            time !== currentTurn?.time && evt !== currentTurn?.evt ? evt : "",
+          evt: evt !== currentTurn?.evt ? evt : "",
         });
         match.goals = [match.goals[0] + goals[0], match.goals[1] + goals[1]];
         for (const playerNumber in match.boost) {
@@ -279,33 +285,36 @@ function runMatchTurn(
   match: StoredMatch,
   homeTeam: Team,
   awayTeam: Team,
+  userTeamId: Team["id"],
   ballPosition: number,
-  debug: boolean,
 ): [TurnGoals, TurnMomentum, EventMessage] {
   const oldMomentum = match.turns[0]?.momentum ?? 0;
   const sector = getSector(ballPosition);
-  const homeScore = sum(
-    homeTeam.players.map((player) =>
-      getPlayerContribution(
-        sector,
-        player,
-        match.boost[player.number] ? 1.5 : 1,
+  const homeStats =
+    sum(
+      homeTeam.players.map((player) =>
+        getPlayerContribution(
+          sector,
+          player,
+          homeTeam.id === userTeamId && match.boost[player.number] ? 1.5 : 1,
+        ),
       ),
-    ),
-  );
-  const awayScore = sum(
-    awayTeam.players.map((player) =>
-      getPlayerContribution((sector * -1) as Sector, player, 1),
-    ),
-  );
-  const threshold = Math.abs(homeScore - awayScore);
-  const maxIncrement = 4;
-  let increment =
-    Math.max(Math.min(threshold ** 0.4 - 2, maxIncrement), 0) / maxIncrement;
-  if (awayScore > homeScore) {
+    ) ** 0.5;
+  const awayStats =
+    sum(
+      awayTeam.players.map((player) =>
+        getPlayerContribution(
+          (sector * -1) as Sector,
+          player,
+          awayTeam.id === userTeamId && match.boost[player.number] ? 2 : 1,
+        ),
+      ),
+    ) ** 0.5;
+  let increment = 0.25;
+  if (homeStats < awayStats) {
     increment *= -1;
   }
-  const maxMomentum = 2;
+  const maxMomentum = 6;
   let eventMessage = "";
   let momentum = Math.min(
     Math.max(oldMomentum + increment, -1 * maxMomentum),
@@ -319,15 +328,13 @@ function runMatchTurn(
     console.log(awayTeam.name + " takes control");
     eventMessage = awayTeam.name + " takes control";
   }
-  if (debug) {
-    console.log({
-      sector,
-      threshold,
-      increment,
-      momentum: momentum,
-      ballPosition,
-    });
-  }
+  console.log({
+    sector,
+    homeStats,
+    awayStats,
+    increment,
+    momentum,
+  });
 
   const goals: TurnGoals = [0, 0];
   if (ballPosition === 100) {
