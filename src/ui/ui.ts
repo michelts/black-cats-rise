@@ -1,5 +1,5 @@
 import { formations } from "@/core/formations";
-import { boostTurns, turnTimeout } from "@/core/game";
+import { boostTurns, maxMomentum, turnTimeout } from "@/core/game";
 import type {
   Formation,
   Game,
@@ -417,9 +417,9 @@ function renderLiveGameStrategy(
   callback: (strategy: Strategy) => [Strategy, number] | undefined,
 ) {
   const strategies: [string, string[], Strategy][] = [
-    ["All Out Attack", ["+att", "-def"], "att"],
-    ["Park the Bus", ["+def", "-att"], "prk"],
-    ["Pressure Up", ["+def", "cntr att"], "prss"],
+    ["All Out Attack", ["+at", "-df"], "att"],
+    ["Park the Bus", ["+df", "-at", "-md"], "prk"],
+    ["Pressure Up", ["+md", "-df", "-at"], "prss"],
   ] as const;
   setTimeout(() => {
     document.querySelectorAll<HTMLElement>("[data-stg]").forEach((elem) => {
@@ -516,6 +516,11 @@ function updateLiveGame(match: Match) {
   const ball = getById("ball");
   const turn = match.turns[0]!;
   ball.style.setProperty("--pct", turn.ballPosition.toFixed(2) + "%");
+  ball.style.setProperty("--ang", (turn.momentum / maxMomentum).toFixed(2));
+  ball.style.setProperty(
+    "--angc",
+    turn.momentum > 0 ? "var(--c1)" : "var(--c2)",
+  );
   const matchTime = getById("matchTime");
   matchTime.innerHTML = turn.time + "min";
   const score = getById("score");

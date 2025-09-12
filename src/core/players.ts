@@ -44,12 +44,12 @@ function makePlayer(
 }
 
 function getStat(desiredStat: Position, position: Position): number {
-  const threshold = 0.66;
+  const threshold = 0.75;
   if (desiredStat === position) {
     // Using power to reduce the chance or very large stats
     return threshold + Math.random() ** 3 * (1 - threshold);
   }
-  return Math.random() * threshold;
+  return Math.random() * 0.66;
 }
 
 function round(n: number) {

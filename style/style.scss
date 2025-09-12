@@ -613,8 +613,10 @@ label:has(+ select) {
   min-height: 300px;
   position: relative;
   --pct: 50%;
+  --ang: 0; // angle
   --c1: #fff;
   --c2: #000;
+  --angc: var(--c1);
   background: var(--c2);
   border-radius: 0.25rem;
   outline: 1px solid $progress-bar-border;
@@ -632,7 +634,23 @@ label:has(+ select) {
       position: absolute;
       bottom: -0.75rem;
       left: -0.375rem;
-      color: #fff;;
+      color: #fff;
+      z-index: 2;
+    }
+
+    &:after {
+      content: "";
+      display: block;
+      position: absolute;
+      bottom: -5px;
+      left: 5px;
+      width: 30px;
+      height: 10px;
+      z-index: 1;
+      background: var(--angc);
+      transform: scaleX(calc(0.25 * var(--ang) / abs(var(--ang)) + var(--ang)));
+      transform-origin: 0 0;
+      border-radius: 0.25rem;
     }
   }
 }

@@ -28,6 +28,8 @@ const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
 export const turnTimeout = 250; // increase or decrease for controlling game speed
 
+export const maxMomentum = 6;
+
 export const boostTurns = 20; // check turnsPerSecond
 const boostPercentage = 1.5;
 const boostMaxConcurrent = 3;
@@ -355,7 +357,6 @@ function runMatchTurn(
   if (homeStats < awayStats) {
     increment *= -1;
   }
-  const maxMomentum = 6;
   let eventMessage = "";
   let momentum = Math.min(
     Math.max(oldMomentum + increment, -1 * maxMomentum),
@@ -426,7 +427,7 @@ function applyStrategy(
   }
   if (strategy === "prk" && strategyTurns) {
     defenseBoost = 1.5;
-    midBoost = 1;
+    midBoost = 0.8;
     attackBoost = defenseBoost ** -1;
   }
   if (strategy === "prss" && strategyTurns) {
