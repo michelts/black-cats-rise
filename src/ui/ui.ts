@@ -384,7 +384,26 @@ function renderLiveGameProgress(home: Team, away: Team) {
 }
 
 function renderLiveGameStrategy() {
-  return "<div class=lgst><b>Strategy</b></div>";
+  const strategies = [
+    ["All out attack", "+att -def"],
+    ["Park the bus", "+def -att"],
+    ["Pressure up", "+def +counter attack"],
+  ];
+  return (
+    "<div class=lgst><div class=c><b>Strategy</b></div><div class=lgst-b>" +
+    strategies
+      .map(
+        ([label, effect]) =>
+          "<button class=btn>" +
+          label +
+          " <span>" +
+          effect +
+          "</span>" +
+          "</button>",
+      )
+      .join("") +
+    "</div></div>"
+  );
 }
 
 function renderLiveGameSidebar(turns: StoredTurn[]) {

@@ -144,9 +144,6 @@ nav button {
 
   button {
     background: $button-background;
-    border: 0;
-    border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
     font-size: 1.2rem;
   }
 }
@@ -385,7 +382,7 @@ label:has(+ select) {
   border: 0;
   color: #fff;
   font-weight: bold;
-  border-radius: 0.5rem;
+  border-radius: 1.2em;
   padding: 0.5rem 1rem;
   background: $button-background;
 
@@ -399,7 +396,7 @@ label:has(+ select) {
 .lg {
   display: grid;
   grid-template-columns: 1fr 10px 1fr;
-  grid-template-rows: auto 1fr 1fr;
+  grid-template-rows: auto min-content 1fr;
   gap: 1rem;
 }
 // live game header
@@ -587,6 +584,20 @@ label:has(+ select) {
     }
   }
 }
+
+// live game strategy
+.lgst {
+  backdrop-filter: brightness(140%);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+}
+.lgst-b {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
 // live game sidebar
 .lgs {
   backdrop-filter: brightness(140%);
@@ -621,13 +632,6 @@ label:has(+ select) {
   .hm {
     color: $match-events-home-color;
   }
-}
-
-// live game strategy
-.lgst {
-  backdrop-filter: brightness(140%);
-  border-radius: 0.75rem;
-  padding: 0.5rem 1rem;
 }
 
 @media screen and (max-width: 639px) {
