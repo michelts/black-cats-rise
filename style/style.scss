@@ -125,11 +125,15 @@ nav button {
     max-width: 400px;
   }
 
-  nav {
+  div {
     backdrop-filter: brightness(200%);
     padding: 2rem;
     border-radius: 1rem;
     align-items: center;
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
   }
 
   svg {
@@ -143,19 +147,11 @@ nav button {
     border: 0;
     border-radius: 0.5rem;
     padding: 0.5rem 1rem;
+    font-size: 1.2rem;
   }
 }
 .screen.intro.active {
   display: flex;
-}
-.intro nav {
-  flex-direction: column;
-  font-size: 1.5rem;
-  gap: 1em;
-}
-.intro nav button:hover {
-  color: #f7b700;
-  text-decoration: underline;
 }
 
 main {
@@ -386,13 +382,17 @@ label:has(+ select) {
 }
 
 .btn {
-  background: red;
   border: 0;
   color: #fff;
   font-weight: bold;
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
   background: $button-background;
+
+  &:hover {
+    cursor: pointer;
+    outline: 3px solid $button-background;
+  }
 }
 
 // live game
