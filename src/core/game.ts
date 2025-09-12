@@ -177,6 +177,7 @@ export class Game implements GameType {
         }
         const time = Math.round(match.turns.length / turnsPerSecond);
         match.turns.unshift({
+          id: match.turns.length,
           ballPosition: Math.min(Math.max(newPosition, 0), 100),
           momentum: newMomentum,
           time,

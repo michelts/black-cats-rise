@@ -397,7 +397,9 @@ function renderLiveGameSidebar(turns: StoredTurn[]) {
 function renderTurnMessage(turn: StoredTurn) {
   const isGoal = turn.goals.some((goal) => goal);
   return (
-    "<div><div class=tm>" +
+    "<div id=tm-" +
+    turn.id +
+    "><div class=tm>" +
     turn.time +
     "'</div> " +
     "<div class='" +
@@ -418,7 +420,12 @@ function updateLiveGame(match: Match) {
   score.innerHTML = match.goals.join("x");
   if (turn.evt) {
     const sidebar = getById("lgs-ms");
-    sidebar.innerHTML += renderTurnMessage(turn);
+    const lastTurnMessageId = (sidebar.lastChild as HTMLElement)?.getAttribute(
+      "id",
+    );
+    if (lastTurnMessageId !== "tm-" + turn.id) {
+      sidebar.innerHTML += renderTurnMessage(turn);
+    }
   }
 }
 
