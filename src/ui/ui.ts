@@ -190,6 +190,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
         if (match?.isLive) {
           return match!.setStrategy(game.userTeam.id, strategy);
         }
+        return undefined;
       },
     ) +
     renderLiveGameSidebar(match.turns) +
