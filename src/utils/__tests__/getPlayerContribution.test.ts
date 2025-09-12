@@ -17,7 +17,7 @@ it.each`
   "returns $contribution for $playerPos player in sector $sector",
   ({ sector, playerPos, df, md, at, contribution }) => {
     const player = PlayerFactory.build({ pos: playerPos, df, md, at });
-    expect(getPlayerContribution(sector, player, 0)).toEqual(contribution);
+    expect(getPlayerContribution(sector, player)).toEqual(contribution);
   },
 );
 
@@ -33,6 +33,6 @@ it.each`
   "returns zero for goal keepers and reserves for sector $sector",
   ({ sector, contribution }) => {
     const player = PlayerFactory.build({ pos: "gk", df: 1, md: 1, at: 1 });
-    expect(getPlayerContribution(sector, player, 0)).toEqual(contribution);
+    expect(getPlayerContribution(sector, player)).toEqual(contribution);
   },
 );
