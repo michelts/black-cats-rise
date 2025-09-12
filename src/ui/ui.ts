@@ -100,13 +100,13 @@ function renderMatches(game: Game, container: HTMLElement) {
 function renderNextMatch(match: Match) {
   return (
     "<div class=nm><div><div><b>" +
-    match.teams[0].name +
+    renderTeamName(match.teams[0]) +
     "</b><span>Home</span></div><span>" +
     tShirt(match.teams[0].kit) +
     "vs" +
     tShirt(match.teams[1].kit) +
     "</span><div><b>" +
-    match.teams[1].name +
+    renderTeamName(match.teams[1]) +
     "</b><span>Away</span></div></div><div><button class=btn data-round=" +
     match.round +
     ">" +
@@ -613,7 +613,10 @@ function renderTeamName(
     '">' +
     prefix +
     "<span>" +
-    team.name +
+    team.name.slice(0, 5) +
+    "<span class=sr>" +
+    team.name.slice(5) +
+    "</span>" +
     "</span></div>"
   );
 }
