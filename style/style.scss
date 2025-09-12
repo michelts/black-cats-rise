@@ -511,12 +511,15 @@ label:has(+ select) {
     border-radius: 50%;
     border: 0;
     box-shadow: 2px 2px 5px rgba(#000, 0.5);
-    background: hsl(from var(--bg) h s calc(l + 15));
+    --lt: 15;
+    --bgc: hsl(from var(--bg) h s calc(l + var(--lt)));
+    background: var(--bgc);
     --p: 0;
 
     &:not(:disabled):hover {
       cursor: pointer;
-      background: hsl(from var(--bg) h s calc(l + 25));
+      --lt: 25;
+      outline: 3px solid var(--bgc);
     }
 
     &.df {
