@@ -428,10 +428,10 @@ label:has(+ select) {
   .t:hover span {
     text-decoration: underline;
   }
-  .t span {
+  .t.a .name {
     position: relative;
   }
-  .t.a span:after {
+  .t.a .name:after {
     content: "";
     display: block;
     position: absolute;
