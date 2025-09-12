@@ -34,6 +34,7 @@ export const boostTurns = 20; // check turnsPerSecond
 const boostPercentage = 1.5;
 const boostMaxConcurrent = 3;
 const statsNormalizationRate = 3; // force stats less discrepant so the boost has easier impact
+const aiStrategyChance = 0.66;
 
 export class Game implements GameType {
   storage: Record<string, unknown>;
@@ -477,7 +478,11 @@ function maybeApplyAiStrategy(
   teamIndex: 0 | 1,
 ) {
   const isDefending = match.turns[0].momentum * teamIndex === 0 ? 1 : -1;
-  if (isDefending && !match.strategy[teamIndex][1] && Math.random() > 0.5) {
+  if (
+    isDefending &&
+    !match.strategy[teamIndex][1] &&
+    Math.random() > aiStrategyChance
+  ) {
     const strategy = AiStrategies[sector];
     match.strategy[teamIndex] = [strategy, boostTurns];
     if (!match.turns[0].evt) {
