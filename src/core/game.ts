@@ -348,6 +348,9 @@ function runMatchTurn(
       );
     }),
   );
+  console.log(
+    `${homeTeam.name.slice(0, 3)}: ${homeStats.toFixed(1)} - ${awayTeam.name.slice(0, 3)}: ${awayStats.toFixed(1)}`,
+  );
   let increment = 0.25;
   if (homeStats < awayStats) {
     increment *= -1;
@@ -414,14 +417,27 @@ function applyStrategy(
 ): Player {
   const [strategy, strategyTurns] = strategyTuple;
   let attackBoost = 1;
+  let midBoost = 1;
   let defenseBoost = 1;
-  if (strategyTurns && strategy === "att") {
+  if (strategy === "att" && strategyTurns) {
     attackBoost = 1.5;
+    midBoost = 1;
     defenseBoost = attackBoost ** -1;
+  }
+  if (strategy === "prk" && strategyTurns) {
+    defenseBoost = 1.5;
+    midBoost = 1;
+    attackBoost = defenseBoost ** -1;
+  }
+  if (strategy === "prss" && strategyTurns) {
+    defenseBoost = 0.8;
+    midBoost = 1.5;
+    attackBoost = 0.8;
   }
   return {
     ...player,
     df: player.df * defenseBoost,
+    md: player.md * midBoost,
     at: player.at * attackBoost,
   };
 }
