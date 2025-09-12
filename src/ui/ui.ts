@@ -555,11 +555,11 @@ function renderTeam(game: Game, container: HTMLElement) {
     team.players
       .map(
         (player, index) =>
-          "<tr title='Drag to swap positions' data-idx='" +
+          "<tr title='Click to select for changing positions' data-swap='" +
           index +
-          "' draggable=true class=" +
+          "' class=" +
           (player.pos ?? "sub") +
-          "><td>⠿</td><td>" +
+          "><td>⇆</td><td>" +
           player.number +
           "<td>" +
           renderPosition(player.pos) +
@@ -577,29 +577,21 @@ function renderTeam(game: Game, container: HTMLElement) {
       )
       .join("") +
     "</table>";
-  for (const row of document.querySelectorAll('tr[draggable="true"]')) {
-    row.addEventListener("dragstart", (evt) => {
-      (evt as DragEvent).dataTransfer?.setData(
-        "text/plain",
-        (evt.target as HTMLTableRowElement).dataset.idx ?? "",
-      );
-    });
-    row.addEventListener("dragenter", (evt) => {
-      evt.preventDefault();
-      row.classList.add("over");
-    });
-    row.addEventListener("dragover", (evt) => {
-      evt.preventDefault();
-    });
-    row.addEventListener("dragleave", () => {
-      row.classList.remove("over");
-    });
-    row.addEventListener("drop", (evt) => {
-      evt.preventDefault();
-      row.classList.remove("over");
-      const orig = (evt as DragEvent).dataTransfer?.getData("text/plain");
-      const dest = (evt.target as HTMLElement).closest("tr")?.dataset.idx;
-      if (orig && dest) {
+  const rows = document.querySelectorAll<HTMLElement>("tbody [data-swap]");
+  for (const row of rows) {
+    row.addEventListener("click", () => {
+      let currentSelected = null;
+      for (const otherRow of rows) {
+        if (otherRow.classList.contains("slcd")) {
+          currentSelected = otherRow;
+        }
+        otherRow.classList.remove("slcd");
+      }
+      if (currentSelected === null) {
+        row.classList.add("slcd");
+      } else if (currentSelected !== row) {
+        const orig = Number(currentSelected.dataset.swap);
+        const dest = Number(row.dataset.swap);
         game.userTeam.swapPlayers(Number(orig), Number(dest));
         renderTeam(game, container);
       }

@@ -256,17 +256,44 @@ tr.sub {
 tr.bold td {
   background: hsl(from var(--td-bg) h s calc(l + 15))
 }
-tr[draggable="true"] {
-  cursor: grab;
-
+tr[data-swap] {
   &:hover td {
-    background: hsl(from var(--td-bg) h s calc(l + 15))
+    cursor: pointer;
+    background: hsl(from var(--td-bg) h s calc(l + 15));
   }
+
+  // selected
+  &.slcd {
+    position: relative;
+
+    &:after {
+      content: "";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: rgba(#fff, 0.3);
+      color: black;
+      width: 100%;
+      height: 100%;
+      animation: blink-color 0.4s infinite;
+    }
+  }
+
 }
-// overflow when dragging
-tr.over td {
-  background: hsl(from var(--td-bg) h s calc(l - 5));
-  filter: blur(1px);
+
+@keyframes blink-color {
+  0% {
+    background-color: rgba(#fff, 0.3);
+  }
+  50% {
+    background-color: rgba(#fff, 0.0);
+  }
+  100% {
+    background-color: rgba(#fff, 0.3);
+  }
 }
 
 select {
