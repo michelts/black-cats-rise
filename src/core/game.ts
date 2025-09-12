@@ -28,13 +28,14 @@ const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
 export const turnTimeout = 250; // increase or decrease for controlling game speed
 
-export const maxMomentum = 8;
+export const maxMomentum = 4;
 
-export const boostTurns = 20; // check turnsPerSecond
-const boostPercentage = 1.5;
+export const boostTurns = 12; // check turnsPerSecond
+const boostPercentage = 1.3;
 const boostMaxConcurrent = 3;
-const statsNormalizationRate = 3; // force stats less discrepant so the boost has easier impact
-const aiStrategyChance = 0.66;
+const statsNormalizationRate = 4; // force stats less discrepant so the boost has easier impact
+const aiStrategyChance = 1;
+const ballPositionProgressionStep = 1;
 
 export class Game implements GameType {
   storage: Record<string, unknown>;
@@ -178,14 +179,13 @@ export class Game implements GameType {
           ballPosition,
         );
 
-        const progressionStep = 0.5;
         let newPosition = ballPosition;
         if (goals.some((goal) => goal)) {
           newPosition = 50; // midfield on goal
         } else if (newMomentum > 0) {
-          newPosition += progressionStep;
+          newPosition += ballPositionProgressionStep;
         } else if (newMomentum < 0) {
-          newPosition -= progressionStep;
+          newPosition -= ballPositionProgressionStep;
         }
         const time = Math.round(match.turns.length / turnsPerSecond);
         match.turns.unshift({
@@ -337,7 +337,7 @@ function runMatchTurn(
 ): [TurnGoals, TurnMomentum, EventMessage] {
   const oldMomentum = match.turns[0]?.momentum ?? 0;
   const sector = getSector(ballPosition);
-  const homeStats = sum(
+  let homeStats = sum(
     homeTeam.players.map((player) => {
       const boost =
         userIsHome && match.boost[player.number] ? boostPercentage : 1;
@@ -351,7 +351,7 @@ function runMatchTurn(
       );
     }),
   );
-  const awayStats = sum(
+  let awayStats = sum(
     awayTeam.players.map((player) => {
       const boost =
         !userIsHome && match.boost[player.number] ? boostPercentage : 1;
@@ -365,8 +365,15 @@ function runMatchTurn(
       );
     }),
   );
+  const aiPlayerMaxBoost = Object.keys(match.boost).length * 0.3;
+  const aiPlayerBoost = 1 + (Math.random() * aiPlayerMaxBoost) / 10;
+  if (userIsHome) {
+    awayStats *= aiPlayerBoost;
+  } else {
+    homeStats *= aiPlayerBoost;
+  }
   console.log(
-    `${homeTeam.name.slice(0, 3)}: ${homeStats.toFixed(1)} - ${awayTeam.name.slice(0, 3)}: ${awayStats.toFixed(1)}`,
+    `${homeTeam.name.slice(0, 3)}: ${homeStats.toFixed(1)} - ${awayTeam.name.slice(0, 3)}: ${awayStats.toFixed(1)} - ${aiPlayerMaxBoost.toFixed(2)}, ${aiPlayerBoost.toFixed(2)}`,
   );
   let increment = 0.25;
   if (homeStats < awayStats) {
@@ -481,7 +488,7 @@ function maybeApplyAiStrategy(
   if (
     isDefending &&
     !match.strategy[teamIndex][1] &&
-    Math.random() > aiStrategyChance
+    Math.random() > 1 - aiStrategyChance
   ) {
     const strategy = AiStrategies[sector];
     match.strategy[teamIndex] = [strategy, boostTurns];

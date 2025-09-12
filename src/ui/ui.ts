@@ -417,9 +417,9 @@ function renderLiveGameStrategy(
   callback: (strategy: Strategy) => [Strategy, number] | undefined,
 ) {
   const strategies: [string, string[], Strategy][] = [
-    ["All Out Attack", ["+at", "-df"], "att"],
     ["Man Mark", ["+df", "-at", "-md"], "prk"],
     ["Press High", ["+md", "-df", "-at"], "prss"],
+    ["All Out Attack", ["+at", "-df"], "att"],
   ] as const;
   setTimeout(() => {
     document.querySelectorAll<HTMLElement>("[data-stg]").forEach((elem) => {
