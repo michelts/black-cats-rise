@@ -28,7 +28,7 @@ const turnsPerSecond = 4;
 export const maxTurns = time * turnsPerSecond;
 export const turnTimeout = 250; // increase or decrease for controlling game speed
 
-export const maxMomentum = 6;
+export const maxMomentum = 8;
 
 export const boostTurns = 20; // check turnsPerSecond
 const boostPercentage = 1.5;
@@ -166,11 +166,14 @@ export class Game implements GameType {
         // prepend new turn and update scored goals
         const currentTurn = match.turns[0];
         const ballPosition = currentTurn?.ballPosition ?? 50;
+        const homeTeam = teamsLookup[match.teamIds[0]];
+        const awayTeam = teamsLookup[match.teamIds[1]];
+        const userIsHome = homeTeam.id === this.userTeamId;
         const [goals, newMomentum, evt] = runMatchTurn(
           match,
-          teamsLookup[match.teamIds[0]],
-          teamsLookup[match.teamIds[1]],
-          this.userTeamId,
+          homeTeam,
+          awayTeam,
+          userIsHome,
           ballPosition,
         );
 
@@ -206,6 +209,18 @@ export class Game implements GameType {
             match.strategy[i] = ["", 0];
           }
         }
+        const aiTeamIndex = userIsHome ? 1 : 0;
+        const aiTeam = teamsLookup[match.teamIds[aiTeamIndex]];
+        let sectorFromAiPerspective = getSector(newPosition);
+        if (userIsHome) {
+          sectorFromAiPerspective *= -1;
+        }
+        maybeApplyAiStrategy(
+          match,
+          sectorFromAiPerspective as Sector,
+          aiTeam,
+          aiTeamIndex,
+        );
         updatedStoredMatch = match;
       } else {
         match.turns.push({} as StoredTurn); // hack to keep other teams matches data low
@@ -316,12 +331,11 @@ function runMatchTurn(
   match: StoredMatch,
   homeTeam: Team,
   awayTeam: Team,
-  userTeamId: Team["id"],
+  userIsHome: boolean,
   ballPosition: number,
 ): [TurnGoals, TurnMomentum, EventMessage] {
   const oldMomentum = match.turns[0]?.momentum ?? 0;
   const sector = getSector(ballPosition);
-  const userIsHome = homeTeam.id === userTeamId;
   const homeStats = sum(
     homeTeam.players.map((player) => {
       const boost =
@@ -441,4 +455,34 @@ function applyStrategy(
     md: player.md * midBoost,
     at: player.at * attackBoost,
   };
+}
+
+const AiStrategies: Record<Sector, Strategy> = {
+  "-1": "prk",
+  0: "prss",
+  1: "att",
+};
+
+const StrategyLabels: Partial<Record<Strategy, (name: string) => string>> = {
+  prk: (name) => `${name} is locking down the attackers!`,
+  prss: (name) => `${name} is pressuring up!`,
+  att: (name) => `All of ${name} is attacking!`,
+  cntr: (name) => `${name} is counter-attacking!`,
+};
+
+function maybeApplyAiStrategy(
+  match: StoredMatch,
+  sector: Sector,
+  team: Team,
+  teamIndex: 0 | 1,
+) {
+  const isDefending = match.turns[0].momentum * teamIndex === 0 ? 1 : -1;
+  if (isDefending && !match.strategy[teamIndex][1] && Math.random() > 0.5) {
+    const strategy = AiStrategies[sector];
+    match.strategy[teamIndex] = [strategy, boostTurns];
+    if (!match.turns[0].evt) {
+      match.turns[0].evt = StrategyLabels[strategy]?.(team.name) ?? "";
+    }
+    console.log(`Set AI boost: ${strategy}`);
+  }
 }

@@ -418,8 +418,8 @@ function renderLiveGameStrategy(
 ) {
   const strategies: [string, string[], Strategy][] = [
     ["All Out Attack", ["+at", "-df"], "att"],
-    ["Park the Bus", ["+df", "-at", "-md"], "prk"],
-    ["Pressure Up", ["+md", "-df", "-at"], "prss"],
+    ["Man Mark", ["+df", "-at", "-md"], "prk"],
+    ["Press High", ["+md", "-df", "-at"], "prss"],
   ] as const;
   setTimeout(() => {
     document.querySelectorAll<HTMLElement>("[data-stg]").forEach((elem) => {
