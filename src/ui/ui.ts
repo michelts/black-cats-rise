@@ -167,6 +167,8 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
     ) as 0 | 1;
   }
   const teamForFormation = match.teams[currentLiveTeamIndex];
+  const teamIndex = match.teamIds.indexOf(game.userTeam.id);
+  const [currentStrategy, strategyTurns] = match.strategy[teamIndex];
   container.innerHTML =
     "<div class=lg>" +
     renderLiveGameHeader(...match.teams) +
@@ -181,10 +183,15 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       },
     ) +
     renderLiveGameProgress(...match.teams) +
-    renderLiveGameStrategy(game, match, (strategy: Strategy) => {
-      match!.setStrategy(game.userTeam.id, strategy);
-      renderLiveGame(game, container, round);
-    }) +
+    renderLiveGameStrategy(
+      currentStrategy,
+      strategyTurns,
+      (strategy: Strategy) => {
+        if (match?.isLive) {
+          return match!.setStrategy(game.userTeam.id, strategy);
+        }
+      },
+    ) +
     renderLiveGameSidebar(match.turns) +
     "</div>";
   const start = getById("start");
@@ -404,34 +411,68 @@ function renderLiveGameProgress(home: Team, away: Team) {
 }
 
 function renderLiveGameStrategy(
-  game: Game,
-  match: Match,
-  callback: (strategy: Strategy) => void,
+  currentStrategy: Strategy,
+  strategyTurns: number,
+  callback: (strategy: Strategy) => [Strategy, number] | undefined,
 ) {
   const strategies: [string, string[], Strategy][] = [
     ["All Out Attack", ["+att", "-def"], "att"],
     ["Park the Bus", ["+def", "-att"], "prk"],
     ["Pressure Up", ["+def", "cntr att"], "prss"],
   ] as const;
-  const teamIndex = match.teamIds.indexOf(game.userTeam.id);
-  const [currentStrategy, turns] = match.strategy[teamIndex];
   setTimeout(() => {
     document.querySelectorAll<HTMLElement>("[data-stg]").forEach((elem) => {
       elem.addEventListener("click", () => {
-        callback(elem.dataset.stg as Strategy);
+        const result = callback(elem.dataset.stg as Strategy);
+        if (!result) {
+          return;
+        }
+        const [newStrategy, newTurns] = result;
+        getById("lgst").outerHTML = renderLiveGameStrategy(
+          newStrategy,
+          newTurns,
+          callback,
+        );
+        // live game strategy action
+        startAnimation(getById("lgst-a"), newTurns);
       });
     });
+    function startAnimation(container: HTMLElement, turns: number) {
+      const duration = turns * turnTimeout;
+      const delta = (boostTurns - turns) * turnTimeout;
+      const zero = (document.timeline.currentTime as number) - delta;
+      requestAnimationFrame(animate);
+      function animate(timestamp: number) {
+        if (
+          !container.isConnected ||
+          container.getBoundingClientRect().width === 0
+        ) {
+          return;
+        }
+        const value = (timestamp - zero) / duration;
+        container.style.setProperty("--p", "" + value * 100);
+        if (value < 1) {
+          requestAnimationFrame((t) => animate(t));
+        } else {
+          container.style.setProperty("--p", "100");
+          getById("lgst").outerHTML = renderLiveGameStrategy("", 0, callback);
+        }
+      }
+    }
   });
   return (
-    "<div class=lgst><div class=c><b>Strategy</b></div><div class=lgst-b>" +
+    "<div id=lgst><div class=c><b>Strategy</b></div><div class=lgst-b>" +
     strategies
       .map(
         ([label, effects, strategy]) =>
           "<button " +
-          (currentStrategy ? "disabled " : "") +
+          (currentStrategy === strategy && strategyTurns ? "id=lgst-a " : "") +
+          (strategyTurns ? "disabled " : "") +
           "data-stg=" +
           strategy +
-          " class=btn><b>" +
+          " class='btn" +
+          (currentStrategy === strategy && strategyTurns ? " ld" : "") +
+          "'><b>" +
           label +
           "</b> " +
           effects.map((ef) => "<span>" + ef + "</span>").join("") +

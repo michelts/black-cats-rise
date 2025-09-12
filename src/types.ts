@@ -97,7 +97,7 @@ type BaseMatch = StoredMatch & {
   isCurrent: boolean;
   advance: () => Match;
   boostPlayer: (playerNumber: Player["number"]) => number; // returns the boost itself
-  setStrategy: (teamId: Team["id"], strategy: Strategy) => number; // return the strategy turns itself
+  setStrategy: (teamId: Team["id"], strategy: Strategy) => [Strategy, number]; // return the strategy turns itself
 };
 
 export interface StoredMatch {

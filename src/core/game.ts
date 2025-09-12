@@ -197,6 +197,11 @@ export class Game implements GameType {
             delete match.boost[playerNumber];
           }
         }
+        for (const i of [0, 1]) {
+          if (--match.strategy[i][1] <= 0) {
+            match.strategy[i] = ["", 0];
+          }
+        }
         updatedStoredMatch = match;
       } else {
         match.turns.push({} as StoredTurn); // hack to keep other teams matches data low
@@ -251,17 +256,17 @@ export class Game implements GameType {
     match: Pick<Match, "id">,
     teamId: Team["id"],
     newStrategy: Strategy,
-  ) {
+  ): [Strategy, number] {
     const storedMatches = this.storage.matches as StoredMatch[];
     const matchIndex = storedMatches.findIndex((m) => m.id === match.id);
     const teamIndex = storedMatches[matchIndex].teamIds.indexOf(teamId);
-    const [, turns] = storedMatches[matchIndex].strategy[teamIndex];
+    const [strategy, turns] = storedMatches[matchIndex].strategy[teamIndex];
     if (turns) {
-      return 0;
+      return [strategy, turns];
     }
     storedMatches[matchIndex].strategy[teamIndex] = [newStrategy, boostTurns];
     this.storage.matches = storedMatches;
-    return turns;
+    return [newStrategy, boostTurns];
   }
 
   setTeamFormation(teamId: Team["id"], formation: Formation) {
@@ -312,17 +317,16 @@ function runMatchTurn(
 ): [TurnGoals, TurnMomentum, EventMessage] {
   const oldMomentum = match.turns[0]?.momentum ?? 0;
   const sector = getSector(ballPosition);
+  const userIsHome = homeTeam.id === userTeamId;
   const homeStats = sum(
     homeTeam.players.map((player) => {
-      const boost =
-        homeTeam.id === userTeamId && match.boost[player.number] ? 1.5 : 1;
+      const boost = userIsHome && match.boost[player.number] ? 1.5 : 1;
       return getPlayerContribution(sector, player) ** 0.5 * boost;
     }),
   );
   const awayStats = sum(
     awayTeam.players.map((player) => {
-      const boost =
-        awayTeam.id === userTeamId && match.boost[player.number] ? 2 : 1;
+      const boost = !userIsHome && match.boost[player.number] ? 2 : 1;
       return (
         getPlayerContribution((sector * -1) as Sector, player) ** 0.5 * boost
       );
