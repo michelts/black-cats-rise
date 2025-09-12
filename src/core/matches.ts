@@ -21,6 +21,10 @@ export function generateEmptyMatches(numTeams: EvenNumber): StoredMatch[] {
         turns: [],
         goals: [0, 0] satisfies [number, number],
         boost: {},
+        strategy: [
+          ["", 0],
+          ["", 0],
+        ] satisfies StoredMatch["strategy"],
       });
     }
 

@@ -97,6 +97,7 @@ type BaseMatch = StoredMatch & {
   isCurrent: boolean;
   advance: () => Match;
   boostPlayer: (playerNumber: Player["number"]) => number; // returns the boost itself
+  setStrategy: (teamId: Team["id"], strategy: Strategy) => number; // return the strategy turns itself
 };
 
 export interface StoredMatch {
@@ -106,7 +107,11 @@ export interface StoredMatch {
   turns: StoredTurn[];
   goals: [number, number];
   boost: Record<StoredPlayer["number"], number>;
+  strategy: [[Strategy, number], [Strategy, number]];
 }
+
+// All out attack, park the bus, pressure up, couter attack, empty
+export type Strategy = "att" | "prk" | "prss" | "cntr" | "";
 
 export interface StoredTurn {
   id: number;

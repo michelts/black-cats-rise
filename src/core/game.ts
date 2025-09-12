@@ -11,6 +11,7 @@ import type {
   StoredMatch,
   StoredTeam,
   StoredTurn,
+  Strategy,
   Table,
   Team,
 } from "@/types";
@@ -110,6 +111,9 @@ export class Game implements GameType {
       },
       boostPlayer(playerNumber: Player["number"]) {
         return game.boostPlayerInMatch(this, playerNumber);
+      },
+      setStrategy(teamId: Team["id"], strategy: Strategy) {
+        return game.setTeamStrategyInMatch(this, teamId, strategy);
       },
     };
     if (match.turns.length === maxTurns) {
@@ -241,6 +245,23 @@ export class Game implements GameType {
     storedMatches[index].boost = { ...boost, [playerNumber]: boostTurns };
     this.storage.matches = storedMatches;
     return boostTurns;
+  }
+
+  setTeamStrategyInMatch(
+    match: Pick<Match, "id">,
+    teamId: Team["id"],
+    newStrategy: Strategy,
+  ) {
+    const storedMatches = this.storage.matches as StoredMatch[];
+    const matchIndex = storedMatches.findIndex((m) => m.id === match.id);
+    const teamIndex = storedMatches[matchIndex].teamIds.indexOf(teamId);
+    const [, turns] = storedMatches[matchIndex].strategy[teamIndex];
+    if (turns) {
+      return 0;
+    }
+    storedMatches[matchIndex].strategy[teamIndex] = [newStrategy, boostTurns];
+    this.storage.matches = storedMatches;
+    return turns;
   }
 
   setTeamFormation(teamId: Team["id"], formation: Formation) {

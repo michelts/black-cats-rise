@@ -392,9 +392,13 @@ label:has(+ select) {
   padding: 0.5rem 1rem;
   background: $button-background;
 
-  &:hover {
+  &:not(:disabled):hover {
     cursor: pointer;
     outline: 3px solid $button-background;
+  }
+
+  &:disabled {
+    background: #666;
   }
 }
 

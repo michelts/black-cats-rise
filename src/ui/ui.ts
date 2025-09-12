@@ -9,6 +9,7 @@ import type {
   Position,
   Screen,
   StoredTurn,
+  Strategy,
   Team,
 } from "@/types";
 
@@ -180,7 +181,10 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       },
     ) +
     renderLiveGameProgress(...match.teams) +
-    renderLiveGameStrategy() +
+    renderLiveGameStrategy(game, match, (strategy: Strategy) => {
+      match!.setStrategy(game.userTeam.id, strategy);
+      renderLiveGame(game, container, round);
+    }) +
     renderLiveGameSidebar(match.turns) +
     "</div>";
   const start = getById("start");
@@ -399,18 +403,35 @@ function renderLiveGameProgress(home: Team, away: Team) {
   );
 }
 
-function renderLiveGameStrategy() {
-  const strategies = [
-    ["All out attack", ["+att", "-def"]],
-    ["Park the bus", ["+def", "-att"]],
-    ["Pressure up", ["+def", "cntr att"]],
+function renderLiveGameStrategy(
+  game: Game,
+  match: Match,
+  callback: (strategy: Strategy) => void,
+) {
+  const strategies: [string, string[], Strategy][] = [
+    ["All Out Attack", ["+att", "-def"], "att"],
+    ["Park the Bus", ["+def", "-att"], "prk"],
+    ["Pressure Up", ["+def", "cntr att"], "prss"],
   ] as const;
+  const teamIndex = match.teamIds.indexOf(game.userTeam.id);
+  const [currentStrategy, turns] = match.strategy[teamIndex];
+  setTimeout(() => {
+    document.querySelectorAll<HTMLElement>("[data-stg]").forEach((elem) => {
+      elem.addEventListener("click", () => {
+        callback(elem.dataset.stg as Strategy);
+      });
+    });
+  });
   return (
     "<div class=lgst><div class=c><b>Strategy</b></div><div class=lgst-b>" +
     strategies
       .map(
-        ([label, effects]) =>
-          "<button class=btn><b>" +
+        ([label, effects, strategy]) =>
+          "<button " +
+          (currentStrategy ? "disabled " : "") +
+          "data-stg=" +
+          strategy +
+          " class=btn><b>" +
           label +
           "</b> " +
           effects.map((ef) => "<span>" + ef + "</span>").join("") +
