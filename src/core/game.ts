@@ -172,7 +172,7 @@ export class Game implements GameType {
           ballPosition,
         );
 
-        const step = 1;
+        const step = 0.5;
         let newPosition = ballPosition;
         if (goals.some((goal) => goal)) {
           newPosition = 50; // midfield on goal

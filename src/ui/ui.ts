@@ -515,7 +515,7 @@ function renderTurnMessage(turn: StoredTurn) {
 function updateLiveGame(match: Match) {
   const ball = getById("ball");
   const turn = match.turns[0]!;
-  ball.style.setProperty("--pct", turn.ballPosition.toFixed(0) + "%");
+  ball.style.setProperty("--pct", turn.ballPosition.toFixed(2) + "%");
   const matchTime = getById("matchTime");
   matchTime.innerHTML = turn.time + "min";
   const score = getById("score");
