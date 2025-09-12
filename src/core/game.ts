@@ -172,14 +172,14 @@ export class Game implements GameType {
           ballPosition,
         );
 
-        const step = 0.5;
+        const progressionStep = 0.5;
         let newPosition = ballPosition;
         if (goals.some((goal) => goal)) {
           newPosition = 50; // midfield on goal
         } else if (newMomentum > 0) {
-          newPosition += step;
+          newPosition += progressionStep;
         } else if (newMomentum < 0) {
-          newPosition -= step;
+          newPosition -= progressionStep;
         }
         const time = Math.round(match.turns.length / turnsPerSecond);
         match.turns.unshift({
