@@ -185,7 +185,7 @@ export class Game implements GameType {
         }
         updatedStoredMatch = match;
       } else {
-        match.turns.push(null);
+        match.turns.push({} as StoredTurn); // hack to keep other teams matches data low
         if (match.turns.length === maxTurns) {
           const scores = match.teamIds
             .map((id) => teamsLookup[id])

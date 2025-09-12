@@ -103,7 +103,7 @@ export interface StoredMatch {
   id: string;
   round: number;
   teamIds: [StoredTeam["id"], StoredTeam["id"]];
-  turns: (StoredTurn | null)[];
+  turns: StoredTurn[];
   goals: [number, number];
   boost: Record<StoredPlayer["number"], number>;
 }

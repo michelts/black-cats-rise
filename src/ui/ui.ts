@@ -421,7 +421,7 @@ function renderTurnMessage(turn: StoredTurn) {
 
 function updateLiveGame(match: Match) {
   const ball = getById("ball");
-  const turn = match.turns[0]!; // it could be null for other teams, but not for the player's team
+  const turn = match.turns[0]!;
   ball.style.setProperty("--pct", turn.ballPosition.toFixed(0) + "%");
   const matchTime = getById("matchTime");
   matchTime.innerHTML = turn.time + "min";
