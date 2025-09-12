@@ -176,6 +176,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
       },
     ) +
     renderLiveGameProgress(...match.teams) +
+    renderLiveGameStrategy() +
     renderLiveGameSidebar(match.turns) +
     "</div>";
   const start = getById("start");
@@ -380,6 +381,10 @@ function renderLiveGameProgress(home: Team, away: Team) {
     color2 +
     "'><div id=ball><span>⚽</span></div></div>"
   );
+}
+
+function renderLiveGameStrategy() {
+  return "<div class=lgst><b>Strategy</b></div>";
 }
 
 function renderLiveGameSidebar(turns: StoredTurn[]) {

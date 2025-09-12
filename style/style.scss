@@ -399,7 +399,7 @@ label:has(+ select) {
 .lg {
   display: grid;
   grid-template-columns: 1fr 10px 1fr;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr 1fr;
   gap: 1rem;
 }
 // live game header
@@ -453,6 +453,7 @@ label:has(+ select) {
   flex-direction: column;
   align-items: center;
   border-radius: 0.75rem;
+  grid-row: span 2;
 
   b {
     padding: 0.5rem;
@@ -568,6 +569,7 @@ label:has(+ select) {
   background: var(--c2);
   border-radius: 0.25rem;
   outline: 1px solid $progress-bar-border;
+  grid-row: span 2;
 
   > div {
     position: relative;
@@ -619,6 +621,13 @@ label:has(+ select) {
   .hm {
     color: $match-events-home-color;
   }
+}
+
+// live game strategy
+.lgst {
+  backdrop-filter: brightness(140%);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
 }
 
 @media screen and (max-width: 639px) {
