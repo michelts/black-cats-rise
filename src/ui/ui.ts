@@ -616,7 +616,7 @@ function renderTeam(game: Game, container: HTMLElement) {
           "</td></tr>",
       )
       .join("") +
-    "</table>";
+    "</table><p class=c>Click a player to select it and click again other player to swap them.</p>";
   const rows = document.querySelectorAll<HTMLElement>("tbody [data-swap]");
   for (const row of rows) {
     row.addEventListener("click", () => {
