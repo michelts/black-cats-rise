@@ -1,3 +1,4 @@
+import { possiblyPlayMusic, stopMusic } from "@/audio";
 import { formations } from "@/core/formations";
 import { boostTurns, maxMomentum, turnTimeout } from "@/core/game";
 import type {
@@ -37,6 +38,7 @@ function navigate(game: Game, screen: Screen, extraData?: unknown) {
   const screenContainer = toggleScreen(screen);
 
   if (screen !== "live" && matchInterval) {
+    stopMusic();
     clearInterval(matchInterval);
   }
 
@@ -212,6 +214,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
   }
 
   const begin = (match: Match) => {
+    possiblyPlayMusic();
     start.classList.add("hide");
     score.classList.remove("hide");
     time.classList.remove("hide");
@@ -240,6 +243,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
     updateLiveGame(match);
     if (match.isLive) {
       begin(match); // continue game
+      possiblyPlayMusic();
     }
   }
 
