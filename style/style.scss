@@ -379,7 +379,7 @@ label:has(+ select) {
   gap: 0.5rem;
   margin-bottom: 2rem;
 }
-.nm, .nm > div div, .nm > div > span {
+.nm, .nm > div > div, .nm > div > span {
   display: flex;
   flex-direction: column;
 }
