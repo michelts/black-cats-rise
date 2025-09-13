@@ -407,7 +407,7 @@ function renderLiveGameProgress(home: Team, away: Team) {
     color1 +
     "; --c2: " +
     color2 +
-    "'><div id=ball><span>⚽</span></div></div>"
+    "'><div id=ball><span>⚽</span><div></div></div></div>"
   );
 }
 
@@ -516,7 +516,15 @@ function updateLiveGame(match: Match) {
   const ball = getById("ball");
   const turn = match.turns[0]!;
   ball.style.setProperty("--pct", turn.ballPosition.toFixed(2) + "%");
-  ball.style.setProperty("--ang", (turn.momentum / maxMomentum).toFixed(2));
+
+  // angle adds 0.25 so the percentage starts from "ball" boundaries - this is
+  // calculated here instead of css because chrome had issues with css based
+  // calc
+  const momentumPct = turn.momentum / maxMomentum;
+  const delta = (0.25 * momentumPct) / Math.abs(momentumPct);
+  const angle = delta + momentumPct;
+  ball.style.setProperty("--ang", Number.isNaN(angle) ? "0" : angle.toFixed(2));
+
   ball.style.setProperty(
     "--angc",
     turn.momentum > 0 ? "var(--c1)" : "var(--c2)",

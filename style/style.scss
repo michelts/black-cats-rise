@@ -648,7 +648,7 @@ label:has(+ select) {
       height: 10px;
       z-index: 1;
       background: var(--angc);
-      transform: scaleX(calc(0.25 * var(--ang) / abs(var(--ang)) + var(--ang)));
+      transform: scaleX(var(--ang));
       transform-origin: 0 0;
       border-radius: 0.25rem;
     }
