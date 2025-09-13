@@ -41,6 +41,12 @@ function navigate(game: Game, screen: Screen, extraData?: unknown) {
   }
 
   if (screen === "game") {
+    game.reset();
+    navigate(game, "matches");
+    return;
+  }
+
+  if (screen === "continue") {
     navigate(game, "matches");
     return;
   }

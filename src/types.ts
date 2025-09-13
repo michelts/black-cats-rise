@@ -4,9 +4,17 @@ export interface Game {
   userTeam: Team;
   matches: Array<Match>;
   currentDate: Date;
+  reset: () => void;
 }
 
-export type Screen = "splash" | "game" | "matches" | "team" | "table" | "live";
+export type Screen =
+  | "splash"
+  | "game"
+  | "continue"
+  | "matches"
+  | "team"
+  | "table"
+  | "live";
 
 export interface Team extends StoredTeam {
   players: Player[];
