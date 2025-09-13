@@ -513,11 +513,13 @@ function renderLiveGameStrategy(
 function renderLiveGameSidebar(turns: StoredTurn[]) {
   const sidebar =
     "<div class=lgs><div class=c><b>Match Events</b></div><div id=lgs-ms>" +
-    turns
-      .filter((turn) => turn.evt)
-      .reverse()
-      .map(renderTurnMessage)
-      .join("") +
+    (turns.length === 0
+      ? "<p class=c>Click the <b>Start</b> button above to begin.<br/><br/>To play your next match, or get back to the current match, navigate to the <b>Fixtures</b> menu.</p>"
+      : turns
+          .filter((turn) => turn.evt)
+          .reverse()
+          .map(renderTurnMessage)
+          .join("")) +
     "</div></div>";
   return sidebar;
 }
