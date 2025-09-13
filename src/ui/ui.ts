@@ -1,4 +1,4 @@
-import { possiblyPlayMusic, stopMusic } from "@/audio";
+import { possiblyPlayMusic, stopMusic, toggleMusic } from "@/audio";
 import { formations } from "@/core/formations";
 import { boostTurns, maxMomentum, turnTimeout } from "@/core/game";
 import type {
@@ -23,6 +23,16 @@ export function makeUserInterface(game: Game) {
   currentTeam = game.userTeam.id;
   matchInterval = null;
 
+  const control = getById("msc-tgl");
+  control.addEventListener("click", async () => {
+    const enabled = await toggleMusic();
+    if (enabled) {
+      control.classList.remove("off");
+    } else {
+      control.classList.add("off");
+    }
+  });
+
   for (const elem of document.querySelectorAll(".menu")) {
     elem.addEventListener("click", (event) => {
       const target = event.target as HTMLElement;
@@ -40,6 +50,8 @@ function navigate(game: Game, screen: Screen, extraData?: unknown) {
   if (screen !== "live" && matchInterval) {
     stopMusic();
     clearInterval(matchInterval);
+    const music = getById("msc-tgl");
+    music.setAttribute("disabled", "");
   }
 
   if (screen === "game") {
@@ -215,6 +227,7 @@ function renderLiveGame(game: Game, container: HTMLElement, round: unknown) {
 
   const begin = (match: Match) => {
     possiblyPlayMusic();
+    getById("msc-tgl").removeAttribute("disabled");
     start.classList.add("hide");
     score.classList.remove("hide");
     time.classList.remove("hide");

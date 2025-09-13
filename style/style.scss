@@ -176,6 +176,9 @@ main {
 .intro.active ~ main, .hide {
   display: none;
 }
+.hidden {
+  visibility: hidden;
+}
 
 header {
   display: flex;
@@ -776,8 +779,20 @@ label:has(+ select) {
 }
 
 // screen reader only
+.sr {
+  pointer-events: none;
+}
 @media screen and (max-width: 639px) {
   .sr {
     display: none;
+  }
+}
+
+#msc-tgl {
+  &:disabled {
+    color: rgba(#fff, 0.3);
+  }
+  &:not(.disabled).off {
+    text-decoration: line-through;
   }
 }
