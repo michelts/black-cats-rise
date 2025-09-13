@@ -423,6 +423,9 @@ function renderLiveGameStrategy(
   ] as const;
   setTimeout(() => {
     document.querySelectorAll<HTMLElement>("[data-stg]").forEach((elem) => {
+      if ((elem.dataset.stg as Strategy) === currentStrategy && strategyTurns) {
+        startAnimation(getById("lgst-a"), strategyTurns);
+      }
       elem.addEventListener("click", () => {
         const result = callback(elem.dataset.stg as Strategy);
         if (!result) {
@@ -525,6 +528,7 @@ function updateLiveGame(match: Match) {
   const angle = delta + momentumPct;
   ball.style.setProperty("--ang", Number.isNaN(angle) ? "0" : angle.toFixed(2));
 
+  // angle color
   ball.style.setProperty(
     "--angc",
     turn.momentum > 0 ? "var(--c1)" : "var(--c2)",
