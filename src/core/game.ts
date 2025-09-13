@@ -31,10 +31,10 @@ export const turnTimeout = 250; // increase or decrease for controlling game spe
 export const maxMomentum = 4;
 
 export const boostTurns = 12; // check turnsPerSecond
-const boostPercentage = 1.3;
+const boostPercentage = 1.5;
 const boostMaxConcurrent = 3;
 const statsNormalizationRate = 4; // force stats less discrepant so the boost has easier impact
-const aiStrategyChance = 1;
+const aiStrategyChance = 0.7;
 const ballPositionProgressionStep = 1;
 
 export class Game implements GameType {
@@ -365,8 +365,8 @@ function runMatchTurn(
       );
     }),
   );
-  const aiPlayerMaxBoost = Object.keys(match.boost).length * 0.3;
-  const aiPlayerBoost = 1 + (Math.random() * aiPlayerMaxBoost) / 10;
+  const aiPlayerMaxBoost = 1.5;
+  const aiPlayerBoost = 1 + (Math.random() ** 2 * aiPlayerMaxBoost) / 10;
   if (userIsHome) {
     awayStats *= aiPlayerBoost;
   } else {
@@ -385,11 +385,9 @@ function runMatchTurn(
     maxMomentum,
   );
   if (momentum === 0 && oldMomentum < 0) {
-    console.log(homeTeam.name + " takes control");
     eventMessage = homeTeam.name + " takes control";
   }
   if (momentum < 0 && oldMomentum === 0) {
-    console.log(awayTeam.name + " takes control");
     eventMessage = awayTeam.name + " takes control";
   }
   if (match.turns.length === 0) {
