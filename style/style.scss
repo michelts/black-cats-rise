@@ -132,7 +132,7 @@ nav button {
     max-width: 400px;
   }
 
-  div {
+  & > div {
     backdrop-filter: brightness(200%);
     padding: 2rem;
     border-radius: 1rem;
@@ -141,6 +141,12 @@ nav button {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+
+    & > div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
   }
 
   svg {
@@ -156,6 +162,14 @@ nav button {
 }
 .screen.intro.active {
   display: flex;
+}
+
+#continue {
+  border: 0;
+  background: none;
+  color: #fff;
+  text-decoration: underline;
+  font-size: 1rem;
 }
 
 main {
