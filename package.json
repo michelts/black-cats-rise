@@ -8,7 +8,7 @@
     "dev": "vite",
     "lint": "biome check",
     "typecheck": "tsc",
-    "build": "tsc && vite build && rm -f dist.zip && advzip -a dist.zip dist/ && ls -l dist.zip",
+    "build": "tsc && vite build && rm -f dist.zip && cd dist && advzip -a ../dist.zip index.html && cd ../ && ls -l dist.zip",
     "preview": "vite preview",
     "test": "vitest",
     "serve": "cd dist && python -m http.server 8008"
